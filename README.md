@@ -1,9 +1,12 @@
 
-How to edit this: test-2025
-* Option-1 (tested and worked ok): PyCharm supports editing of these .md files. Then you need to push to the main branch or make a pull request.
-* Option-2 (tested ok): Edit and commit it directly on github. Then any local repo copies will need to be "updated".
+# FeedMe
 
-# cp3407-project-v2024 template [Delete or change to your team/project name before submitting]
+FeedMe is a modern food ordering website developed for CP3407/CP5507. The system is designed to improve the online food ordering experience by allowing customers to browse restaurants, view menus, place orders, and track their order progress. Restaurant owners can manage menu items and incoming orders, while administrators can monitor users, restaurants, and overall activity on the platform.
+
+## Project Goal
+The goal of FeedMe is to develop a user-friendly and database-driven website that provides a better food ordering experience than traditional platforms by focusing on usability, clear role-based access, and efficient order management.
+
+# cp3407-project-FEED ME
 
 This a project assignment template for CP3407. 
 The following is the list of items, which are required to be completed.
@@ -25,12 +28,14 @@ It is recommended to complete this assignment in a group of 2-4 students.
 
 # Project planning BEFORE iteration-1, (see chapters 1-3)
 Checklist/TODOs: 
-* Update the following during each week prac session
-* github entry timestamp is BEFORE the iteration-1
-* User stories are correct: see p39
-* Must have more user stories than fits into iterations 1 and 2. To practice the priority.
-* [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
-* ...
+* Update the following during each week prac session  
+* GitHub entry timestamp is BEFORE the iteration-1  
+* User stories are correct and prioritised  
+* Created more user stories than needed for iteration 1 and 2  
+* Project idea finalised ( FeedMe)  
+* Tech stack selected (PHP, MySQL, HTML, CSS, JS, Docker)  
+* Pages and features identified  
+* Database design completed
 
 Total: YY days
 
