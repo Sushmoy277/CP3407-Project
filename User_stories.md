@@ -1,4 +1,4 @@
-# User Stories – Part 1 (Customer Features)
+# User Stories 
 
 ## Customer User Stories
 
@@ -17,3 +17,22 @@
 - As a customer, I want to save my delivery address so that future checkout is faster.
 - As a customer, I want to view my order history so that I can reorder meals easily.
 - As a customer, I want to rate and review restaurants and orders so that I can share my experience.
+
+
+## Restaurant Owner User Stories
+
+- As a restaurant owner, I want to register my restaurant so that customers can find my business on the platform.
+- As a restaurant owner, I want to manage my restaurant profile so that customers can see correct business information.
+- As a restaurant owner, I want to add, edit, and remove menu items so that my menu stays updated.
+- As a restaurant owner, I want to upload food images and prices so that customers can understand what they are ordering.
+- As a restaurant owner, I want to receive incoming orders instantly so that I can begin preparing food quickly.
+- As a restaurant owner, I want to update order status such as preparing, ready, and dispatched so that customers stay informed.
+- As a restaurant owner, I want to view daily and weekly sales reports so that I can monitor business performance.
+- As a restaurant owner, I want to manage available hours and delivery availability so that customers see accurate service times.
+
+## Delivery Rider User Stories
+
+- As a delivery rider, I want to log in and view assigned deliveries so that I know which orders to deliver.
+- As a delivery rider, I want to see customer address and delivery details so that I can complete deliveries correctly.
+- As a delivery rider, I want to update delivery progress so that customers can track the order.
+- As a delivery rider, I want to mark an order as delivered so that the system records completion.
