@@ -52,6 +52,14 @@ Total: YY days
 - Team collaboration is maintained through version control, task boards, and regular updates to ensure timely delivery.
 - [Agile Project Management](https://github.com/Sushmoy277/CP3407-Project/blob/main/agile_project_management.md)
 
+## UI/UX Design
+
+- The system is designed with a simple and user-friendly interface to improve usability and navigation.
+- Wireframes and structured page layouts are used to clearly define the system before development.
+- The design focuses on smooth user flow, accessibility, and responsive behaviour across devices.
+- [UI Design](UI_design.md)
+
+
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
 * Goal is to have 2 iterations during a trimester of teaching.
