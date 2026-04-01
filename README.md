@@ -45,6 +45,13 @@ Total: YY days
 ## Techs Used
 - [Tech Stack](https://github.com/Sushmoy277/CP3407-Project/blob/main/tech_stack.md)
 
+## Agile Project Management
+
+- The project follows an Agile (Scrum) approach to develop the system in multiple iterations (sprints).
+- Tasks are divided into smaller units and managed using tools like GitHub and Trello for better tracking.
+- Team collaboration is maintained through version control, task boards, and regular updates to ensure timely delivery.
+- [Agile Project Management]()
+
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
 * Goal is to have 2 iterations during a trimester of teaching.
