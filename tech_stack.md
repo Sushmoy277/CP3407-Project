@@ -108,3 +108,83 @@ These technologies are chosen because:
 - They are reliable and widely used
 - They are suitable for food ordering systems
 - They meet the requirement of using a modern database
+
+
+
+## Cloud Services (AWS)
+
+To achieve HD-level quality, FeedMe uses cloud services as encouraged in the project brief.
+
+
+
+### AWS EC2 (Elastic Compute Cloud)
+
+Used for:
+- Hosting backend server
+- Running application logic
+
+Features:
+- Scalable virtual servers
+- Flexible configuration
+- Reliable hosting
+
+
+
+### AWS S3 (Simple Storage Service)
+
+Used for:
+- Storing images (food images, restaurant images)
+
+Features:
+- Secure file storage
+- High durability
+- Easy access from frontend
+
+
+### AWS Amplify / Static Hosting
+
+Used for:
+- Hosting frontend application
+
+Features:
+- Fast deployment
+- Continuous integration support
+- Easy connection with GitHub
+
+---
+
+## Additional Tools
+
+### Docker (Optional)
+
+Used for:
+- Containerising application
+- Ensuring consistent development environment
+
+### Postman
+
+Used for:
+- Testing APIs
+- Debugging backend requests
+
+
+
+## Justification
+
+These tools are selected because:
+- Cloud services improve scalability and performance
+- AWS is recommended in the assignment for HD marks
+- They reflect real-world industry practices
+- They support deployment and testing of the system
+
+
+
+## Summary
+
+The FeedMe system uses:
+- React for frontend
+- Node.js and Express for backend
+- MySQL for database
+- AWS for cloud deployment
+
+This ensures a modern, scalable, and professional system architecture.
