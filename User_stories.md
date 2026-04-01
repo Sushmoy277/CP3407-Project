@@ -36,3 +36,19 @@
 - As a delivery rider, I want to see customer address and delivery details so that I can complete deliveries correctly.
 - As a delivery rider, I want to update delivery progress so that customers can track the order.
 - As a delivery rider, I want to mark an order as delivered so that the system records completion.
+
+## Admin User Stories
+
+- As an admin, I want to manage users so that the platform remains secure and organised.
+- As an admin, I want to approve or manage restaurants so that only valid businesses are listed.
+- As an admin, I want to manage menu and order issues so that service quality is maintained.
+- As an admin, I want to view reports on orders, users, and restaurant activity so that I can monitor overall platform performance.
+- As an admin, I want to manage reviews and reported problems so that the system remains trustworthy.
+
+## Unique Features (USP)
+
+- As a customer, I want smart meal recommendations based on my preferences and previous orders so that I can discover suitable meals faster.
+- As a customer, I want healthier food filters and recommendation tags so that I can make better food choices.
+- As a customer, I want more accurate live order tracking so that I know exactly where my order is.
+- As a customer, I want scheduled ordering so that I can set meals for later in the day.
+- As a restaurant owner, I want a better dashboard with order and sales insights so that I can improve operations.
