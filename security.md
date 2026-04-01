@@ -84,3 +84,48 @@ Data protection is important because:
 - It protects user privacy
 - It prevents system vulnerabilities
 - It ensures trust in the platform
+
+## Secure System Design
+
+The system is designed to:
+- Limit access to sensitive features
+- Use secure APIs
+- Prevent unauthorized actions
+
+
+
+## Logging and Monitoring
+
+- Track user activity
+- Monitor system errors
+- Identify suspicious behaviour
+
+
+
+## Backup and Recovery
+
+- Regular database backups
+- Ability to restore system in case of failure
+
+
+
+## Deployment Security
+
+- Secure AWS configuration
+- Restricted server access
+- Use environment variables for sensitive data
+
+
+
+## Justification
+
+These practices are used because:
+- They improve system reliability
+- They prevent data loss
+- They follow modern industry standards
+
+
+
+## Summary
+
+The FeedMe system applies security best practices including authentication, data protection, validation, and secure deployment to ensure a safe and reliable platform.
