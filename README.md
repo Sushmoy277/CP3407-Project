@@ -50,7 +50,7 @@ Total: YY days
 - The project follows an Agile (Scrum) approach to develop the system in multiple iterations (sprints).
 - Tasks are divided into smaller units and managed using tools like GitHub and Trello for better tracking.
 - Team collaboration is maintained through version control, task boards, and regular updates to ensure timely delivery.
-- [Agile Project Management]()
+- [Agile Project Management](https://github.com/Sushmoy277/CP3407-Project/blob/main/agile_project_management.md)
 
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
