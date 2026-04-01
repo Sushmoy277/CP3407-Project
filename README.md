@@ -69,6 +69,14 @@ Total: YY days
 ## Team Roles
 - [Team Work Distributions](https://github.com/Sushmoy277/CP3407-Project/blob/main/team_roles.md)
 
+## Database Design
+
+- The database is designed to store users, restaurants, orders, and related data in a structured way.
+- It includes multiple tables with clear relationships to support system functionality.
+- The design ensures data consistency, scalability, and efficient system performance.
+
+- [Database Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/database_design.md)
+
 
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
