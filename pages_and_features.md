@@ -84,3 +84,59 @@ Features:
 Features:
 - Rate restaurants
 - Submit reviews and feedback
+
+
+## Restaurant Owner Features
+
+### Restaurant Dashboard
+Features:
+- View incoming orders
+- Monitor order status
+- View sales summary
+
+
+
+### Menu Management Page
+Features:
+- Add new menu items
+- Edit or delete items
+- Upload images
+- Update prices and descriptions
+
+
+
+### Order Management Page
+Features:
+- Accept or reject orders
+- Update order status (preparing, ready, dispatched)
+
+
+
+### Restaurant Profile Page
+Features:
+- Update restaurant details
+- Set operating hours
+- Manage delivery availability
+
+
+### Sales Report Page
+Features:
+- View daily and weekly sales
+- Monitor performance
+
+
+## Delivery Rider Features
+
+### Rider Dashboard
+Features:
+- View assigned deliveries
+- See customer details and addresses
+
+
+
+### Delivery Management Page
+Features:
+- Update delivery status
+- Mark as picked up
+- Mark as on the way
+- Mark as delivered
