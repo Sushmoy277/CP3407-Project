@@ -74,7 +74,7 @@ Fields:
 - total_amount
 - status
 
-# Database Design – Part 2 (Supporting Tables & Relationships)
+# Database Design
 
 ## Supporting Tables
 
