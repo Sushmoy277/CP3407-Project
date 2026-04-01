@@ -40,7 +40,6 @@ The frontend handles:
 - Suitable for dashboards (customer, restaurant, admin)
 
 
-
 ## Backend Design
 
 The backend handles:
@@ -59,7 +58,6 @@ The backend handles:
 - Good for API-based systems
 - Easy integration with frontend and database
 
----
 
 ## Database Design Overview
 
@@ -81,7 +79,6 @@ The database stores:
 - Reliable and widely used
 - Supports complex relationships (orders, users, menus)
 
----
 
 ## API Communication
 
@@ -91,7 +88,6 @@ The database stores:
 - Backend sends response to frontend
 
 This ensures clear separation between UI and logic.
-
 
 
 ## User Interaction Flow
@@ -121,8 +117,6 @@ To achieve HD-level quality, the system uses cloud services.
 - Modern industry practice
 - Required for HD-level work
 
----
-
 ## Security Design
 
 - User authentication required
@@ -130,7 +124,6 @@ To achieve HD-level quality, the system uses cloud services.
 - Input validation
 - Secure data handling
 
----
 
 ## Scalability
 
@@ -139,7 +132,6 @@ The system supports future growth:
 - More restaurants
 - Additional features (AI, tracking, etc.)
 
----
 
 ## Justification of Architecture
 
@@ -148,8 +140,7 @@ This architecture is chosen because:
 - It separates frontend, backend, and database
 - It supports agile development
 - It matches assignment requirements
-
----
+- 
 
 ## Summary
 
