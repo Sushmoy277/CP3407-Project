@@ -101,3 +101,62 @@ This ensures clear separation between UI and logic.
 - Browses restaurants
 - Adds items to cart
 - Proceeds to checkout
+
+# Architecture Design 
+
+## Cloud & Deployment
+
+To achieve HD-level quality, the system uses cloud services.
+
+### AWS Services
+
+- EC2 – backend hosting
+- RDS – MySQL database
+- S3 – image storage
+- Amplify – frontend hosting
+
+### Justification
+
+- Scalable system
+- Modern industry practice
+- Required for HD-level work
+
+---
+
+## Security Design
+
+- User authentication required
+- Role-based access (customer, admin, restaurant, rider)
+- Input validation
+- Secure data handling
+
+---
+
+## Scalability
+
+The system supports future growth:
+- More users
+- More restaurants
+- Additional features (AI, tracking, etc.)
+
+---
+
+## Justification of Architecture
+
+This architecture is chosen because:
+- It follows modern web standards
+- It separates frontend, backend, and database
+- It supports agile development
+- It matches assignment requirements
+
+---
+
+## Summary
+
+The FeedMe system uses:
+- React frontend
+- Node.js backend
+- MySQL database
+- AWS cloud services
+
+This ensures a scalable, maintainable, and modern system.
