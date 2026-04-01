@@ -1,59 +1,50 @@
-# Tech Stack
+# Technology Stack
 
-## Selected Technology Stack
+## Overview
 
-### Frontend
-**React.js**
+FeedMe uses modern development tools and technologies to build a scalable and efficient food ordering system. These tools are selected based on industry standards and assignment requirements.
 
-React will be used to build the user interface of the website. It is a strong choice because it supports reusable components, modern page design, and a responsive user experience.
+## Frontend Technologies
 
-### Backend
-**Node.js + Express.js**
+### React
 
-Node.js with Express will be used to build the backend server and APIs. This combination is suitable for handling user authentication, restaurant and menu management, cart operations, and order processing.
+Used to build the user interface of the application.
 
-### Database
-**MySQL**
+Features:
+- Component-based architecture
+- Reusable UI components
+- Fast rendering using virtual DOM
+- Supports responsive design
 
-MySQL will be used as the main relational database. It is appropriate for storing users, restaurants, menu items, orders, and reviews in a structured and reliable way.
+### HTML, CSS, JavaScript
 
-### Version Control
-**Git + GitHub**
-
-GitHub will be used for version control, collaboration, documentation storage, and tracking contributions from all group members.
-
-### Design Tool
-**Figma**
-
-Figma will be used to prepare wireframes and layout ideas before frontend development begins.
-
-## Why this stack is suitable
-This technology stack is suitable because:
-- It supports full-stack web development
-- It provides a modern GUI
-- It includes a modern database
-- It is practical for teamwork
-- It is widely used and well supported
-- It allows the team to build a realistic and professional website project
-
-## Planned Architecture
-- React frontend for the client interface
-- Express backend for API endpoints
-- MySQL database for persistent data storage
-- GitHub for collaboration and documentation
+Used for:
+- Structuring web pages (HTML)
+- Styling and layout (CSS)
+- Interactive behaviour (JavaScript)
 
 ## Development Tools
-- VS Code
-- Node.js
-- npm
-- MySQL Workbench
-- GitHub Desktop or Git command line
-- Figma
 
-## Optional Tools for Improvement
-- Docker for environment consistency
-- AWS for cloud deployment
-- Postman for API testing
+### Git and GitHub
 
-## Final Decision
-The team has selected React, Node.js, Express, and MySQL because this combination provides a balanced, realistic, and achievable approach for building the FeedMe website.
+Used for:
+- Version control
+- Team collaboration
+- Tracking code changes
+- Managing project files
+
+### Visual Studio Code
+
+Used as the main code editor for development.
+
+Features:
+- Lightweight and fast
+- Supports multiple programming languages
+- Extensions for React, Node.js, and debugging
+
+## Justification
+
+These tools are chosen because:
+- They are widely used in modern web development
+- They support team collaboration
+- They improve development speed and maintainability
