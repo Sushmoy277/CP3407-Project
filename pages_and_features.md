@@ -140,3 +140,60 @@ Features:
 - Mark as picked up
 - Mark as on the way
 - Mark as delivered
+
+# Pages and Features – Part 3 (Admin & Unique Features)
+
+## Admin Features
+
+### Admin Dashboard
+Features:
+- View total users, restaurants, and orders
+- Monitor system activity
+
+### User Management Page
+Features:
+- Manage customers, restaurant owners, and riders
+- Remove or suspend users
+
+### Restaurant Management Page
+Features:
+- Approve or reject restaurants
+- Edit restaurant details
+- Remove restaurants if needed
+
+### Order Monitoring Page
+Features:
+- View all orders
+- Track system-wide activity
+- Handle order issues
+
+### Review and Reports Page
+Features:
+- Manage user reviews
+- Handle complaints
+- View reports and analytics
+
+## Unique Features (USP)
+
+### Smart Recommendations
+Features:
+- Recommend meals based on user preferences
+- Suggest restaurants based on previous orders
+
+### Health and Diet Filters
+Features:
+- Filter meals by halal, vegetarian, vegan, spicy, or low-calorie options
+
+### Scheduled Ordering
+Features:
+- Allow users to place orders for future times
+
+### Improved Tracking
+Features:
+- Provide accurate delivery updates
+- Show real-time progress
+
+### Advanced Restaurant Dashboard
+Features:
+- Show detailed sales insights
+- Help restaurant owners improve operations
