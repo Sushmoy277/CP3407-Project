@@ -114,3 +114,54 @@ Test cases ensure:
 - Features work correctly
 - System behaves as expected
 - Errors are identified early
+
+# Testing 
+
+## Test Data
+
+Different types of data are used for testing:
+
+- Valid data (correct inputs)
+- Invalid data (wrong inputs)
+- Edge cases (empty fields, large values)
+
+
+## Input Validation Testing
+
+Examples:
+- Prevent empty login fields
+- Validate email format
+- Restrict invalid payment inputs
+
+
+## Error Handling
+
+The system handles errors by:
+- Showing clear error messages
+- Preventing system crashes
+- Guiding users to correct mistakes
+
+
+## Acceptance Testing
+
+Acceptance testing ensures the system meets user requirements.
+
+Examples:
+- User can successfully place an order
+- Restaurant can manage orders
+- Rider can complete delivery
+
+
+## Justification
+
+Testing ensures:
+- System reliability
+- Better user experience
+- Reduced system failures
+
+
+## Summary
+
+The FeedMe system uses multiple testing methods to ensure all components work correctly.
+
+This includes unit, integration, and system testing along with proper validation and error handling.
