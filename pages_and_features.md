@@ -141,7 +141,7 @@ Features:
 - Mark as on the way
 - Mark as delivered
 
-# Pages and Features – Part 3 (Admin & Unique Features)
+# Pages and Features 
 
 ## Admin Features
 
