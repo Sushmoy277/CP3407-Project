@@ -110,3 +110,61 @@ Wireframes help:
 - Visualise the system before development
 - Identify design issues early
 - Improve communication among team members
+
+## User Flow
+
+### Customer Flow
+
+1. User visits homepage
+2. Searches or browses restaurants
+3. Selects a restaurant
+4. Adds items to cart
+5. Proceeds to checkout
+6. Places order
+7. Tracks delivery
+
+---
+
+## Restaurant Flow
+
+1. Restaurant logs in
+2. Views incoming orders
+3. Accepts and prepares order
+4. Updates order status
+
+---
+
+## Rider Flow
+
+1. Rider logs in
+2. Receives delivery task
+3. Picks up order
+4. Delivers order
+5. Marks as completed
+
+---
+
+## UX Considerations
+
+- Fast navigation between pages
+- Minimal steps to place an order
+- Clear feedback (order status, confirmations)
+- Error handling (invalid inputs, failed actions)
+
+---
+
+## Accessibility
+
+- Readable fonts
+- Clear buttons and icons
+- Mobile-friendly design
+- Simple interaction flow
+
+---
+
+## Justification
+
+The UX design ensures:
+- Users can complete tasks quickly
+- The system is easy to learn
+- The experience is smooth and efficient
