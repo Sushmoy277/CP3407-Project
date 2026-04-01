@@ -41,6 +41,59 @@ The frontend handles:
 
 
 
+## Backend Design
+
+The backend handles:
+- Business logic
+- Authentication
+- Order processing
+- API communication
+
+### Technology
+- Node.js
+- Express.js
+
+### Justification
+
+- Fast and scalable
+- Good for API-based systems
+- Easy integration with frontend and database
+
+---
+
+## Database Design Overview
+
+The database stores:
+- Users
+- Restaurants
+- Menu items
+- Orders
+- Payments
+- Deliveries
+- Reviews
+
+### Technology
+- MySQL
+
+### Justification
+
+- Structured relational data
+- Reliable and widely used
+- Supports complex relationships (orders, users, menus)
+
+---
+
+## API Communication
+
+- Frontend sends request
+- Backend processes request
+- Database stores/retrieves data
+- Backend sends response to frontend
+
+This ensures clear separation between UI and logic.
+
+
+
 ## User Interaction Flow
 
 - User visits website
