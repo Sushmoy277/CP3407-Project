@@ -66,6 +66,9 @@ Total: YY days
 - Security practices such as encryption, HTTPS, and safe deployment are used to keep the system reliable.
 - [Security](https://github.com/Sushmoy277/CP3407-Project/blob/main/security.md)
 
+## Team Roles
+- [Team Work Distributions](https://github.com/Sushmoy277/CP3407-Project/blob/main/team_roles.md)
+
 
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
