@@ -40,7 +40,7 @@ Checklist/TODOs:
 Total: YY days
 
 ## System Features
--[Pages And Features](https://github.com/Sushmoy277/CP3407-Project/blob/main/pages_and_features.md)
+- [Pages And Features](https://github.com/Sushmoy277/CP3407-Project/blob/main/pages_and_features.md)
 
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
