@@ -42,6 +42,9 @@ Total: YY days
 ## System Features
 - [Pages And Features](https://github.com/Sushmoy277/CP3407-Project/blob/main/pages_and_features.md)
 
+## Techs Used
+- [Tech Stack]()
+
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
 * Goal is to have 2 iterations during a trimester of teaching.
