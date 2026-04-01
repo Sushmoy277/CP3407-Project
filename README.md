@@ -77,7 +77,14 @@ Total: YY days
 
 - [Database Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/database_design.md)
 
+## Testing
 
+- The system is tested using unit, integration, and system testing to ensure all features work correctly.
+- Test cases are used to verify key functionalities such as login, ordering, and delivery.
+- Validation and error handling are applied to improve system reliability and user experience.
+
+- [Testing](https://github.com/Sushmoy277/CP3407-Project/blob/main/testing.md)
+  
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
 * Goal is to have 2 iterations during a trimester of teaching.
