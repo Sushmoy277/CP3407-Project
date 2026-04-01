@@ -144,3 +144,57 @@ Fields:
 - One order has one delivery (1-to-1)
 - One restaurant can have many reviews (1-to-many)
 - One user can write many reviews (1-to-many)
+
+
+## Database Justification
+
+The database design is chosen based on the needs of the FeedMe system.
+
+Reasons:
+
+- Uses relational structure suitable for food ordering systems
+- Supports multiple user roles (customer, restaurant, rider, admin)
+- Maintains data consistency using foreign keys
+- Allows efficient data storage and retrieval
+- Supports scalability for future features
+
+
+
+## Data Integrity
+
+The system ensures data integrity by:
+- Using primary keys for unique identification
+- Using foreign keys to maintain relationships
+- Avoiding duplicate or inconsistent data
+
+
+
+## Scalability
+
+The design allows future expansion such as:
+- Adding promotions and discounts
+- Adding analytics and reports
+- Supporting more users and restaurants
+
+
+
+## Justification with Assignment Requirements
+
+This database design:
+- Uses a modern relational database (MySQL)
+- Supports all core system features
+- Aligns with project requirements
+- Helps deliver a scalable and efficient system
+
+
+
+## Summary
+
+The FeedMe database is structured to manage users, restaurants, orders, and deliveries effectively.
+
+It ensures:
+- Strong relationships between data
+- Efficient system performance
+- Support for future development
+
+This design provides a solid foundation for building the application.
