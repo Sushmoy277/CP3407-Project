@@ -59,6 +59,13 @@ Total: YY days
 - The design focuses on smooth user flow, accessibility, and responsive behaviour across devices.
 - [UI Design](UI_design.md)
 
+## Security Design
+
+- The system uses secure login and role-based access to protect user accounts and data.
+- All user inputs and data are validated and protected to prevent errors and attacks.
+- Security practices such as encryption, HTTPS, and safe deployment are used to keep the system reliable.
+- [Security](https://github.com/Sushmoy277/CP3407-Project/blob/main/security.md)
+
 
 ## Iteration 1 [duration 3-4 weeks], add your start and end dates 
 
