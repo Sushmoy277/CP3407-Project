@@ -48,3 +48,63 @@ These tools are chosen because:
 - They are widely used in modern web development
 - They support team collaboration
 - They improve development speed and maintainability
+
+## Backend Technologies
+
+### Node.js
+
+Used to build the server-side logic.
+
+Features:
+- Fast and scalable
+- Handles multiple requests efficiently
+- Suitable for real-time applications
+
+### Express.js
+
+Used as a backend framework.
+
+Features:
+- Simplifies API development
+- Lightweight and flexible
+- Easy integration with frontend and database
+
+
+
+## Database Technology
+
+### MySQL
+
+Used to store application data.
+
+Stores:
+- Users
+- Restaurants
+- Menu items
+- Orders
+- Payments
+- Reviews
+
+
+
+## Database Hosting
+
+### AWS RDS (Relational Database Service)
+
+Used to host MySQL database in the cloud.
+
+Features:
+- Managed database service
+- Automatic backups
+- High availability
+- Scalable storage
+
+
+
+## Justification
+
+These technologies are chosen because:
+- They support structured data relationships
+- They are reliable and widely used
+- They are suitable for food ordering systems
+- They meet the requirement of using a modern database
