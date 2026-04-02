@@ -45,7 +45,7 @@ These design choices ensure:
 - Reduced complexity
 - Improved user satisfaction
 
-# UI/UX Design – Part 2 (Pages & Wireframes)
+
 
 ## Main Pages
 
@@ -123,7 +123,7 @@ Wireframes help:
 6. Places order
 7. Tracks delivery
 
----
+
 
 ## Restaurant Flow
 
@@ -132,7 +132,7 @@ Wireframes help:
 3. Accepts and prepares order
 4. Updates order status
 
----
+
 
 ## Rider Flow
 
@@ -142,7 +142,7 @@ Wireframes help:
 4. Delivers order
 5. Marks as completed
 
----
+
 
 ## UX Considerations
 
@@ -151,7 +151,7 @@ Wireframes help:
 - Clear feedback (order status, confirmations)
 - Error handling (invalid inputs, failed actions)
 
----
+
 
 ## Accessibility
 
@@ -160,7 +160,6 @@ Wireframes help:
 - Mobile-friendly design
 - Simple interaction flow
 
----
 
 ## Justification
 
