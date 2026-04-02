@@ -2,7 +2,7 @@
 
 The FeedMe system is designed with a focus on simplicity, usability, and accessibility. The goal is to create an intuitive interface similar to FoodPanda but improved for better user experience.
 
--[Interface Design](https://www.figma.com/board/7PcOZ8ORDOZHcP3hYhWP62/CP3407-Project?node-id=0-1&t=TFO8SAobrxVPzwNE-0)
+[Interface Design](https://www.figma.com/board/7PcOZ8ORDOZHcP3hYhWP62/CP3407-Project?node-id=0-1&t=TFO8SAobrxVPzwNE-0)
 
 
 ## Design Principles
