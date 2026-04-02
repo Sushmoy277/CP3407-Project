@@ -58,6 +58,7 @@ Total: YY days
 - Wireframes and structured page layouts are used to clearly define the system before development.
 - The design focuses on smooth user flow, accessibility, and responsive behaviour across devices.
 - [UI Design](UI_design.md)
+- [Interface Design](https://www.figma.com/board/7PcOZ8ORDOZHcP3hYhWP62/CP3407-Project?node-id=0-1&p=f&t=Rcg0UPWfsJqJucsH-0)
 
 ## Security Design
 
