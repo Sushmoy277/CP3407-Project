@@ -77,7 +77,12 @@ Total: YY days
 - The design ensures data consistency, scalability, and efficient system performance.
 
 - [Database Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/database_design.md)
+## Architecture Design
 
+- The system follows a layered architecture where users (Customer, Restaurant Owner, Delivery Rider, and Admin) interact with the platform through a web-based frontend interface.
+- The frontend communicates with the backend server, which handles core functionalities such as authentication, order processing, delivery management, and overall business logic.
+- The backend connects to a central database for storing system data and integrates with external services such as payment gateways, notification systems, and location services to support real-time food delivery operations.
+- [Architecture Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/architecture.md)
 ## Testing
 
 - The system is tested using unit, integration, and system testing to ensure all features work correctly.
