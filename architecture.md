@@ -1,5 +1,7 @@
 # Architecture Design 
 
+<img width="577" height="347" alt="Screenshot 2026-04-02 at 11 05 48 pm" src="https://github.com/user-attachments/assets/d5b821d6-bd75-4d54-a669-a9e3b264befe" />
+
 ## Overview
 
 FeedMe is a modern food ordering platform inspired by FoodPanda, designed to improve user experience, performance, and system management.
@@ -151,4 +153,4 @@ The FeedMe system uses:
 - AWS cloud services
 
 This ensures a scalable, maintainable, and modern system.
-<img width="577" height="347" alt="Screenshot 2026-04-02 at 11 05 48 pm" src="https://github.com/user-attachments/assets/d5b821d6-bd75-4d54-a669-a9e3b264befe" />
+
