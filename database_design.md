@@ -1,5 +1,8 @@
 # Database Design 
+
 <img width="547" height="725" alt="Screenshot 2026-04-03 at 12 19 41 am" src="https://github.com/user-attachments/assets/2b387afb-b234-4e61-acb5-1a13d61a4bd5" />
+
+
 ## Overview
 
 The FeedMe system uses a relational database to manage all system data.  
