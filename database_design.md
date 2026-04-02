@@ -148,6 +148,8 @@ Fields:
 - One order has one delivery (1-to-1)
 - One restaurant can have many reviews (1-to-many)
 - One user can write many reviews (1-to-many)
+- One user can manage many restaurants (1-to-many)
+- One user (as rider) can handle many deliveries (1-to-many)
 
 
 ## Database Justification
@@ -202,5 +204,5 @@ It ensures:
 - Support for future development
 
 This design provides a solid foundation for building the application.
-
+Note: Table and field names in the implementation may differ slightly from the ER diagram (e.g., plural vs singular naming), but they represent the same database structure.
 
