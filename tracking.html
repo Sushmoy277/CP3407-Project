@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FeedMe — Order Tracking</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark)}
+  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:24px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px;cursor:pointer}
+  .back-link{font-size:13px;font-weight:600;color:var(--gray);cursor:pointer}.back-link:hover{color:var(--dark)}
+  .main{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:40px;max-width:1100px;margin:0 auto}
+  .section-title{font-size:20px;font-weight:800;margin-bottom:20px}
+  .panel{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+  .panel-title{font-size:15px;font-weight:800;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+
+  .order-id{font-size:13px;color:var(--gray);font-family:var(--mono);margin-bottom:6px}
+  .status-pill{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;font-family:var(--mono);background:#FEF3C7;color:#92400E}
+
+  /* STATUS TRACK */
+  .track-bar{display:flex;align-items:flex-start;margin:28px 0}
+  .track-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+  .track-step:not(:last-child)::after{content:'';position:absolute;top:16px;left:60%;right:-40%;height:3px;background:var(--border)}
+  .track-step.done:not(:last-child)::after{background:var(--dark)}
+  .track-step.active:not(:last-child)::after{background:var(--border)}
+  .track-dot{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--mono);z-index:1;position:relative}
+  .track-dot.done{background:var(--dark);border-color:var(--dark);color:#fff}
+  .track-dot.active{background:var(--orange);border-color:var(--orange);color:#fff}
+  .track-label{font-size:11px;font-family:var(--mono);color:var(--gray);text-align:center}
+  .track-label.done,.track-label.active{color:var(--dark);font-weight:700}
+
+  .eta-box{background:var(--light);border-radius:10px;padding:16px 20px;margin-top:4px}
+  .eta-label{font-size:12px;font-family:var(--mono);color:var(--gray);margin-bottom:4px}
+  .eta-time{font-size:28px;font-weight:800;color:var(--orange)}
+  .eta-sub{font-size:12px;color:var(--gray);font-family:var(--mono);margin-top:2px}
+
+  .rider-row{display:flex;align-items:center;gap:14px}
+  .rider-avatar{width:52px;height:52px;border-radius:50%;background:#E8E6E0;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .rider-name{font-size:15px;font-weight:700}
+  .rider-meta{font-size:12px;color:var(--gray);font-family:var(--mono);margin-top:2px}
+  .call-btn{margin-left:auto;padding:8px 18px;background:var(--dark);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer}
+  .call-btn:hover{background:var(--orange)}
+
+  .map-box{background:#E8E6E0;border:2px solid var(--border);border-radius:12px;height:260px;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:var(--mono);color:var(--gray);position:relative;overflow:hidden}
+  .map-box::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 30px)}
+  .map-box span{position:relative;z-index:1;font-size:20px}
+
+  .order-line{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:var(--gray)}
+  .order-line.total{color:var(--dark);font-weight:800;font-size:14px;margin-top:12px;padding-top:12px;border-top:2px solid var(--border)}
+
+  @media(max-width:800px){.main{grid-template-columns:1fr;padding:20px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="location.href='index.html'">FeedMe</div>
+  <div class="back-link" onclick="location.href='history.html'">← My Orders</div>
+</nav>
+<div class="main">
+  <div>
+    <div class="section-title">Order Tracking</div>
+    <div class="panel">
+      <div class="panel-title">📦 Order Details</div>
+      <div class="order-id">#ORD-20250401-7842 · Burger Palace · Placed 7:42 PM</div>
+      <div style="margin-top:8px"><span class="status-pill">⏳ PREPARING YOUR ORDER</span></div>
+      <div class="track-bar">
+        <div class="track-step done">
+          <div class="track-dot done">✓</div>
+          <div class="track-label done">Received</div>
+        </div>
+        <div class="track-step active">
+          <div class="track-dot active">★</div>
+          <div class="track-label active">Preparing</div>
+        </div>
+        <div class="track-step">
+          <div class="track-dot">3</div>
+          <div class="track-label">Dispatched</div>
+        </div>
+        <div class="track-step">
+          <div class="track-dot">4</div>
+          <div class="track-label">Delivered</div>
+        </div>
+      </div>
+      <div class="eta-box">
+        <div class="eta-label">Estimated Delivery</div>
+        <div class="eta-time" id="eta">8:15 PM</div>
+        <div class="eta-sub">~<span id="mins">25</span> minutes remaining</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">🚴 Your Rider</div>
+      <div class="rider-row">
+        <div class="rider-avatar">😎</div>
+        <div>
+          <div class="rider-name">Ahmad Rider</div>
+          <div class="rider-meta">⭐ 4.8 rating · Honda Beat WXY 1234</div>
+        </div>
+        <button class="call-btn">📞 CALL</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-title">Live Map</div>
+    <div class="map-box"><span>📍 Live Rider Location</span></div>
+    <div class="panel" style="margin-top:20px">
+      <div class="panel-title">🧾 Items Ordered</div>
+      <div class="order-line"><span>Classic Beef Burger x2</span><span>$17.80</span></div>
+      <div class="order-line"><span>Fries (Large) x1</span><span>$3.90</span></div>
+      <div class="order-line"><span>Soft Drink x1</span><span>$2.50</span></div>
+      <div class="order-line total"><span>Total Paid</span><span style="color:var(--orange)">$29.13</span></div>
+    </div>
+  </div>
+</div>
+<script>
+// countdown timer
+let mins = 25;
+setInterval(()=>{if(mins>0){mins--;document.getElementById('mins').textContent=mins}},60000);
+</script>
+</body>
+</html>
