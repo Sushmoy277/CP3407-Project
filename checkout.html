@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FeedMe — Checkout</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark)}
+  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:24px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px;cursor:pointer}
+  .back-link{font-size:13px;font-weight:600;color:var(--gray);cursor:pointer}.back-link:hover{color:var(--dark)}
+  .breadcrumb{margin-left:auto;display:flex;gap:8px;align-items:center;font-size:12px;font-family:var(--mono);color:var(--gray)}
+  .breadcrumb .active{color:var(--orange);font-weight:700}
+
+  .main{display:grid;grid-template-columns:1fr 380px;gap:28px;padding:40px;max-width:1200px;margin:0 auto}
+  .section-title{font-size:20px;font-weight:800;margin-bottom:20px}
+  .panel{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+  .panel-title{font-size:15px;font-weight:800;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+
+  .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-group{margin-bottom:16px}
+  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;font-family:var(--mono)}
+  input,select,textarea{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--white);outline:none;transition:border-color .2s}
+  input:focus,select:focus,textarea:focus{border-color:var(--dark)}
+
+  .pay-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--border);border-radius:8px;cursor:pointer;margin-bottom:10px;transition:all .2s}
+  .pay-option.selected{border-color:var(--orange);background:#FFF5F2}
+  .pay-option:hover{border-color:var(--dark)}
+  .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .radio.checked{border-color:var(--orange);background:var(--orange)}
+  .radio.checked::after{content:'';width:7px;height:7px;background:#fff;border-radius:50%}
+  .pay-label{font-size:14px;font-weight:600}
+
+  .card-details{background:var(--light);border-radius:8px;padding:16px;margin-top:12px}
+
+  .summary-card{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:24px;position:sticky;top:80px}
+  .summary-title{font-size:17px;font-weight:800;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+  .order-item-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:var(--gray)}
+  .summary-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;margin-bottom:10px}
+  .summary-row .label{color:var(--gray)}
+  .summary-row .value{font-weight:600;font-family:var(--mono)}
+  .summary-divider{border:none;border-top:2px solid var(--border);margin:14px 0}
+  .summary-total{display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:800;margin-bottom:20px}
+  .summary-total .value{color:var(--orange)}
+  .place-btn{width:100%;padding:15px;background:var(--orange);color:var(--white);border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:background .2s;margin-bottom:10px}
+  .place-btn:hover{background:#e04400}
+  .secure-note{text-align:center;font-size:12px;color:var(--gray);font-family:var(--mono);margin-top:10px}
+
+  @media(max-width:800px){.main{grid-template-columns:1fr;padding:20px}.form-row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="location.href='index.html'">FeedMe</div>
+  <div class="back-link" onclick="location.href='cart.html'">← Back to Cart</div>
+  <div class="breadcrumb">
+    <span class="active">1. Cart</span><span>→</span>
+    <span class="active">2. Checkout</span><span>→</span>
+    <span>3. Confirmation</span>
+  </div>
+</nav>
+
+<div class="main">
+  <div>
+    <div class="section-title">Checkout</div>
+    <div class="panel">
+      <div class="panel-title">📍 Delivery Address</div>
+      <div class="form-group"><label>Street Address</label><input type="text" value="123 Main Street, City Centre"></div>
+      <div class="form-row2">
+        <div class="form-group"><label>City</label><input type="text" value="Kuala Lumpur"></div>
+        <div class="form-group"><label>Postcode</label><input type="text" value="50000"></div>
+      </div>
+      <div class="form-group"><label>Delivery Notes (Optional)</label><textarea rows="2" placeholder="e.g. Ring doorbell, leave at door..."></textarea></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">💳 Payment Method</div>
+      <div class="pay-option selected" onclick="selectPay(this,'card')">
+        <div class="radio checked"></div>
+        <div class="pay-label">💳 Credit / Debit Card</div>
+      </div>
+      <div class="pay-option" onclick="selectPay(this,'cod')">
+        <div class="radio"></div>
+        <div class="pay-label">💸 Cash on Delivery</div>
+      </div>
+      <div class="pay-option" onclick="selectPay(this,'ewallet')">
+        <div class="radio"></div>
+        <div class="pay-label">📱 E-Wallet (TNG / GrabPay)</div>
+      </div>
+      <div class="card-details" id="card-details">
+        <div class="form-group"><label>Card Number</label><input type="text" placeholder="•••• •••• •••• ••••" maxlength="19"></div>
+        <div class="form-row2">
+          <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"></div>
+          <div class="form-group"><label>CVV</label><input type="text" placeholder="•••" maxlength="4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-title">Order Summary</div>
+    <div class="summary-card">
+      <div class="summary-title">Burger Palace</div>
+      <div class="order-item-row"><span>Classic Beef Burger x2</span><span>$17.80</span></div>
+      <div class="order-item-row"><span>Fries (Large) x1</span><span>$3.90</span></div>
+      <div class="order-item-row"><span>Soft Drink x1</span><span>$2.50</span></div>
+      <hr class="summary-divider">
+      <div class="summary-row"><span class="label">Subtotal</span><span class="value">$24.20</span></div>
+      <div class="summary-row"><span class="label">Delivery Fee</span><span class="value">$2.99</span></div>
+      <div class="summary-row"><span class="label">Tax (8%)</span><span class="value">$1.94</span></div>
+      <hr class="summary-divider">
+      <div class="summary-total"><span>TOTAL</span><span class="value">$29.13</span></div>
+      <button class="place-btn" onclick="placeOrder()">PLACE ORDER</button>
+      <div class="secure-note">🔒 Secured by SSL Encryption</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectPay(el,type){
+  document.querySelectorAll('.pay-option').forEach(p=>{p.classList.remove('selected');p.querySelector('.radio').classList.remove('checked')});
+  el.classList.add('selected');el.querySelector('.radio').classList.add('checked');
+  document.getElementById('card-details').style.display=type==='card'?'block':'none';
+}
+function placeOrder(){
+  localStorage.removeItem('feedme_cart');
+  alert('Order placed successfully! 🎉 Redirecting to tracking...');
+  location.href='tracking.html';
+}
+</script>
+</body>
+</html>
