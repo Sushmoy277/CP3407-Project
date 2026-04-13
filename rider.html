@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FeedMe — Rider Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--blue:#3B82F6;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark);display:flex;min-height:100vh}
+  .sidebar{width:240px;background:var(--dark);flex-shrink:0;display:flex;flex-direction:column}
+  .sidebar-brand{padding:20px;border-bottom:1px solid #333}
+  .sidebar-avatar{width:48px;height:48px;border-radius:50%;background:#333;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px}
+  .sidebar-name{font-size:14px;font-weight:700;color:var(--white)}
+  .sidebar-sub{font-size:11px;color:#888;font-family:var(--mono);margin-top:2px}
+  .online-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.2);color:var(--green);font-size:11px;font-family:var(--mono);padding:3px 8px;border-radius:4px;margin-top:8px;font-weight:700}
+  .sidebar-section{font-size:10px;font-family:var(--mono);color:#555;text-transform:uppercase;letter-spacing:2px;padding:14px 20px 5px}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer;transition:all .2s;text-decoration:none}
+  .sidebar-item:hover{color:var(--white);background:rgba(255,255,255,.05)}
+  .sidebar-item.active{color:var(--white);background:var(--orange)}
+  .main{flex:1;overflow:auto}
+  .topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+  .topbar-title{font-size:18px;font-weight:800}
+  .toggle-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);border:2px solid var(--green);background:transparent;color:var(--green);transition:all .2s}
+  .toggle-btn:hover{background:var(--green);color:var(--white)}
+  .content{padding:28px 32px}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+  .stat-card{background:var(--white);border:2px solid var(--border);border-left:5px solid var(--orange);border-radius:10px;padding:16px 20px}
+  .stat-card:nth-child(2){border-left-color:var(--green)}
+  .stat-card:nth-child(3){border-left-color:var(--blue)}
+  .stat-val{font-size:26px;font-weight:800;font-family:var(--mono)}
+  .stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);margin-top:4px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .panel{background:var(--white);border:2px solid var(--border);border-radius:10px;padding:20px}
+  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+  .delivery-card{border:2px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+  .delivery-card:hover{border-color:var(--dark)}
+  .delivery-card.urgent{border-color:var(--orange);background:#FFF5F2}
+  .d-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .d-num{font-size:13px;font-weight:800;font-family:var(--mono)}
+  .d-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono)}
+  .b-pickup{background:#FEF3C7;color:#92400E}
+  .b-onway{background:#DBEAFE;color:#1E40AF}
+  .b-done{background:#D1FAE5;color:#065F46}
+  .d-info{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:5px;display:flex;align-items:flex-start;gap:6px}
+  .d-info .icon{flex-shrink:0}
+  .action-btn{width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;margin-top:8px;transition:background .2s}
+  .action-orange{background:var(--orange);color:var(--white)}
+  .action-orange:hover{background:#e04400}
+  .action-green{background:var(--green);color:var(--white)}
+  .action-green:hover{background:#059669}
+  .map-box{background:#E8E6E0;border:2px solid var(--border);border-radius:10px;height:280px;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:var(--mono);color:var(--gray);position:relative;overflow:hidden}
+  .map-box::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 30px)}
+  .map-box span{position:relative;z-index:1;font-size:20px}
+  .info-note{font-size:12px;font-family:var(--mono);color:var(--gray);text-align:center;margin-top:10px;padding:8px;background:var(--light);border-radius:6px}
+  @media(max-width:900px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-avatar">😎</div>
+    <div class="sidebar-name">Ahmad Rider</div>
+    <div class="sidebar-sub">⭐ 4.8 · 142 deliveries</div>
+    <div class="online-badge">● ONLINE</div>
+  </div>
+  <div class="sidebar-section">DELIVERIES</div>
+  <a class="sidebar-item active" href="rider.html">📦 My Deliveries</a>
+  <a class="sidebar-item" href="#">✅ Completed</a>
+  <a class="sidebar-item" href="#">💰 Earnings</a>
+  <div class="sidebar-section">ACCOUNT</div>
+  <a class="sidebar-item" href="#">⭐ My Ratings</a>
+  <a class="sidebar-item" href="#">⚙️ Settings</a>
+  <a class="sidebar-item" href="login.html">🚪 Logout</a>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">My Deliveries</div>
+    <button class="toggle-btn" onclick="toggleStatus(this)">● GO OFFLINE</button>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">3</div><div class="stat-label">Active Orders</div></div>
+      <div class="stat-card"><div class="stat-val">$48.50</div><div class="stat-label">Today's Earnings</div></div>
+      <div class="stat-card"><div class="stat-val">4.8 ⭐</div><div class="stat-label">My Rating</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="panel-title" style="font-size:16px;font-weight:800;margin-bottom:16px">Active Deliveries</div>
+
+        <div class="delivery-card urgent">
+          <div class="d-top">
+            <span class="d-num">#ORD-7844</span>
+            <span class="d-badge b-pickup">PICK UP NOW</span>
+          </div>
+          <div class="d-info"><span class="icon">📍</span><span>Pick up: Burger Palace, 123 Main St</span></div>
+          <div class="d-info"><span class="icon">🏠</span><span>Deliver to: 456 Oak Ave — John D.</span></div>
+          <div class="d-info"><span class="icon">📞</span><span>+60 12-345 6789</span></div>
+          <div class="d-info"><span class="icon">💰</span><span>Earn: $4.50 · Est. 15 min</span></div>
+          <button class="action-btn action-orange" onclick="markPickedUp(this)">MARK AS PICKED UP</button>
+        </div>
+
+        <div class="delivery-card">
+          <div class="d-top">
+            <span class="d-num">#ORD-7842</span>
+            <span class="d-badge b-onway">ON THE WAY</span>
+          </div>
+          <div class="d-info"><span class="icon">📍</span><span>From: Pizza Factory, Tower St</span></div>
+          <div class="d-info"><span class="icon">🏠</span><span>To: 88 Maple Drive — Sarah L.</span></div>
+          <div class="d-info"><span class="icon">📞</span><span>+60 19-876 5432</span></div>
+          <div class="d-info"><span class="icon">💰</span><span>Earn: $3.80 · Est. 8 min</span></div>
+          <button class="action-btn action-green" onclick="markDelivered(this)">✓ MARK AS DELIVERED</button>
+        </div>
+
+        <div class="delivery-card">
+          <div class="d-top">
+            <span class="d-num">#ORD-7841</span>
+            <span class="d-badge b-done">COMPLETED</span>
+          </div>
+          <div class="d-info"><span class="icon">✅</span><span>Delivered to 22 Pine Street · 3:14 PM</span></div>
+          <div class="d-info"><span class="icon">💰</span><span>Earned: $5.20</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel-title" style="font-size:16px;font-weight:800;margin-bottom:16px">Delivery Map</div>
+        <div class="map-box"><span>🗺️ Live Route View</span></div>
+        <div class="info-note">📍 Your location is shared in real-time</div>
+        <div class="panel" style="margin-top:16px">
+          <div class="panel-title">📅 Today's Summary</div>
+          <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;font-family:var(--mono)">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Deliveries Completed</span><span style="font-weight:700">12</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Total Distance</span><span style="font-weight:700">38.2 km</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Total Earned</span><span style="font-weight:700;color:var(--orange)">$48.50</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Avg. Rating Today</span><span style="font-weight:700">⭐ 4.9</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function toggleStatus(btn){
+  const online=btn.textContent.includes('OFFLINE');
+  btn.textContent=online?'● GO OFFLINE':'● GO ONLINE';
+  btn.style.borderColor=online?'var(--green)':'var(--gray)';
+  btn.style.color=online?'var(--green)':'var(--gray)';
+}
+function markPickedUp(btn){
+  btn.closest('.delivery-card').querySelector('.d-badge').textContent='ON THE WAY';
+  btn.closest('.delivery-card').querySelector('.d-badge').className='d-badge b-onway';
+  btn.closest('.delivery-card').classList.remove('urgent');
+  btn.className='action-btn action-green';
+  btn.textContent='✓ MARK AS DELIVERED';
+  btn.onclick=function(){markDelivered(this)};
+}
+function markDelivered(btn){
+  const card=btn.closest('.delivery-card');
+  card.querySelector('.d-badge').textContent='COMPLETED';
+  card.querySelector('.d-badge').className='d-badge b-done';
+  btn.remove();
+  alert('Delivery completed! 🎉 +$3.80 added to your earnings');
+}
+</script>
+</body>
+</html>
