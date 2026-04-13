@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FeedMe — Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark)}
+  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:24px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px;cursor:pointer}
+  .back-link{font-size:13px;font-weight:600;color:var(--gray);cursor:pointer}.back-link:hover{color:var(--dark)}
+  .main{max-width:600px;margin:0 auto;padding:40px 24px}
+  .page-title{font-size:26px;font-weight:800;margin-bottom:24px}
+  .panel{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+  .panel-title{font-size:15px;font-weight:800;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+
+  .order-ref{display:flex;align-items:center;gap:14px}
+  .rest-icon{width:56px;height:56px;background:#E8E6E0;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+  .rest-name{font-size:15px;font-weight:800}
+  .rest-sub{font-size:12px;color:var(--gray);font-family:var(--mono);margin-top:2px}
+
+  /* Star rating */
+  .star-picker{display:flex;justify-content:center;gap:12px;padding:20px 0;border-bottom:2px solid var(--border);margin-bottom:16px}
+  .star-btn{font-size:36px;cursor:pointer;transition:transform .15s;filter:grayscale(1);opacity:.4}
+  .star-btn.active,.star-btn:hover{filter:none;opacity:1;transform:scale(1.1)}
+  .rating-text{text-align:center;font-size:14px;font-weight:700;margin-bottom:16px;font-family:var(--mono);color:var(--orange)}
+
+  .sub-rating{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:13px}
+  .sub-stars{display:flex;gap:4px}
+  .sub-star{font-size:16px;cursor:pointer;color:#FFB800}
+  .sub-star.empty{color:#E0DDD8}
+
+  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;font-family:var(--mono)}
+  textarea{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--white);outline:none;transition:border-color .2s;resize:vertical}
+  textarea:focus{border-color:var(--dark)}
+  .submit-btn{width:100%;padding:15px;background:var(--orange);color:var(--white);border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:background .2s;margin-top:16px}
+  .submit-btn:hover{background:#e04400}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="location.href='index.html'">FeedMe</div>
+  <div class="back-link" onclick="location.href='history.html'">← Order History</div>
+</nav>
+<div class="main">
+  <div class="page-title">Leave a Review</div>
+  <div class="panel">
+    <div class="order-ref">
+      <div class="rest-icon">🍔</div>
+      <div>
+        <div class="rest-name">Burger Palace</div>
+        <div class="rest-sub">#ORD-20250401-7842 · 1 April 2025</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">⭐ Rate Your Experience</div>
+    <div class="star-picker" id="star-picker">
+      <span class="star-btn active" data-val="1" onclick="setRating(1)">⭐</span>
+      <span class="star-btn active" data-val="2" onclick="setRating(2)">⭐</span>
+      <span class="star-btn active" data-val="3" onclick="setRating(3)">⭐</span>
+      <span class="star-btn active" data-val="4" onclick="setRating(4)">⭐</span>
+      <span class="star-btn" data-val="5" onclick="setRating(5)">⭐</span>
+    </div>
+    <div class="rating-text" id="rating-text">4 / 5 — Very Good</div>
+
+    <div class="sub-rating">
+      <span>Food Quality</span>
+      <div class="sub-stars">
+        <span class="sub-star" onclick="setSubRating('food',1)">★</span><span class="sub-star" onclick="setSubRating('food',2)">★</span>
+        <span class="sub-star" onclick="setSubRating('food',3)">★</span><span class="sub-star" onclick="setSubRating('food',4)">★</span>
+        <span class="sub-star empty" onclick="setSubRating('food',5)">★</span>
+      </div>
+    </div>
+    <div class="sub-rating">
+      <span>Delivery Speed</span>
+      <div class="sub-stars">
+        <span class="sub-star" onclick="setSubRating('speed',1)">★</span><span class="sub-star" onclick="setSubRating('speed',2)">★</span>
+        <span class="sub-star" onclick="setSubRating('speed',3)">★</span><span class="sub-star" onclick="setSubRating('speed',4)">★</span>
+        <span class="sub-star" onclick="setSubRating('speed',5)">★</span>
+      </div>
+    </div>
+    <div class="sub-rating">
+      <span>Packaging</span>
+      <div class="sub-stars">
+        <span class="sub-star" onclick="setSubRating('pkg',1)">★</span><span class="sub-star" onclick="setSubRating('pkg',2)">★</span>
+        <span class="sub-star" onclick="setSubRating('pkg',3)">★</span>
+        <span class="sub-star empty" onclick="setSubRating('pkg',4)">★</span><span class="sub-star empty" onclick="setSubRating('pkg',5)">★</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>Your Comment</label>
+      <textarea rows="4" placeholder="Share your experience with this restaurant...">Food was delicious and arrived hot! The fries were crispy and the burger was well-seasoned.</textarea>
+    </div>
+    <button class="submit-btn" onclick="submitReview()">SUBMIT REVIEW</button>
+  </div>
+</div>
+<script>
+const labels=['','Terrible','Poor','Okay','Very Good','Excellent!'];
+function setRating(val){
+  document.querySelectorAll('.star-btn').forEach((s,i)=>{s.classList.toggle('active',i<val)});
+  document.getElementById('rating-text').textContent=${val} / 5 — ${labels[val]};
+}
+function setSubRating(cat,val){/* update sub stars inline */}
+function submitReview(){alert('Review submitted! Thank you 🎉');location.href='history.html';}
+</script>
+</body>
+</html>
