@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeedMe — Restaurants</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark)}
+  a{text-decoration:none;color:inherit}
+
+  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:32px;position:sticky;top:0;z-index:100}
+  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px;cursor:pointer}
+  .nav-links{display:flex;gap:24px;flex:1}
+  .nav-links a{font-size:14px;font-weight:600;color:var(--dark);transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:var(--orange)}
+  .btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid var(--dark)}
+  .btn-orange{background:var(--orange);color:var(--white);border-color:var(--orange)}
+  .btn-orange:hover{background:#e04400}
+
+  .search-strip{background:var(--white);border-bottom:2px solid var(--border);padding:16px 40px;display:flex;gap:12px;align-items:center}
+  .search-wrap{flex:1;display:flex;border:2px solid var(--dark);border-radius:8px;overflow:hidden}
+  .search-wrap input{flex:1;padding:12px 16px;font-size:14px;font-family:var(--font);border:none;outline:none}
+  .search-wrap button{background:var(--dark);color:var(--white);border:none;padding:0 24px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer}
+  .search-wrap button:hover{background:var(--orange)}
+  select{padding:11px 14px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);background:var(--white);outline:none;cursor:pointer}
+  select:focus{border-color:var(--dark)}
+
+  .filter-strip{background:var(--white);border-bottom:2px solid var(--border);padding:12px 40px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .filter-label{font-size:12px;font-family:var(--mono);color:var(--gray);margin-right:4px}
+  .chip{padding:6px 16px;border-radius:30px;border:2px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;background:var(--white)}
+  .chip:hover,.chip.active{background:var(--dark);color:var(--white);border-color:var(--dark)}
+
+  .content{padding:32px 40px}
+  .results-info{font-size:14px;color:var(--gray);font-family:var(--mono);margin-bottom:24px}
+  .results-info span{color:var(--dark);font-weight:700}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .card{background:var(--white);border-radius:12px;border:2px solid var(--border);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12);border-color:var(--dark)}
+  .card-img{height:140px;background:#E8E6E0;display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:2px solid var(--border);position:relative}
+  .card-badge{position:absolute;top:10px;right:10px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono)}
+  .card-body{padding:14px 16px}
+  .card-name{font-size:15px;font-weight:700;margin-bottom:6px}
+  .stars{display:flex;gap:2px;align-items:center;margin-bottom:6px}
+  .star{font-size:13px;color:#FFB800}
+  .rating-count{font-size:11px;color:var(--gray);font-family:var(--mono);margin-left:4px}
+  .card-meta{display:flex;gap:12px;font-size:12px;color:var(--gray);margin-bottom:6px;flex-wrap:wrap}
+  .tag{font-size:11px;font-weight:600;color:var(--orange);font-family:var(--mono)}
+  .card-btn{width:100%;background:var(--dark);color:var(--white);border:none;padding:10px;border-radius:6px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;margin-top:8px;transition:background .2s}
+  .card-btn:hover{background:var(--orange)}
+
+  .pagination{display:flex;justify-content:center;gap:8px;margin-top:36px}
+  .page-btn{padding:8px 16px;border:2px solid var(--border);border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);font-family:var(--mono);transition:all .2s}
+  .page-btn:hover,.page-btn.active{background:var(--dark);color:var(--white);border-color:var(--dark)}
+
+  @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}.search-strip{flex-direction:column}.content{padding:24px 16px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="location.href='index.html'">FeedMe</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="restaurants.html" class="active">Restaurants</a>
+    <a href="#">Deals</a>
+    <a href="tracking.html">Track Order</a>
+  </div>
+  <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
+</nav>
+
+<div class="search-strip">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Search restaurants, cuisine, dishes..." oninput="filterCards()">
+    <button>SEARCH</button>
+  </div>
+  <select onchange="filterCards()">
+    <option>Sort: Rating ↓</option>
+    <option>Sort: Delivery Time</option>
+    <option>Sort: Price</option>
+  </select>
+  <select>
+    <option>Delivery: All</option>
+    <option>Free Delivery</option>
+    <option>Under $2</option>
+  </select>
+</div>
+
+<div class="filter-strip">
+  <span class="filter-label">Filter:</span>
+  <div class="chip active" onclick="setFilter(this,'All')">All</div>
+  <div class="chip" onclick="setFilter(this,'Burgers')">🍔 Burgers</div>
+  <div class="chip" onclick="setFilter(this,'Pizza')">🍕 Pizza</div>
+  <div class="chip" onclick="setFilter(this,'Noodles')">🍜 Noodles</div>
+  <div class="chip" onclick="setFilter(this,'Chicken')">🍗 Chicken</div>
+  <div class="chip" onclick="setFilter(this,'Healthy')">🥗 Healthy</div>
+  <div class="chip" onclick="setFilter(this,'Sushi')">🍣 Sushi</div>
+  <div class="chip" onclick="setFilter(this,'Fast')">⚡ Fast Delivery</div>
+</div>
+
+<div class="content">
+  <div class="results-info">Showing <span id="count">8</span> restaurants</div>
+  <div class="grid" id="cardGrid">
+
+    <div class="card" data-cat="Burgers" onclick="location.href='menu.html'">
+      <div class="card-img">🍔<div class="card-badge">TOP RATED</div></div>
+      <div class="card-body">
+        <div class="card-name">Burger Palace</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(380)</span></div>
+        <div class="card-meta"><span>⏱ 25 min</span><span>🚚 $2.99</span></div>
+        <div class="tag">🍔 Burgers</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Pizza" onclick="location.href='menu.html'">
+      <div class="card-img">🍕</div>
+      <div class="card-body">
+        <div class="card-name">Pizza Factory</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rating-count">(512)</span></div>
+        <div class="card-meta"><span>⏱ 35 min</span><span>🚚 Free</span></div>
+        <div class="tag">🍕 Pizza</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Sushi" onclick="location.href='menu.html'">
+      <div class="card-img">🍣</div>
+      <div class="card-body">
+        <div class="card-name">Sushi World</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(198)</span></div>
+        <div class="card-meta"><span>⏱ 40 min</span><span>🚚 $1.99</span></div>
+        <div class="tag">🍣 Sushi</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Noodles" onclick="location.href='menu.html'">
+      <div class="card-img">🍜</div>
+      <div class="card-body">
+        <div class="card-name">Noodle House</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(267)</span></div>
+        <div class="card-meta"><span>⏱ 20 min</span><span>🚚 $1.50</span></div>
+        <div class="tag">🍜 Noodles</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Chicken" onclick="location.href='menu.html'">
+      <div class="card-img">🍗</div>
+      <div class="card-body">
+        <div class="card-name">KFC Corner</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(445)</span></div>
+        <div class="card-meta"><span>⏱ 15 min</span><span>🚚 Free</span></div>
+        <div class="tag">🍗 Chicken</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Healthy" onclick="location.href='menu.html'">
+      <div class="card-img">🥗</div>
+      <div class="card-body">
+        <div class="card-name">Green Bowl</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rating-count">(312)</span></div>
+        <div class="card-meta"><span>⏱ 30 min</span><span>🚚 $2.00</span></div>
+        <div class="tag">🥗 Healthy</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Pizza" onclick="location.href='menu.html'">
+      <div class="card-img">🍝</div>
+      <div class="card-body">
+        <div class="card-name">Pasta Roma</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(87)</span></div>
+        <div class="card-meta"><span>⏱ 45 min</span><span>🚚 $3.50</span></div>
+        <div class="tag">🍝 Italian</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Burgers" onclick="location.href='menu.html'">
+      <div class="card-img">🌮</div>
+      <div class="card-body">
+        <div class="card-name">Taco Fiesta</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="rating-count">(203)</span></div>
+        <div class="card-meta"><span>⏱ 25 min</span><span>🚚 $1.99</span></div>
+        <div class="tag">🌮 Mexican</div>
+        <button class="card-btn">VIEW MENU</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pagination">
+    <div class="page-btn active">1</div>
+    <div class="page-btn">2</div>
+    <div class="page-btn">3</div>
+    <div class="page-btn">Next →</div>
+  </div>
+</div>
+
+<script>
+let activeFilter = 'All';
+function setFilter(el, cat) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = cat;
+  filterCards();
+}
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(c => {
+    const name = c.querySelector('.card-name').textContent.toLowerCase();
+    const cat = c.dataset.cat;
+    const matchFilter = activeFilter === 'All' || cat === activeFilter;
+    const matchSearch = name.includes(q);
+    const show = matchFilter && matchSearch;
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('count').textContent = visible;
+}
+</script>
+</body>
+</html>
