@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FeedMe — Restaurant Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
+  body{font-family:var(--font);background:var(--light);color:var(--dark);display:flex;min-height:100vh}
+
+  .sidebar{width:240px;background:var(--dark);flex-shrink:0;display:flex;flex-direction:column;padding:0}
+  .sidebar-brand{padding:20px 20px 16px;border-bottom:1px solid #333;display:flex;align-items:center;gap:10px}
+  .sidebar-logo{font-family:var(--mono);font-weight:700;font-size:16px;color:var(--orange)}
+  .sidebar-name{font-size:13px;font-weight:600;color:var(--white)}
+  .sidebar-section{font-size:10px;font-family:var(--mono);color:#555;text-transform:uppercase;letter-spacing:2px;padding:16px 20px 6px}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer;transition:all .2s;text-decoration:none}
+  .sidebar-item:hover{color:var(--white);background:rgba(255,255,255,.05)}
+  .sidebar-item.active{color:var(--white);background:var(--orange)}
+  .sidebar-item .icon{font-size:16px;width:20px}
+
+  .main{flex:1;overflow:auto}
+  .topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+  .topbar-title{font-size:18px;font-weight:800}
+  .status-badge{background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:6px;font-family:var(--mono);cursor:pointer}
+
+  .content{padding:28px 32px}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{background:var(--white);border:2px solid var(--border);border-left:5px solid var(--orange);border-radius:10px;padding:18px 20px}
+  .stat-val{font-size:30px;font-weight:800;font-family:var(--mono)}
+  .stat-label{font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);margin-top:4px}
+  .stat-change{font-size:11px;color:var(--green);font-family:var(--mono);margin-top:6px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .panel{background:var(--white);border:2px solid var(--border);border-radius:10px;padding:20px}
+  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+
+  .order-item{border:2px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+  .order-item.new{border-color:var(--orange);background:#FFF5F2}
+  .order-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .order-num{font-size:13px;font-weight:800;font-family:var(--mono)}
+  .o-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
+  .o-new{background:var(--orange);color:#fff}
+  .o-prep{background:#F59E0B;color:#fff}
+  .o-done{background:var(--green);color:#fff}
+  .order-detail{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:10px}
+  .btn-row{display:flex;gap:8px}
+  .btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid}
+  .btn-accept{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .btn-accept:hover{background:#e04400}
+  .btn-reject{background:transparent;color:var(--dark);border-color:var(--border)}
+  .btn-reject:hover{border-color:var(--dark)}
+  .btn-ready{background:var(--dark);color:#fff;border-color:var(--dark);width:100%}
+  .btn-ready:hover{background:var(--orange);border-color:var(--orange)}
+
+  /* Chart */
+  .chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding:10px 0}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .bar{width:100%;background:var(--border);border-radius:4px 4px 0 0;transition:height .3s}
+  .bar.highlight{background:var(--orange)}
+  .bar-label{font-size:10px;font-family:var(--mono);color:var(--gray)}
+
+  @media(max-width:900px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div>
+      <div class="sidebar-logo">FeedMe</div>
+      <div class="sidebar-name">Burger Palace</div>
+    </div>
+  </div>
+  <div class="sidebar-section">MAIN</div>
+  <a class="sidebar-item active" href="restaurant-dashboard.html"><span class="icon">📊</span> Dashboard</a>
+  <a class="sidebar-item" href="#"><span class="icon">📦</span> Orders</a>
+  <a class="sidebar-item" href="menu-management.html"><span class="icon">🍔</span> Menu</a>
+  <div class="sidebar-section">REPORTS</div>
+  <a class="sidebar-item" href="#"><span class="icon">💰</span> Sales</a>
+  <a class="sidebar-item" href="#"><span class="icon">⭐</span> Reviews</a>
+  <div class="sidebar-section">SETTINGS</div>
+  <a class="sidebar-item" href="#"><span class="icon">⚙️</span> Settings</a>
+  <a class="sidebar-item" href="login.html"><span class="icon">🚪</span> Logout</a>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Today's Overview</div>
+    <div class="status-badge" onclick="this.textContent=this.textContent.includes('OPEN')?'● STORE CLOSED':'● STORE OPEN'">● STORE OPEN</div>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">24</div><div class="stat-label">Orders Today</div><div class="stat-change">↑ +6 from yesterday</div></div>
+      <div class="stat-card"><div class="stat-val">$486</div><div class="stat-label">Revenue Today</div><div class="stat-change">↑ +12% from yesterday</div></div>
+      <div class="stat-card"><div class="stat-val">3</div><div class="stat-label">Pending Orders</div><div class="stat-change" style="color:var(--orange)">Requires attention</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title">🔔 Incoming Orders</div>
+        <div class="order-item new">
+          <div class="order-top-row"><span class="order-num">#7844 — John D.</span><span class="o-badge o-new">NEW</span></div>
+          <div class="order-detail">Beef Burger x2, Fries x1 · $21.70 · 2 mins ago</div>
+          <div class="btn-row">
+            <button class="btn btn-accept" onclick="this.closest('.order-item').style.borderColor='var(--green)'">ACCEPT</button>
+            <button class="btn btn-reject">REJECT</button>
+          </div>
+        </div>
+        <div class="order-item">
+          <div class="order-top-row"><span class="order-num">#7843 — Sarah L.</span><span class="o-badge o-prep">PREPARING</span></div>
+          <div class="order-detail">Chicken Burger x1, Milkshake x1 · $16.40</div>
+          <button class="btn btn-ready" onclick="this.textContent='✓ Marked Ready!'">MARK AS READY</button>
+        </div>
+        <div class="order-item">
+          <div class="order-top-row"><span class="order-num">#7842 — Ahmad R.</span><span class="o-badge o-done">DISPATCHED</span></div>
+          <div class="order-detail">Double Smash x1, Fries x2 · $20.70</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">📈 Sales — This Week</div>
+        <div class="chart">
+          <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">Mon</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">Tue</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:60%"></div><div class="bar-label">Wed</div></div>
+          <div class="bar-wrap"><div class="bar highlight" style="height:90%"></div><div class="bar-label">Thu</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:85%"></div><div class="bar-label">Fri</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:95%"></div><div class="bar-label">Sat</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:80%"></div><div class="bar-label">Sun</div></div>
+        </div>
+        <div style="font-size:12px;font-family:var(--mono);color:var(--gray);margin-top:8px;text-align:center">Peak day: Saturday · $892 revenue</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
