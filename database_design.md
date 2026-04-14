@@ -4,6 +4,8 @@
 
 ## MySQL Database
 
+https://github.com/Sushmoy277/CP3407-Project/blob/main/feedme_database.sql
+
 ## Overview
 
 The FeedMe system uses a relational database to manage all system data.  
