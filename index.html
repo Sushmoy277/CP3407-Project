@@ -1,225 +1,1442 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FeedMe — Home</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
-  body{font-family:var(--font);background:var(--light);color:var(--dark)}
-  a{text-decoration:none;color:inherit}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedMe — Home</title>
 
-  /* NAV */
-  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:32px;position:sticky;top:0;z-index:100}
-  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px}
-  .nav-links{display:flex;gap:24px;flex:1}
-  .nav-links a{font-size:14px;font-weight:600;color:var(--dark);transition:color .2s}
-  .nav-links a:hover{color:var(--orange)}
-  .nav-right{display:flex;gap:10px;align-items:center}
-  .btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid var(--dark)}
-  .btn-outline{background:transparent;color:var(--dark)}
-  .btn-outline:hover{background:var(--dark);color:var(--white)}
-  .btn-solid{background:var(--dark);color:var(--white)}
-  .btn-solid:hover{background:#333}
-  .btn-orange{background:var(--orange);color:var(--white);border-color:var(--orange)}
-  .btn-orange:hover{background:#e04400}
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap');
 
-  /* HERO */
-  .hero{background:var(--dark);padding:80px 40px;text-align:center;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.02) 20px,rgba(255,255,255,.02) 40px)}
-  .hero-content{position:relative;z-index:1}
-  .hero h1{font-size:52px;font-weight:800;color:var(--white);line-height:1.1;margin-bottom:16px}
-  .hero h1 span{color:var(--orange)}
-  .hero p{font-size:16px;color:#aaa;font-family:var(--mono);margin-bottom:36px}
-  .search-bar{display:flex;max-width:560px;margin:0 auto;border-radius:8px;overflow:hidden;border:2px solid var(--orange)}
-  .search-bar input{flex:1;padding:16px 20px;font-size:15px;font-family:var(--font);border:none;outline:none;background:#fff}
-  .search-bar button{background:var(--orange);color:#fff;border:none;padding:0 32px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;letter-spacing:.5px}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* SECTIONS */
-  .section{padding:48px 40px}
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-  .section-title{font-size:22px;font-weight:800;color:var(--dark)}
-  .see-all{font-size:13px;color:var(--orange);font-weight:600;cursor:pointer}
+    :root {
+      --bg: #f7f5f2;
+      --surface: rgba(255, 255, 255, 0.82);
+      --card: #ffffff;
+      --text: #131313;
+      --muted: #707070;
+      --line: #e6dfd7;
+      --orange: #ff5a1f;
+      --orange-dark: #e64b12;
+      --dark: #111111;
+      --success: #17b26a;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --container: 1240px;
+    }
 
-  /* CATEGORIES */
-  .categories{background:var(--white);border-top:2px solid var(--border);border-bottom:2px solid var(--border);padding:24px 40px}
-  .cat-row{display:flex;gap:12px;flex-wrap:wrap}
-  .cat-chip{padding:8px 18px;border-radius:30px;border:2px solid var(--dark);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;background:var(--white)}
-  .cat-chip:hover,.cat-chip.active{background:var(--dark);color:var(--white)}
+    html {
+      scroll-behavior: smooth;
+    }
 
-  /* CARDS GRID */
-  .cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-  .card{background:var(--white);border-radius:12px;border:2px solid var(--border);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
-  .card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
-  .card-img{height:150px;background:#E8E6E0;display:flex;align-items:center;justify-content:center;font-size:40px;border-bottom:2px solid var(--border)}
-  .card-body{padding:14px 16px}
-  .card-name{font-size:15px;font-weight:700;margin-bottom:6px}
-  .stars{display:flex;gap:2px;margin-bottom:6px}
-  .star{font-size:13px;color:#FFB800}
-  .card-meta{display:flex;gap:12px;font-size:12px;color:var(--gray);margin-bottom:12px}
-  .card-btn{width:100%;background:var(--dark);color:var(--white);border:none;padding:10px;border-radius:6px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;transition:background .2s}
-  .card-btn:hover{background:var(--orange)}
+    body {
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 90, 31, 0.09), transparent 26%),
+        radial-gradient(circle at top right, rgba(255, 180, 80, 0.10), transparent 22%),
+        linear-gradient(180deg, #fbfaf8 0%, #f5f1ec 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
-  /* PROMO CARDS */
-  .promo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  .promo-card{border-radius:12px;border:2px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .2s}
-  .promo-card:hover{transform:translateY(-3px)}
-  .promo-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:28px}
-  .promo-body{padding:10px 14px;background:var(--white)}
-  .promo-name{font-size:13px;font-weight:700;margin-bottom:4px}
-  .promo-meta{display:flex;align-items:center;gap:8px}
-  .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
-  .badge-hot{background:var(--orange);color:#fff}
-  .badge-free{background:#10B981;color:#fff}
-  .badge-new{background:#3B82F6;color:#fff}
-  .badge-val{background:#F59E0B;color:#fff}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-  /* FOOTER */
-  footer{background:var(--dark);color:#888;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-family:var(--mono)}
-  footer a{color:#888;margin-left:16px}
-  footer a:hover{color:var(--orange)}
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
-  @media(max-width:900px){
-    .cards-grid,.promo-grid{grid-template-columns:repeat(2,1fr)}
-    nav{padding:0 20px;gap:16px}
-    .hero h1{font-size:34px}
-    .section{padding:32px 20px}
-  }
-</style>
+    .container {
+      width: min(var(--container), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .section {
+      padding: 84px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--orange);
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 560px;
+      margin-top: 10px;
+      line-height: 1.7;
+    }
+
+    .section-link {
+      color: var(--orange);
+      font-weight: 700;
+      transition: transform 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .section-link:hover {
+      color: var(--orange-dark);
+      transform: translateX(4px);
+    }
+
+    /* NAVBAR */
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      padding: 14px 0;
+      backdrop-filter: blur(18px);
+      background: rgba(247, 245, 242, 0.72);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(var(--container), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 16px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      background: var(--surface);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.04em;
+    }
+
+    .nav-left,
+    .nav-right,
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-links {
+      gap: 30px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      font-weight: 700;
+      position: relative;
+      font-size: 15px;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--orange);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font-weight: 800;
+      font-size: 14px;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--dark);
+      border: 1.5px solid #ddd4ca;
+    }
+
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-dark {
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .btn-dark:hover {
+      transform: translateY(-2px);
+      background: #000;
+    }
+
+    .btn-orange {
+      background: linear-gradient(135deg, #ff6b2c, #ff4d00);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.28);
+    }
+
+    .btn-orange:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 28px rgba(255, 90, 31, 0.34);
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 26px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 38px 0 48px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(255, 101, 41, 0.22), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.08), transparent 24%),
+        linear-gradient(135deg, #0f0f10 0%, #1f1f22 100%);
+      color: #fff;
+      border-radius: 34px;
+      padding: 64px 42px;
+      min-height: 580px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.02) 0 18px,
+          transparent 18px 36px
+        );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      background: #34d399;
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.12);
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 .accent {
+      color: var(--orange);
+      display: inline-block;
+      text-shadow: 0 6px 18px rgba(255, 90, 31, 0.16);
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.76);
+      font-size: 17px;
+      line-height: 1.8;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.98);
+      border: 2px solid rgba(255, 90, 31, 0.24);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16);
+      margin-bottom: 24px;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      padding: 10px 14px;
+      background: transparent;
+      font-family: inherit;
+      color: var(--dark);
+    }
+
+    .search-btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #ff6b2c, #ff4d00);
+      color: white;
+      padding: 16px 24px;
+      font-weight: 800;
+      font-size: 14px;
+      min-width: 140px;
+      transition: transform 0.2s ease;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .quick-tag {
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .quick-tag:hover {
+      background: var(--orange);
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+
+    .hero-side {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 24px;
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 30px;
+      padding: 28px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(255, 90, 31, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .mini-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .stat-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat-box h3 {
+      font-size: 28px;
+      margin-bottom: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .stat-box p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .live-order {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: linear-gradient(135deg, #fff7f2, #ffffff);
+      border: 1px solid #f0ddd2;
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .live-order strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .live-order span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .pulse {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--success);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .pulse::before,
+    .pulse::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(23, 178, 106, 0.35);
+      animation: pulse 1.8s infinite;
+    }
+
+    .pulse::after {
+      animation-delay: .8s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+
+    /* CATEGORY BAR */
+    .category-wrap {
+      padding: 14px 0 6px;
+    }
+
+    .category-scroller {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 8px 2px 4px;
+      scrollbar-width: none;
+    }
+
+    .category-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex-shrink: 0;
+      border: 1.5px solid #d8cec3;
+      background: rgba(255,255,255,0.8);
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    }
+
+    .chip:hover,
+    .chip.active {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    /* PROMOS */
+    .promo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .promo-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #ede3d9;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .promo-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.10);
+    }
+
+    .promo-top {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 46px;
+      position: relative;
+    }
+
+    .promo-top::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .promo-body {
+      padding: 18px;
+      background: white;
+    }
+
+    .promo-body h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .promo-body p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .promo-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.08em;
+    }
+
+    .hot { background: #ff5a1f; }
+    .free { background: #10b981; }
+    .new { background: #3b82f6; }
+    .value { background: #f59e0b; }
+
+    /* RESTAURANTS */
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .restaurant-card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #ede4db;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 22px 42px rgba(0,0,0,0.12);
+    }
+
+    .restaurant-cover {
+      height: 210px;
+      padding: 18px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .restaurant-cover .emoji {
+      font-size: 64px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .restaurant-cover::before {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+    }
+
+    .restaurant-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.06) 100%);
+    }
+
+    .like-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.95);
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 3;
+      transition: transform 0.2s ease;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    }
+
+    .like-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .card-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: start;
+    }
+
+    .restaurant-name {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .rating-pill {
+      flex-shrink: 0;
+      background: #fff7ed;
+      color: #d97706;
+      border: 1px solid #fed7aa;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stars {
+      color: #ffb800;
+      letter-spacing: 1px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .restaurant-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .meta-pill {
+      background: #f8f6f3;
+      border: 1px solid #ece4db;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .card-btn {
+      flex: 1;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 14px;
+      transition: all 0.22s ease;
+    }
+
+    .card-btn.primary {
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .card-btn.primary:hover {
+      background: var(--orange);
+    }
+
+    .card-btn.secondary {
+      background: #fff7f3;
+      color: var(--orange);
+      border: 1px solid #ffd7c7;
+    }
+
+    .card-btn.secondary:hover {
+      background: #ffe8dd;
+    }
+
+    /* HIGHLIGHT BAND */
+    .highlight-band {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .highlight-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,247,242,0.95));
+      border: 1px solid #eee0d5;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .highlight-card h4 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .highlight-card p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* EMPTY SEARCH STATE */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 50px 20px 20px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 84px;
+      background: linear-gradient(180deg, #111111, #0b0b0b);
+      color: rgba(255,255,255,0.72);
+      padding: 34px 0;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: var(--orange);
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(26px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    .fade-up.delay-1 { animation-delay: 0.1s; }
+    .fade-up.delay-2 { animation-delay: 0.2s; }
+    .fade-up.delay-3 { animation-delay: 0.3s; }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1120px) {
+      .hero-grid,
+      .promo-grid,
+      .restaurant-grid,
+      .highlight-band {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-main {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 860px) {
+      nav {
+        flex-wrap: wrap;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 8px;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-right {
+        margin-left: auto;
+      }
+
+      .promo-grid,
+      .restaurant-grid,
+      .highlight-band,
+      .stat-row {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 64px 0;
+      }
+
+      .hero-main {
+        padding: 42px 24px;
+      }
+
+      .search-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .btn {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .restaurant-name {
+        font-size: 21px;
+      }
+
+      .card-actions {
+        flex-direction: column;
+      }
+
+      .footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">FeedMe</div>
-  <div class="nav-links">
-    <a href="restaurants.html">Restaurants</a>
-    <a href="#">Deals</a>
-    <a href="tracking.html">Track Order</a>
-  </div>
-  <div class="nav-right">
-    <button class="btn btn-outline" onclick="location.href='login.html'">Login</button>
-    <button class="btn btn-solid" onclick="location.href='register.html'">Sign Up</button>
-    <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
-  </div>
-</nav>
+  <div class="nav-wrap">
+    <nav>
+      <div class="nav-left">
+        <a href="index.html" class="logo">FeedMe</a>
+      </div>
 
-<section class="hero">
-  <div class="hero-content">
-    <h1>Hungry? Food is<br><span>one search away.</span></h1>
-    <p>// Discover restaurants. Order in. Enjoy fast delivery.</p>
-    <div class="search-bar">
-      <input type="text" placeholder="Search restaurants or food items...">
-      <button>SEARCH</button>
-    </div>
-  </div>
-</section>
+      <button class="menu-toggle" id="menuToggle">☰</button>
 
-<div class="categories">
-  <div class="cat-row">
-    <div class="cat-chip active">🍔 Burgers</div>
-    <div class="cat-chip">🍕 Pizza</div>
-    <div class="cat-chip">🍜 Noodles</div>
-    <div class="cat-chip">🍗 Chicken</div>
-    <div class="cat-chip">🥗 Salads</div>
-    <div class="cat-chip">🍣 Sushi</div>
-    <div class="cat-chip">🥪 Sandwiches</div>
-    <div class="cat-chip">🍦 Desserts</div>
-  </div>
-</div>
+      <div class="nav-links" id="navLinks">
+        <a href="restaurants.html" class="active">Restaurants</a>
+        <a href="#promotions">Deals</a>
+        <a href="tracking.html">Track Order</a>
+      </div>
 
-<section class="section" style="background:var(--light)">
-  <div class="section-header">
-    <div class="section-title">Featured Promotions</div>
-    <div class="see-all">See all deals →</div>
+      <div class="nav-right">
+        <button class="btn btn-outline" onclick="location.href='login.html'">Login</button>
+        <button class="btn btn-dark" onclick="location.href='register.html'">Sign Up</button>
+        <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
+      </div>
+    </nav>
   </div>
-  <div class="promo-grid">
-    <div class="promo-card">
-      <div class="promo-img" style="background:#FFE0CC">🍔</div>
-      <div class="promo-body">
-        <div class="promo-name">50% OFF Burgers</div>
-        <div class="promo-meta"><span style="font-size:11px;color:var(--gray)">Valid until 30 Apr</span><span class="badge badge-hot">HOT</span></div>
-      </div>
-    </div>
-    <div class="promo-card">
-      <div class="promo-img" style="background:#CCE8FF">🚚</div>
-      <div class="promo-body">
-        <div class="promo-name">Free Delivery Fridays</div>
-        <div class="promo-meta"><span style="font-size:11px;color:var(--gray)">Every Friday</span><span class="badge badge-free">FREE</span></div>
-      </div>
-    </div>
-    <div class="promo-card">
-      <div class="promo-img" style="background:#D1FAE5">🎁</div>
-      <div class="promo-body">
-        <div class="promo-name">New User — $5 Off</div>
-        <div class="promo-meta"><span style="font-size:11px;color:var(--gray)">First order only</span><span class="badge badge-new">NEW</span></div>
-      </div>
-    </div>
-    <div class="promo-card">
-      <div class="promo-img" style="background:#FEF3C7">🍱</div>
-      <div class="promo-body">
-        <div class="promo-name">Combo Meals from $9</div>
-        <div class="promo-meta"><span style="font-size:11px;color:var(--gray)">All day</span><span class="badge badge-val">VALUE</span></div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section" style="background:var(--white)">
-  <div class="section-header">
-    <div class="section-title">Top Rated Restaurants</div>
-    <div class="see-all" onclick="location.href='restaurants.html'">View all →</div>
-  </div>
-  <div class="cards-grid">
-    <div class="card" onclick="location.href='menu.html'">
-      <div class="card-img">🍔</div>
-      <div class="card-body">
-        <div class="card-name">Burger Palace</div>
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span></div>
-        <div class="card-meta"><span>⏱ 25 min</span><span>🚚 $2.99</span></div>
-        <button class="card-btn">VIEW MENU</button>
-      </div>
-    </div>
-    <div class="card" onclick="location.href='menu.html'">
-      <div class="card-img">🍕</div>
-      <div class="card-body">
-        <div class="card-name">Pizza Factory</div>
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <div class="card-meta"><span>⏱ 35 min</span><span>🚚 Free</span></div>
-        <button class="card-btn">VIEW MENU</button>
-      </div>
-    </div>
-    <div class="card" onclick="location.href='menu.html'">
-      <div class="card-img">🍣</div>
-      <div class="card-body">
-        <div class="card-name">Sushi World</div>
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span><span class="star" style="color:#ddd">★</span></div>
-        <div class="card-meta"><span>⏱ 40 min</span><span>🚚 $1.99</span></div>
-        <button class="card-btn">VIEW MENU</button>
-      </div>
-    </div>
-    <div class="card" onclick="location.href='menu.html'">
-      <div class="card-img">🍜</div>
-      <div class="card-body">
-        <div class="card-name">Noodle House</div>
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:#ddd">★</span></div>
-        <div class="card-meta"><span>⏱ 20 min</span><span>🚚 $1.50</span></div>
-        <button class="card-btn">VIEW MENU</button>
-      </div>
-    </div>
-  </div>
-</section>
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-main fade-up">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <span class="dot"></span>
+              Live in your area • Fast delivery • Fresh picks
+            </div>
 
-<footer>
-  <span>© 2025 FeedMe. All rights reserved.</span>
-  <div>
-    <a href="#">About</a>
-    <a href="#">Privacy</a>
-    <a href="#">Contact</a>
-    <a href="#">Help</a>
-  </div>
-</footer>
+            <h1>
+              Hungry?<br>
+              <span class="accent" id="typingText">One click.</span>
+            </h1>
 
+            <p>
+              Discover top-rated restaurants, unbeatable deals, and quick delivery in one clean experience.
+              Search what you crave and find your next order in seconds.
+            </p>
+
+            <div class="search-box">
+              <input type="text" id="searchInput" placeholder="Search restaurants, burgers, sushi, pizza..." />
+              <button class="search-btn" id="searchBtn">SEARCH NOW</button>
+            </div>
+
+            <div class="quick-tags">
+              <button class="quick-tag" data-search="Burger">🔥 Trending Burgers</button>
+              <button class="quick-tag" data-search="Pizza">🍕 Late Night Pizza</button>
+              <button class="quick-tag" data-search="Sushi">🍣 Fresh Sushi</button>
+              <button class="quick-tag" data-search="Desserts">🍰 Sweet Fix</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="hero-card fade-up delay-1">
+            <div class="mini-title">Why FeedMe hits different</div>
+            <h2 style="font-family:'Space Grotesk',sans-serif; font-size:2rem; line-height:1.05; margin-bottom:10px;">
+              Good food. Fast moves. Zero mess.
+            </h2>
+            <p style="color:var(--muted); line-height:1.8; font-size:15px;">
+              Order smarter with quick filters, premium picks, promo highlights, and a cleaner experience that feels more modern.
+            </p>
+
+            <div class="stat-row">
+              <div class="stat-box">
+                <h3>500+</h3>
+                <p>Happy local orders every day</p>
+              </div>
+              <div class="stat-box">
+                <h3>20m</h3>
+                <p>Average delivery for top picks</p>
+              </div>
+              <div class="stat-box">
+                <h3>4.8★</h3>
+                <p>Top-rated customer favourites</p>
+              </div>
+              <div class="stat-box">
+                <h3>24/7</h3>
+                <p>Late-night cravings covered</p>
+              </div>
+            </div>
+
+            <div class="live-order">
+              <div>
+                <strong>Live order activity</strong>
+                <span>New order confirmed near Douglas • just now</span>
+              </div>
+              <div class="pulse"></div>
+            </div>
+          </div>
+
+          <div class="hero-card fade-up delay-2">
+            <div class="mini-title">Tonight’s spotlight</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+              <div>
+                <h3 style="font-size:1.5rem; margin-bottom:8px;">Free delivery Friday</h3>
+                <p style="color:var(--muted); line-height:1.7; font-size:15px;">
+                  Grab your favourite meal and save more on selected restaurants today.
+                </p>
+              </div>
+              <div style="font-size:52px;">🚚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container category-wrap">
+        <div class="category-scroller" id="categoryChips">
+          <button class="chip active" data-category="all">✨ All</button>
+          <button class="chip" data-category="burger">🍔 Burgers</button>
+          <button class="chip" data-category="pizza">🍕 Pizza</button>
+          <button class="chip" data-category="noodle">🍜 Noodles</button>
+          <button class="chip" data-category="chicken">🍗 Chicken</button>
+          <button class="chip" data-category="salad">🥗 Salads</button>
+          <button class="chip" data-category="sushi">🍣 Sushi</button>
+          <button class="chip" data-category="sandwich">🥪 Sandwiches</button>
+          <button class="chip" data-category="dessert">🍦 Desserts</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="promotions">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Deals</div>
+            <h2 class="section-title">Featured Promotions</h2>
+            <p class="section-subtitle">
+              High-impact offers that make the homepage feel alive and worth exploring.
+            </p>
+          </div>
+          <a class="section-link" href="#">See all deals →</a>
+        </div>
+
+        <div class="promo-grid">
+          <div class="promo-card fade-up">
+            <div class="promo-top" style="background:linear-gradient(135deg,#ffd9c4,#ffeade);">🍔</div>
+            <div class="promo-body">
+              <h3>50% OFF Burgers</h3>
+              <p>Get your Friday burger fix with a massive discount on selected meals.</p>
+              <div class="promo-meta">
+                <span style="color:var(--muted); font-size:13px;">Valid until 30 Apr</span>
+                <span class="badge hot">HOT</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="promo-card fade-up delay-1">
+            <div class="promo-top" style="background:linear-gradient(135deg,#d8ecff,#edf7ff);">🚚</div>
+            <div class="promo-body">
+              <h3>Free Delivery Fridays</h3>
+              <p>Order from selected restaurants and skip the delivery fee tonight.</p>
+              <div class="promo-meta">
+                <span style="color:var(--muted); font-size:13px;">Every Friday</span>
+                <span class="badge free">FREE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="promo-card fade-up delay-2">
+            <div class="promo-top" style="background:linear-gradient(135deg,#daf6e8,#eefdf5);">🎁</div>
+            <div class="promo-body">
+              <h3>New User — $5 Off</h3>
+              <p>First order? Perfect. Start strong with instant savings on checkout.</p>
+              <div class="promo-meta">
+                <span style="color:var(--muted); font-size:13px;">First order only</span>
+                <span class="badge new">NEW</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="promo-card fade-up delay-3">
+            <div class="promo-top" style="background:linear-gradient(135deg,#fff1ba,#fff7db);">🍱</div>
+            <div class="promo-body">
+              <h3>Combo Meals from $9</h3>
+              <p>Budget-friendly combos that still feel premium and satisfying.</p>
+              <div class="promo-meta">
+                <span style="color:var(--muted); font-size:13px;">All day</span>
+                <span class="badge value">VALUE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 10px;">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Top Picks</div>
+            <h2 class="section-title">Top Rated Restaurants</h2>
+            <p class="section-subtitle">
+              Use the search bar or category chips to instantly filter these cards.
+            </p>
+          </div>
+          <a class="section-link" href="restaurants.html">View all restaurants →</a>
+        </div>
+
+        <div class="restaurant-grid" id="restaurantGrid">
+          <article class="restaurant-card restaurant-item" data-name="Burger Palace" data-category="burger">
+            <div class="restaurant-cover" style="background:linear-gradient(135deg,#f5eee6,#e8dbce);">
+              <button class="like-btn">♡</button>
+              <div class="emoji">🍔</div>
+            </div>
+            <div class="card-content">
+              <div class="card-topline">
+                <div>
+                  <h3 class="restaurant-name">Burger Palace</h3>
+                  <div class="stars">★★★★☆</div>
+                </div>
+                <div class="rating-pill">4.6</div>
+              </div>
+
+              <div class="restaurant-meta">
+                <span class="meta-pill">⏱ 25 min</span>
+                <span class="meta-pill">🚚 $2.99</span>
+                <span class="meta-pill">Smash burgers</span>
+              </div>
+
+              <div class="card-actions">
+                <button class="card-btn primary" onclick="location.href='menu.html'">View Menu</button>
+                <button class="card-btn secondary">Quick Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="restaurant-card restaurant-item" data-name="Pizza Factory" data-category="pizza">
+            <div class="restaurant-cover" style="background:linear-gradient(135deg,#f8ecdf,#f5e2d1);">
+              <button class="like-btn">♡</button>
+              <div class="emoji">🍕</div>
+            </div>
+            <div class="card-content">
+              <div class="card-topline">
+                <div>
+                  <h3 class="restaurant-name">Pizza Factory</h3>
+                  <div class="stars">★★★★★</div>
+                </div>
+                <div class="rating-pill">4.9</div>
+              </div>
+
+              <div class="restaurant-meta">
+                <span class="meta-pill">⏱ 35 min</span>
+                <span class="meta-pill">🚚 Free</span>
+                <span class="meta-pill">Woodfired</span>
+              </div>
+
+              <div class="card-actions">
+                <button class="card-btn primary" onclick="location.href='menu.html'">View Menu</button>
+                <button class="card-btn secondary">Quick Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="restaurant-card restaurant-item" data-name="Sushi World" data-category="sushi">
+            <div class="restaurant-cover" style="background:linear-gradient(135deg,#efeae2,#e2dbd0);">
+              <button class="like-btn">♡</button>
+              <div class="emoji">🍣</div>
+            </div>
+            <div class="card-content">
+              <div class="card-topline">
+                <div>
+                  <h3 class="restaurant-name">Sushi World</h3>
+                  <div class="stars">★★★★☆</div>
+                </div>
+                <div class="rating-pill">4.4</div>
+              </div>
+
+              <div class="restaurant-meta">
+                <span class="meta-pill">⏱ 40 min</span>
+                <span class="meta-pill">🚚 $1.99</span>
+                <span class="meta-pill">Fresh rolls</span>
+              </div>
+
+              <div class="card-actions">
+                <button class="card-btn primary" onclick="location.href='menu.html'">View Menu</button>
+                <button class="card-btn secondary">Quick Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="restaurant-card restaurant-item" data-name="Noodle House" data-category="noodle">
+            <div class="restaurant-cover" style="background:linear-gradient(135deg,#f3eee6,#e7dfd3);">
+              <button class="like-btn">♡</button>
+              <div class="emoji">🍜</div>
+            </div>
+            <div class="card-content">
+              <div class="card-topline">
+                <div>
+                  <h3 class="restaurant-name">Noodle House</h3>
+                  <div class="stars">★★★★☆</div>
+                </div>
+                <div class="rating-pill">4.5</div>
+              </div>
+
+              <div class="restaurant-meta">
+                <span class="meta-pill">⏱ 20 min</span>
+                <span class="meta-pill">🚚 $1.50</span>
+                <span class="meta-pill">Hot bowls</span>
+              </div>
+
+              <div class="card-actions">
+                <button class="card-btn primary" onclick="location.href='menu.html'">View Menu</button>
+                <button class="card-btn secondary">Quick Add</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          No restaurants matched that search. Try another food name or choose a different category.
+        </div>
+
+        <div class="highlight-band">
+          <div class="highlight-card fade-up">
+            <h4>Fast discovery</h4>
+            <p>Search and category filtering make the page feel active instead of just static cards sitting there.</p>
+          </div>
+          <div class="highlight-card fade-up delay-1">
+            <h4>Better visual hierarchy</h4>
+            <p>Stronger hero section, softer shadows, better spacing, and cleaner cards make it feel more premium.</p>
+          </div>
+          <div class="highlight-card fade-up delay-2">
+            <h4>Modern interactions</h4>
+            <p>Hover effects, animated badges, like buttons, search filtering, and mobile menu add life to the page.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div>
+        <div class="footer-brand">FeedMe</div>
+        <div style="margin-top:8px;">© 2025 FeedMe. All rights reserved.</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+        <a href="#">Help</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("show");
+    });
+
+    const chips = document.querySelectorAll(".chip");
+    const restaurantItems = document.querySelectorAll(".restaurant-item");
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const emptyState = document.getElementById("emptyState");
+    const quickTags = document.querySelectorAll(".quick-tag");
+
+    let activeCategory = "all";
+
+    function filterRestaurants() {
+      const searchText = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      restaurantItems.forEach(item => {
+        const name = item.dataset.name.toLowerCase();
+        const category = item.dataset.category.toLowerCase();
+
+        const matchesCategory = activeCategory === "all" || category === activeCategory;
+        const matchesSearch =
+          name.includes(searchText) ||
+          category.includes(searchText);
+
+        if (matchesCategory && matchesSearch) {
+          item.style.display = "block";
+          visibleCount++;
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        chips.forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        activeCategory = chip.dataset.category;
+        filterRestaurants();
+      });
+    });
+
+    searchInput.addEventListener("input", filterRestaurants);
+    searchBtn.addEventListener("click", filterRestaurants);
+
+    quickTags.forEach(tag => {
+      tag.addEventListener("click", () => {
+        searchInput.value = tag.dataset.search;
+        filterRestaurants();
+        document.getElementById("restaurantGrid").scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    const likeButtons = document.querySelectorAll(".like-btn");
+    likeButtons.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        btn.textContent = btn.textContent === "♡" ? "♥" : "♡";
+        btn.style.color = btn.textContent === "♥" ? "#ff4d00" : "#111";
+      });
+    });
+
+    const typingWords = [
+      "One click.",
+      "One craving away.",
+      "One great order away.",
+      "One search away."
+    ];
+
+    const typingText = document.getElementById("typingText");
+    let wordIndex = 0;
+
+    setInterval(() => {
+      wordIndex = (wordIndex + 1) % typingWords.length;
+      typingText.style.opacity = 0;
+
+      setTimeout(() => {
+        typingText.textContent = typingWords[wordIndex];
+        typingText.style.opacity = 1;
+      }, 220);
+    }, 2200);
+  </script>
 </body>
 </html>
