@@ -627,9 +627,9 @@
       }
     }
 
-    function continueAsGuest() {
+   function continueAsGuest() {
       localStorage.setItem('feedmeGuest', 'true');
-      localStorage.removeItem('feedmeLoggedIn');
+      localStorage.setItem('feedmeLoggedIn', 'false');
       localStorage.removeItem('feedmeToken');
       localStorage.removeItem('feedmeUser');
       localStorage.removeItem('feedmeUserEmail');
