@@ -1,159 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FeedMe — Register</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
-  body{font-family:var(--font);background:var(--light);color:var(--dark)}
-  a{text-decoration:none;color:inherit}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedMe — Register</title>
 
-  nav{background:var(--white);border-bottom:2px solid var(--dark);display:flex;align-items:center;padding:0 40px;height:64px;gap:32px}
-  .logo{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--orange);border:2px solid var(--orange);padding:4px 12px;border-radius:4px}
-  .nav-right{margin-left:auto;display:flex;gap:10px}
-  .btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid var(--dark)}
-  .btn-outline{background:transparent;color:var(--dark)}
-  .btn-outline:hover{background:var(--dark);color:var(--white)}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  .main{display:flex;align-items:flex-start;justify-content:center;padding:48px 24px;gap:40px;flex-wrap:wrap}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  .form-card{background:var(--white);border-radius:16px;border:2px solid var(--border);padding:40px;width:100%;max-width:580px}
-  .form-title{font-size:26px;font-weight:800;margin-bottom:6px}
-  .form-sub{font-size:13px;color:var(--gray);font-family:var(--mono);margin-bottom:32px}
+    :root {
+      --orange: #ff5a0a;
+      --orange-dark: #e64d00;
+      --dark: #111111;
+      --light: #f7f4ef;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #747474;
+      --border: #e4ddd2;
+      --soft-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
 
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .form-group{margin-bottom:18px}
-  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;font-family:var(--mono)}
-  input,select,textarea{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--white);outline:none;transition:border-color .2s}
-  input:focus,select:focus,textarea:focus{border-color:var(--dark)}
-  .input-error{border-color:#EF4444!important}
-  .err{font-size:11px;color:#EF4444;font-family:var(--mono);margin-top:4px;display:none}
-  .err.show{display:block}
+    body {
+      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top left, rgba(255, 90, 10, 0.08), transparent 25%),
+        linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-  .pw-strength{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
-  .pw-fill{height:100%;width:0;border-radius:2px;transition:width .3s,background .3s}
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-  .check-group{display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;font-size:13px;color:var(--gray);line-height:1.5}
-  .check-group input{width:auto;margin-top:2px;flex-shrink:0}
-  .check-group a{color:var(--orange);font-weight:600}
+    .page-shell {
+      width: min(96%, 1500px);
+      margin: 22px auto;
+    }
 
-  .submit-btn{width:100%;padding:15px;background:var(--orange);color:var(--white);border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:background .2s;letter-spacing:.5px}
-  .submit-btn:hover{background:#e04400}
+    nav {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 28px;
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      margin-bottom: 22px;
+    }
 
-  .bottom-link{text-align:center;margin-top:20px;font-size:14px;color:var(--gray)}
-  .bottom-link a{color:var(--orange);font-weight:700}
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: -1px;
+    }
 
-  .info-panel{background:var(--dark);border-radius:16px;padding:32px;width:260px;flex-shrink:0;color:var(--white)}
-  .info-panel h3{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--orange)}
-  .info-item{display:flex;gap:12px;margin-bottom:20px;font-size:13px;line-height:1.6;color:#ccc}
-  .info-icon{font-size:22px;flex-shrink:0}
+    .nav-right {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
 
-  @media(max-width:700px){.form-row{grid-template-columns:1fr}.info-panel{display:none}.form-card{padding:24px}}
-</style>
+    .btn-outline {
+      border: 2px solid #d8cec0;
+      background: rgba(255,255,255,0.75);
+      color: var(--text);
+      padding: 14px 30px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      border-color: var(--dark);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .form-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 30px;
+      box-shadow: var(--soft-shadow);
+      padding: 46px;
+    }
+
+    .eyebrow {
+      color: var(--orange);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .form-title {
+      font-size: clamp(2.3rem, 4vw, 4rem);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #171717;
+    }
+
+    .form-sub {
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 650px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      background: rgba(255,255,255,0.96);
+      font-size: 1.05rem;
+      outline: none;
+      transition: 0.25s ease;
+      color: var(--text);
+      font-family: var(--font-main);
+    }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 5px rgba(255, 90, 10, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .err {
+      display: none;
+      margin-top: 8px;
+      color: #d03131;
+      background: #fff2f2;
+      border: 1px solid #f3c3c3;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .err.show {
+      display: block;
+    }
+
+    .pw-strength {
+      height: 8px;
+      background: #ebe3d7;
+      border-radius: 999px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .pw-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .check-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 8px 0 26px;
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .check-group input {
+      width: 18px;
+      height: 18px;
+      margin-top: 4px;
+      accent-color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .check-group a {
+      color: var(--orange);
+      font-weight: 800;
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      padding: 18px 22px;
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: white;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      box-shadow: 0 18px 40px rgba(255, 90, 10, 0.22);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 22px 45px rgba(255, 90, 10, 0.28);
+    }
+
+    .bottom-link {
+      margin-top: 24px;
+      text-align: center;
+      color: #6f6f6f;
+      font-size: 1rem;
+    }
+
+    .bottom-link a {
+      color: var(--orange);
+      font-weight: 800;
+    }
+
+    .bottom-link a:hover {
+      text-decoration: underline;
+    }
+
+    .info-panel {
+      position: sticky;
+      top: 22px;
+      background:
+        linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.025) 0px,
+          rgba(255,255,255,0.025) 20px,
+          transparent 20px,
+          transparent 40px
+        ),
+        #111214;
+      color: white;
+      border-radius: 30px;
+      padding: 38px 32px;
+      box-shadow: var(--soft-shadow);
+      min-height: 620px;
+      overflow: hidden;
+    }
+
+    .info-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at bottom right, rgba(255, 90, 10, 0.12), transparent 24%);
+      pointer-events: none;
+    }
+
+    .info-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f5f5f5;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #37d39a;
+      border-radius: 50%;
+      box-shadow: 0 0 18px #37d39a;
+    }
+
+    .info-panel h3 {
+      font-size: clamp(2rem, 3.5vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -2px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .info-panel h3 span {
+      color: var(--orange);
+    }
+
+    .info-copy {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 28px;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .info-item {
+      display: flex;
+      gap: 14px;
+      padding: 18px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .info-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .info-item strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .info-item p {
+      color: rgba(255,255,255,0.72);
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 1100px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-panel {
+        position: static;
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page-shell {
+        width: 94%;
+        margin: 14px auto;
+      }
+
+      nav {
+        padding: 16px 18px;
+        border-radius: 22px;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+      }
+
+      .btn-outline {
+        padding: 12px 18px;
+        font-size: 0.95rem;
+      }
+
+      .form-card,
+      .info-panel {
+        padding: 26px 22px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-title,
+      .info-panel h3 {
+        letter-spacing: -1px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="page-shell">
+    <nav>
+      <a href="index.html" class="logo">FeedMe</a>
+      <div class="nav-right">
+        <button class="btn-outline" onclick="location.href='login.html'">Login</button>
+      </div>
+    </nav>
 
-<nav>
-  <a href="index.html"><div class="logo">FeedMe</div></a>
-  <div class="nav-right">
-    <button class="btn btn-outline" onclick="location.href='login.html'">Login</button>
-  </div>
-</nav>
-
-<div class="main">
-  <div class="form-card">
-    <div class="form-title">Create Account</div>
-    <div class="form-sub">Fill in your details to get started</div>
-
-    <form id="regForm" onsubmit="handleRegister(event)">
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" id="fname" placeholder="John" required>
-          <div class="err" id="fname-err">Required field</div>
+    <div class="main-grid">
+      <div class="form-card">
+        <div class="eyebrow">Create your account</div>
+        <div class="form-title">Join FeedMe today</div>
+        <div class="form-sub">
+          Fill in your details below to start ordering faster, save favourite meals,
+          and get a smoother food delivery experience.
         </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" id="lname" placeholder="Doe" required>
+
+        <form id="regForm" onsubmit="handleRegister(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">First name</label>
+              <input type="text" id="fname" placeholder="John" required>
+              <div class="err" id="fname-err">Required field</div>
+            </div>
+
+            <div class="form-group">
+              <label for="lname">Last name</label>
+              <input type="text" id="lname" placeholder="Doe" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="user@example.com" required>
+            <div class="err" id="email-err">Please enter a valid email</div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone number</label>
+            <input type="tel" id="phone" placeholder="+60 12-345 6789" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pw1">Password</label>
+              <input type="password" id="pw1" placeholder="Min. 8 characters" required oninput="checkStrength()">
+              <div class="pw-strength">
+                <div class="pw-fill" id="pw-fill"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pw2">Confirm password</label>
+              <input type="password" id="pw2" placeholder="Repeat password" required>
+              <div class="err" id="pw-err">Passwords do not match</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Delivery address</label>
+            <textarea id="address" placeholder="123 Example Street, City, State" required></textarea>
+          </div>
+
+          <div class="check-group">
+            <input type="checkbox" id="terms" required>
+            <span>
+              I agree to the <a href="#">Terms & Conditions</a> and
+              <a href="#">Privacy Policy</a>
+            </span>
+          </div>
+
+          <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
+        </form>
+
+        <div class="bottom-link">
+          Already have an account? <a href="login.html">Login here</a>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="user@example.com" required>
-        <div class="err" id="email-err">Please enter a valid email</div>
-      </div>
-
-      <div class="form-group">
-        <label>Phone Number</label>
-        <input type="tel" id="phone" placeholder="+60 12-345 6789" required>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="pw1" placeholder="Min. 8 characters" required oninput="checkStrength()">
-          <div class="pw-strength"><div class="pw-fill" id="pw-fill"></div></div>
+      <div class="info-panel">
+        <div class="info-badge">
+          <span class="dot"></span>
+          <span>Fresh picks • Fast signup • Better ordering</span>
         </div>
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <input type="password" id="pw2" placeholder="Repeat password" required>
-          <div class="err" id="pw-err">Passwords do not match</div>
+
+        <h3>Why choose <span>FeedMe?</span></h3>
+        <div class="info-copy">
+          Create your account and unlock faster checkout, saved favourites,
+          live order updates, and a much smoother way to handle cravings.
+        </div>
+
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-icon">⚡</div>
+            <div>
+              <strong>Fast delivery</strong>
+              <p>Order from your favourite local restaurants with a cleaner, faster experience.</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">🔒</div>
+            <div>
+              <strong>Secure payments</strong>
+              <p>Enjoy multiple payment options with a safer and more reliable checkout flow.</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">🗺️</div>
+            <div>
+              <strong>Live tracking</strong>
+              <p>Track your order in real time so you always know where your food is.</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">⭐</div>
+            <div>
+              <strong>Community ratings</strong>
+              <p>Rate meals and restaurants to help others discover the best options nearby.</p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="form-group">
-        <label>Delivery Address</label>
-        <textarea id="address" rows="2" placeholder="123 Example Street, City, State" required style="resize:vertical"></textarea>
-      </div>
-
-      <div class="check-group">
-        <input type="checkbox" id="terms" required>
-        <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span>
-      </div>
-
-      <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
-    </form>
-
-    <div class="bottom-link">
-      Already have an account? <a href="login.html">Login here</a>
     </div>
   </div>
 
-  <div class="info-panel">
-    <h3>Why FeedMe?</h3>
-    <div class="info-item"><span class="info-icon">⚡</span><span>Fast delivery from your favourite local restaurants</span></div>
-    <div class="info-item"><span class="info-icon">🔒</span><span>Secure payments with multiple payment options</span></div>
-    <div class="info-item"><span class="info-icon">🗺️</span><span>Real-time order tracking so you always know where your food is</span></div>
-    <div class="info-item"><span class="info-icon">⭐</span><span>Rate restaurants and help the community find the best food</span></div>
-  </div>
-</div>
+  <script>
+    function checkStrength() {
+      const pw = document.getElementById('pw1').value;
+      const fill = document.getElementById('pw-fill');
 
-<script>
-function checkStrength() {
-  const pw = document.getElementById('pw1').value;
-  const fill = document.getElementById('pw-fill');
-  let strength = 0;
-  if (pw.length >= 8) strength++;
-  if (/[A-Z]/.test(pw)) strength++;
-  if (/[0-9]/.test(pw)) strength++;
-  if (/[^A-Za-z0-9]/.test(pw)) strength++;
-  const colors = ['#EF4444','#F59E0B','#10B981','#10B981'];
-  fill.style.width = (strength * 25) + '%';
-  fill.style.background = colors[strength - 1] || '#EF4444';
-}
-function handleRegister(e) {
-  e.preventDefault();
-  const pw1 = document.getElementById('pw1').value;
-  const pw2 = document.getElementById('pw2').value;
-  const pwErr = document.getElementById('pw-err');
-  if (pw1 !== pw2) { pwErr.classList.add('show'); return; }
-  pwErr.classList.remove('show');
-  window.location.href = 'login.html';
-}
-</script>
+      let strength = 0;
+      if (pw.length >= 8) strength++;
+      if (/[A-Z]/.test(pw)) strength++;
+      if (/[0-9]/.test(pw)) strength++;
+      if (/[^A-Za-z0-9]/.test(pw)) strength++;
+
+      const colors = ['#ef4444', '#f59e0b', '#10b981', '#22c55e'];
+      fill.style.width = (strength * 25) + '%';
+      fill.style.background = colors[Math.max(strength - 1, 0)];
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+
+      const pw1 = document.getElementById('pw1').value.trim();
+      const pw2 = document.getElementById('pw2').value.trim();
+      const pwErr = document.getElementById('pw-err');
+
+      if (pw1 !== pw2) {
+        pwErr.classList.add('show');
+        return;
+      }
+
+      pwErr.classList.remove('show');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>
