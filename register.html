@@ -415,7 +415,7 @@
       .form-card,
       .info-panel {
         padding: 26px 22px;
-      }
+      
 
       .form-row {
         grid-template-columns: 1fr;
@@ -594,7 +594,7 @@
       const fullName = `${fname} ${lname}`.trim();
     
       try {
-        const response = await fetch('http://localhost:5001/api/auth/register', {
+        const response = await fetch('http://18.212.234.225:5000/api/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
