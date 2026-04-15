@@ -573,20 +573,52 @@
       fill.style.background = colors[Math.max(strength - 1, 0)];
     }
 
-    function handleRegister(e) {
+    async function handleRegister(e) {
       e.preventDefault();
-
+    
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
       const pw1 = document.getElementById('pw1').value.trim();
       const pw2 = document.getElementById('pw2').value.trim();
       const pwErr = document.getElementById('pw-err');
-
+    
       if (pw1 !== pw2) {
         pwErr.classList.add('show');
         return;
       }
-
+    
       pwErr.classList.remove('show');
-      window.location.href = 'login.html';
+    
+      const fullName = `${fname} ${lname}`.trim();
+    
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: fullName,
+            email: email,
+            password: pw1,
+            phone: phone,
+            role: 'customer'
+          })
+        });
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+          alert('Registration successful. Please login now.');
+          window.location.href = 'login.html';
+        } else {
+          alert(data.message || 'Registration failed.');
+        }
+      } catch (error) {
+        alert('Unable to connect to server.');
+      }
     }
   </script>
 </body>
