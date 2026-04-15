@@ -532,20 +532,26 @@
   </div>
 
   <script>
-    function handleLogin(e) {
-      e.preventDefault();
+  function handleLogin(e) {
+    e.preventDefault();
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorAlert = document.getElementById('error-alert');
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorAlert = document.getElementById('error-alert');
 
-      if (email && password) {
-        errorAlert.classList.remove('show');
-        window.location.href = 'index.html';
-      } else {
-        errorAlert.classList.add('show');
-      }
+    if (email && password) {
+      errorAlert.classList.remove('show');
+
+      // Save login state
+      localStorage.setItem('feedmeLoggedIn', 'true');
+      localStorage.setItem('feedmeUserEmail', email);
+
+      // Redirect to homepage after login
+      window.location.href = 'index.html';
+    } else {
+      errorAlert.classList.add('show');
     }
-  </script>
+  }
+</script>
 </body>
 </html>
