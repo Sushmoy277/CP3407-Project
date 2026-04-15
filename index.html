@@ -1351,9 +1351,10 @@
   </footer>
 
   <script>
-    const isLoggedIn = localStorage.getItem('feedmeLoggedIn');
-
-    if (isLoggedIn !== 'true') {
+    const isLoggedIn = localStorage.getItem('feedmeLoggedIn') === 'true';
+    const isGuest = localStorage.getItem('feedmeGuest') === 'true';
+    
+    if (!isLoggedIn && !isGuest) {
       window.location.href = 'login.html';
     }
     const menuToggle = document.getElementById("menuToggle");
