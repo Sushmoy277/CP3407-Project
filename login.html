@@ -532,23 +532,50 @@
   </div>
 
   <script>
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
 
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const errorAlert = document.getElementById('error-alert');
 
-    if (email && password) {
-      errorAlert.classList.remove('show');
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-      // Save login state
-      localStorage.setItem('feedmeLoggedIn', 'true');
-      localStorage.setItem('feedmeUserEmail', email);
+      const data = await response.json();
 
-      // Redirect to homepage after login
-      window.location.href = 'index.html';
-    } else {
+      if (response.ok) {
+        errorAlert.classList.remove('show');
+
+        localStorage.setItem('feedmeLoggedIn', 'true');
+        localStorage.setItem('feedmeUserEmail', email);
+
+        if (data.token) {
+          localStorage.setItem('feedmeToken', data.token);
+        }
+
+        if (data.user) {
+          localStorage.setItem('feedmeUser', JSON.stringify(data.user));
+
+          if (data.user.role === 'owner') {
+            window.location.href = 'restaurant-dashboard.html';
+            return;
+          }
+        }
+
+        window.location.href = 'index.html';
+      } else {
+        errorAlert.textContent = data.message || 'Invalid email or password. Please try again.';
+        errorAlert.classList.add('show');
+      }
+    } catch (error) {
+      errorAlert.textContent = 'Unable to connect to server.';
       errorAlert.classList.add('show');
     }
   }
