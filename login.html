@@ -340,6 +340,47 @@
       box-shadow: 0 22px 45px rgba(255, 90, 10, 0.28);
     }
 
+    .extra-actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .guest-btn,
+    .admin-btn {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .guest-btn {
+      background: rgba(255,255,255,0.95);
+      color: var(--dark);
+      border: 2px solid var(--border);
+    }
+
+    .guest-btn:hover {
+      transform: translateY(-2px);
+      border-color: #cfc2b2;
+      box-shadow: var(--card-shadow);
+    }
+
+    .admin-btn {
+      background: transparent;
+      color: var(--dark);
+      border: 2px solid var(--dark);
+    }
+
+    .admin-btn:hover {
+      background: var(--dark);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
     .divider {
       display: flex;
       align-items: center;
@@ -505,6 +546,11 @@
             </div>
 
             <button type="submit" class="submit-btn">LOGIN NOW</button>
+
+            <div class="extra-actions">
+              <button type="button" class="guest-btn" onclick="continueAsGuest()">CONTINUE AS GUEST</button>
+              <button type="button" class="admin-btn" onclick="goToAdmin()">ADMIN LOGIN</button>
+            </div>
           </form>
 
           <div class="divider">
@@ -532,53 +578,67 @@
   </div>
 
   <script>
-  async function handleLogin(e) {
-    e.preventDefault();
+    async function handleLogin(e) {
+      e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errorAlert = document.getElementById('error-alert');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorAlert = document.getElementById('error-alert');
 
-    try {
-      const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      try {
+        const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        errorAlert.classList.remove('show');
+        if (response.ok) {
+          errorAlert.classList.remove('show');
 
-        localStorage.setItem('feedmeLoggedIn', 'true');
-        localStorage.setItem('feedmeUserEmail', email);
+          localStorage.setItem('feedmeLoggedIn', 'true');
+          localStorage.setItem('feedmeGuest', 'false');
+          localStorage.setItem('feedmeUserEmail', email);
 
-        if (data.token) {
-          localStorage.setItem('feedmeToken', data.token);
-        }
-
-        if (data.user) {
-          localStorage.setItem('feedmeUser', JSON.stringify(data.user));
-
-          if (data.user.role === 'owner') {
-            window.location.href = 'restaurant-dashboard.html';
-            return;
+          if (data.token) {
+            localStorage.setItem('feedmeToken', data.token);
           }
-        }
 
-        window.location.href = 'index.html';
-      } else {
-        errorAlert.textContent = data.message || 'Invalid email or password. Please try again.';
+          if (data.user) {
+            localStorage.setItem('feedmeUser', JSON.stringify(data.user));
+
+            if (data.user.role === 'owner') {
+              window.location.href = 'restaurant-dashboard.html';
+              return;
+            }
+          }
+
+          window.location.href = 'index.html';
+        } else {
+          errorAlert.textContent = data.message || 'Invalid email or password. Please try again.';
+          errorAlert.classList.add('show');
+        }
+      } catch (error) {
+        errorAlert.textContent = 'Unable to connect to server.';
         errorAlert.classList.add('show');
       }
-    } catch (error) {
-      errorAlert.textContent = 'Unable to connect to server.';
-      errorAlert.classList.add('show');
     }
-  }
-</script>
+
+    function continueAsGuest() {
+      localStorage.setItem('feedmeGuest', 'true');
+      localStorage.removeItem('feedmeLoggedIn');
+      localStorage.removeItem('feedmeToken');
+      localStorage.removeItem('feedmeUser');
+      localStorage.removeItem('feedmeUserEmail');
+      window.location.href = 'index.html';
+    }
+
+    function goToAdmin() {
+      window.location.href = 'admin.html';
+    }
+  </script>
 </body>
 </html>
