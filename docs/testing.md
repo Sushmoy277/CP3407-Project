@@ -5,12 +5,12 @@ This document details the testing strategies and results for the FeedMe project,
 ---
 
 ## 1. Test-Driven Development (TDD) Approach
-[cite_start]Following the guidelines in the CP3407 textbook (Chapters 7, 8, and 9), our team adopted a Test-Driven Development mindset. We defined acceptance criteria for each user story before the coding phase began. This ensured that every feature was built to satisfy a specific user need.
+Following the guidelines in the CP3407 lecture slides, our team adopted a Test-Driven Development mindset. We defined acceptance criteria for each user story before the coding phase began. This ensured that every feature was built to satisfy a specific user need.
 
 ---
 
 ## 2. Acceptance Testing
-[cite_start]Acceptance testing was conducted for all delivered features to verify that the IT solution delivers "what is needed, on time and on budget".
+Acceptance testing was conducted for all delivered features to verify that the IT solution delivers "what is needed, on time and on budget".
 
 | User Story ID | Feature | Acceptance Criteria | Result |
 | :--- | :--- | :--- | :--- |
@@ -23,7 +23,7 @@ This document details the testing strategies and results for the FeedMe project,
 ---
 
 ## 3. Component Testing and Data Sets
-[cite_start]We utilized specific testing data sets to validate the robustness of the system.
+We utilized specific testing data sets to validate the robustness of the system.
 
 ### A. Unit Testing
 Individual PHP functions, such as the cart total calculation and the menu item price formatter, were tested with:
@@ -39,8 +39,8 @@ We tested the integration between the **WordPress/PHP frontend** and the **AWS S
 ---
 
 ## 4. Performance and Security Testing
-* [cite_start]**Load Testing:** We simulated multiple concurrent users accessing the FeedMe homepage on our AWS EC2 instance to ensure no performance degradation[cite: 193].
-* [cite_start]**Security Audit:** We verified that all sensitive data is encrypted in transit and that role-based access controls prevent customers from accessing the restaurant owner dashboard[cite: 150, 152].
+* **Load Testing:** We simulated multiple concurrent users accessing the FeedMe homepage on our AWS EC2 instance to ensure no performance degradation.
+* **Security Audit:** We verified that all sensitive data is encrypted in transit and that role-based access controls prevent customers from accessing the restaurant owner dashboard.
 
 ---
 [← Back to Main Page](index.md)
