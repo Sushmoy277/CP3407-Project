@@ -22,7 +22,9 @@
   .main{flex:1;overflow:auto}
   .topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
   .topbar-title{font-size:18px;font-weight:800}
+  .topbar-right{display:flex;align-items:center;gap:12px}
   .status-badge{background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:6px;font-family:var(--mono);cursor:pointer}
+  .refresh-indicator{font-size:11px;font-family:var(--mono);color:var(--gray)}
 
   .content{padding:28px 32px}
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
@@ -33,32 +35,48 @@
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   .panel{background:var(--white);border:2px solid var(--border);border-radius:10px;padding:20px}
-  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 
-  .order-item{border:2px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+  .order-item{border:2px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;transition:all .3s}
   .order-item.new{border-color:var(--orange);background:#FFF5F2}
+  .order-item.preparing{border-color:#F59E0B;background:#FFFBF0}
+  .order-item.ready{border-color:var(--green);background:#F0FDF4}
   .order-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .order-num{font-size:13px;font-weight:800;font-family:var(--mono)}
   .o-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
   .o-new{background:var(--orange);color:#fff}
   .o-prep{background:#F59E0B;color:#fff}
+  .o-ready{background:#8B5CF6;color:#fff}
   .o-done{background:var(--green);color:#fff}
-  .order-detail{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:10px}
-  .btn-row{display:flex;gap:8px}
+  .o-cancelled{background:#EF4444;color:#fff}
+  .order-detail{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:10px;line-height:1.6}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
   .btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid}
+  .btn:disabled{opacity:0.5;cursor:not-allowed}
   .btn-accept{background:var(--orange);color:#fff;border-color:var(--orange)}
-  .btn-accept:hover{background:#e04400}
+  .btn-accept:hover:not(:disabled){background:#e04400}
   .btn-reject{background:transparent;color:var(--dark);border-color:var(--border)}
-  .btn-reject:hover{border-color:var(--dark)}
-  .btn-ready{background:var(--dark);color:#fff;border-color:var(--dark);width:100%}
-  .btn-ready:hover{background:var(--orange);border-color:var(--orange)}
+  .btn-reject:hover:not(:disabled){border-color:#EF4444;color:#EF4444}
+  .btn-preparing{background:#F59E0B;color:#fff;border-color:#F59E0B}
+  .btn-preparing:hover:not(:disabled){background:#d97706}
+  .btn-ready{background:var(--dark);color:#fff;border-color:var(--dark)}
+  .btn-ready:hover:not(:disabled){background:var(--orange);border-color:var(--orange)}
 
-  /* Chart */
+  .loading{text-align:center;padding:30px;color:var(--gray);font-family:var(--mono);font-size:13px}
+  .empty{text-align:center;padding:30px;color:var(--gray);font-family:var(--mono);font-size:13px}
+  .error-msg{background:#FEE2E2;border:1px solid #FCA5A5;color:#DC2626;padding:10px 14px;border-radius:6px;font-size:12px;font-family:var(--mono);margin-bottom:12px}
+  .success-msg{background:#D1FAE5;border:1px solid #6EE7B7;color:#065F46;padding:10px 14px;border-radius:6px;font-size:12px;font-family:var(--mono);margin-bottom:12px;display:none}
+
   .chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding:10px 0}
   .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
   .bar{width:100%;background:var(--border);border-radius:4px 4px 0 0;transition:height .3s}
   .bar.highlight{background:var(--orange)}
   .bar-label{font-size:10px;font-family:var(--mono);color:var(--gray)}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:white;padding:12px 20px;border-radius:8px;font-size:13px;font-family:var(--mono);font-weight:600;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s}
+  .toast.show{transform:translateY(0);opacity:1}
+  .toast.success{background:var(--green)}
+  .toast.error{background:#EF4444}
 
   @media(max-width:900px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
 </style>
@@ -68,7 +86,7 @@
   <div class="sidebar-brand">
     <div>
       <div class="sidebar-logo">FeedMe</div>
-      <div class="sidebar-name">Burger Palace</div>
+      <div class="sidebar-name" id="restaurantName">Restaurant</div>
     </div>
   </div>
   <div class="sidebar-section">MAIN</div>
@@ -80,40 +98,34 @@
   <a class="sidebar-item" href="#"><span class="icon">⭐</span> Reviews</a>
   <div class="sidebar-section">SETTINGS</div>
   <a class="sidebar-item" href="#"><span class="icon">⚙️</span> Settings</a>
-  <a class="sidebar-item" href="login.html"><span class="icon">🚪</span> Logout</a>
+  <a class="sidebar-item" href="login.html" onclick="logout()"><span class="icon">🚪</span> Logout</a>
 </div>
 
 <div class="main">
   <div class="topbar">
     <div class="topbar-title">Today's Overview</div>
-    <div class="status-badge" onclick="this.textContent=this.textContent.includes('OPEN')?'● STORE CLOSED':'● STORE OPEN'">● STORE OPEN</div>
+    <div class="topbar-right">
+      <div class="refresh-indicator" id="refreshIndicator">🔄 Auto-refreshing every 10s</div>
+      <div class="status-badge" onclick="this.textContent=this.textContent.includes('OPEN')?'● STORE CLOSED':'● STORE OPEN'">● STORE OPEN</div>
+    </div>
   </div>
   <div class="content">
+    <div id="errorMsg" class="error-msg" style="display:none"></div>
+    <div id="successMsg" class="success-msg"></div>
+
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-val">24</div><div class="stat-label">Orders Today</div><div class="stat-change">↑ +6 from yesterday</div></div>
-      <div class="stat-card"><div class="stat-val">$486</div><div class="stat-label">Revenue Today</div><div class="stat-change">↑ +12% from yesterday</div></div>
-      <div class="stat-card"><div class="stat-val">3</div><div class="stat-label">Pending Orders</div><div class="stat-change" style="color:var(--orange)">Requires attention</div></div>
+      <div class="stat-card"><div class="stat-val" id="totalOrders">—</div><div class="stat-label">Orders Today</div><div class="stat-change" id="pendingLabel">Loading...</div></div>
+      <div class="stat-card"><div class="stat-val" id="totalRevenue">—</div><div class="stat-label">Revenue Today</div><div class="stat-change">↑ Today's total</div></div>
+      <div class="stat-card"><div class="stat-val" id="pendingCount">—</div><div class="stat-label">Pending Orders</div><div class="stat-change" style="color:var(--orange)">Requires attention</div></div>
     </div>
+
     <div class="two-col">
       <div class="panel">
-        <div class="panel-title">🔔 Incoming Orders</div>
-        <div class="order-item new">
-          <div class="order-top-row"><span class="order-num">#7844 — John D.</span><span class="o-badge o-new">NEW</span></div>
-          <div class="order-detail">Beef Burger x2, Fries x1 · $21.70 · 2 mins ago</div>
-          <div class="btn-row">
-            <button class="btn btn-accept" onclick="this.closest('.order-item').style.borderColor='var(--green)'">ACCEPT</button>
-            <button class="btn btn-reject">REJECT</button>
-          </div>
+        <div class="panel-title">
+          🔔 Incoming Orders
+          <span style="font-size:11px;font-family:var(--mono);color:var(--gray);font-weight:400" id="lastUpdated"></span>
         </div>
-        <div class="order-item">
-          <div class="order-top-row"><span class="order-num">#7843 — Sarah L.</span><span class="o-badge o-prep">PREPARING</span></div>
-          <div class="order-detail">Chicken Burger x1, Milkshake x1 · $16.40</div>
-          <button class="btn btn-ready" onclick="this.textContent='✓ Marked Ready!'">MARK AS READY</button>
-        </div>
-        <div class="order-item">
-          <div class="order-top-row"><span class="order-num">#7842 — Ahmad R.</span><span class="o-badge o-done">DISPATCHED</span></div>
-          <div class="order-detail">Double Smash x1, Fries x2 · $20.70</div>
-        </div>
+        <div id="ordersContainer"><div class="loading">Loading orders...</div></div>
       </div>
       <div class="panel">
         <div class="panel-title">📈 Sales — This Week</div>
@@ -131,5 +143,159 @@
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://18.212.234.225/api';
+
+  // Get token and restaurant_id from localStorage
+  const token = localStorage.getItem('token');
+  const restaurantId = localStorage.getItem('restaurant_id');
+
+  if (!token || !restaurantId) {
+    window.location.href = 'login.html';
+  }
+
+  // Set restaurant name if stored
+  const rName = localStorage.getItem('restaurant_name');
+  if (rName) document.getElementById('restaurantName').textContent = rName;
+
+  function logout() {
+    localStorage.clear();
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  function getStatusBadge(status) {
+    const map = {
+      pending:          '<span class="o-badge o-new">NEW</span>',
+      confirmed:        '<span class="o-badge o-prep">CONFIRMED</span>',
+      preparing:        '<span class="o-badge o-prep">PREPARING</span>',
+      ready:            '<span class="o-badge o-ready">READY</span>',
+      out_for_delivery: '<span class="o-badge o-done">DISPATCHED</span>',
+      delivered:        '<span class="o-badge o-done">DELIVERED</span>',
+      cancelled:        '<span class="o-badge o-cancelled">CANCELLED</span>',
+    };
+    return map[status] || `<span class="o-badge o-new">${status.toUpperCase()}</span>`;
+  }
+
+  function getActionButtons(order) {
+    const id = order.order_id;
+    const status = order.order_status || order.status;
+
+    if (status === 'pending') {
+      return `
+        <button class="btn btn-accept" onclick="updateStatus(${id}, 'confirmed')">ACCEPT</button>
+        <button class="btn btn-reject" onclick="updateStatus(${id}, 'cancelled')">REJECT</button>
+      `;
+    } else if (status === 'confirmed') {
+      return `<button class="btn btn-preparing" onclick="updateStatus(${id}, 'preparing')">START PREPARING</button>`;
+    } else if (status === 'preparing') {
+      return `<button class="btn btn-ready" onclick="updateStatus(${id}, 'ready')">MARK AS READY</button>`;
+    } else if (status === 'ready') {
+      return `<button class="btn btn-ready" onclick="updateStatus(${id}, 'out_for_delivery')">MARK DISPATCHED</button>`;
+    }
+    return '';
+  }
+
+  function getItemClass(status) {
+    if (status === 'pending') return 'new';
+    if (status === 'confirmed' || status === 'preparing') return 'preparing';
+    if (status === 'ready') return 'ready';
+    return '';
+  }
+
+  async function updateStatus(orderId, newStatus) {
+    try {
+      const res = await fetch(`${API}/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!res.ok) throw new Error('Failed to update');
+
+      showToast(`✅ Order #${orderId} → ${newStatus.toUpperCase()}`, 'success');
+      loadOrders(); // Refresh
+    } catch (err) {
+      showToast(`❌ Failed to update order`, 'error');
+    }
+  }
+
+  async function loadOrders() {
+    try {
+      const res = await fetch(`${API}/orders/restaurant/${restaurantId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch');
+
+      const orders = await res.json();
+
+      // Update stats
+      const today = new Date().toDateString();
+      const todayOrders = orders.filter(o => new Date(o.order_date).toDateString() === today);
+      const pending = orders.filter(o => ['pending', 'confirmed', 'preparing'].includes(o.order_status || o.status));
+      const revenue = todayOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+
+      document.getElementById('totalOrders').textContent = todayOrders.length;
+      document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(0)}`;
+      document.getElementById('pendingCount').textContent = pending.length;
+      document.getElementById('pendingLabel').textContent = pending.length > 0 ? `↑ ${pending.length} need attention` : '✓ All caught up';
+
+      // Update timestamp
+      const now = new Date();
+      document.getElementById('lastUpdated').textContent = `Updated ${now.toLocaleTimeString()}`;
+
+      // Render orders - show active ones first
+      const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.order_status || o.status));
+      const doneOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.order_status || o.status)).slice(0, 3);
+      const displayOrders = [...activeOrders, ...doneOrders];
+
+      if (displayOrders.length === 0) {
+        document.getElementById('ordersContainer').innerHTML = '<div class="empty">No orders yet today 🍽️</div>';
+        return;
+      }
+
+      document.getElementById('ordersContainer').innerHTML = displayOrders.map(order => {
+        const status = order.order_status || order.status;
+        const itemClass = getItemClass(status);
+        const time = new Date(order.order_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return `
+          <div class="order-item ${itemClass}" id="order-${order.order_id}">
+            <div class="order-top-row">
+              <span class="order-num">#${order.order_id} — ${order.customer_name || 'Customer'}</span>
+              ${getStatusBadge(status)}
+            </div>
+            <div class="order-detail">
+              $${parseFloat(order.total_amount).toFixed(2)} · ${time}<br>
+              📍 ${order.delivery_address || 'No address'}
+            </div>
+            <div class="btn-row">${getActionButtons(order)}</div>
+          </div>
+        `;
+      }).join('');
+
+    } catch (err) {
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('errorMsg').textContent = '⚠️ Could not load orders. Check your connection.';
+    }
+  }
+
+  // Load on page load
+  loadOrders();
+
+  // Auto-refresh every 10 seconds
+  setInterval(loadOrders, 10000);
+</script>
 </body>
 </html>
