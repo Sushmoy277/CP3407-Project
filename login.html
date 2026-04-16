@@ -3,372 +3,721 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FeedMe Staff Login</title>
+  <title>FeedMe — Staff Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+    }
+
+    :root {
+      --orange: #ff5a0a;
+      --orange-dark: #e64d00;
+      --dark: #111111;
+      --light: #f7f4ef;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #747474;
+      --border: #e3ddd3;
+      --soft-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
     }
 
     body {
+      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top left, rgba(255, 90, 10, 0.08), transparent 25%),
+        linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
+      color: var(--text);
       min-height: 100vh;
-      background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page-shell {
+      width: min(96%, 1500px);
+      margin: 22px auto;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 28px;
+      box-shadow: var(--soft-shadow);
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 20px;
+      justify-content: space-between;
+      padding: 18px 28px;
+      margin-bottom: 22px;
     }
 
-    .login-container {
-      width: 100%;
-      max-width: 460px;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: -1px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-outline {
+      border: 2px solid #d8cec0;
+      background: rgba(255,255,255,0.75);
+      color: var(--text);
+      padding: 14px 30px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      border-color: var(--dark);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      border-radius: 30px;
       overflow: hidden;
+      min-height: calc(100vh - 150px);
+      box-shadow: var(--soft-shadow);
+      background: var(--white);
     }
 
-    .login-header {
-      background: #ff5a1f;
+    .left-panel {
+      position: relative;
+      background:
+        linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.025) 0px,
+          rgba(255,255,255,0.025) 20px,
+          transparent 20px,
+          transparent 40px
+        ),
+        #111214;
+      padding: 70px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       color: white;
-      text-align: center;
-      padding: 30px 20px 22px;
     }
 
-    .login-header h1 {
-      font-size: 30px;
-      margin-bottom: 8px;
+    .left-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at bottom right, rgba(255, 90, 10, 0.12), transparent 22%);
+      pointer-events: none;
     }
 
-    .login-header p {
-      font-size: 15px;
-      opacity: 0.95;
+    .badge {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 14px 22px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f5f5f5;
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 36px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
-    .login-body {
-      padding: 28px 24px 30px;
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #37d39a;
+      border-radius: 50%;
+      box-shadow: 0 0 18px #37d39a;
+    }
+
+    .left-panel h1 {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: -3px;
+      font-weight: 800;
+      margin-bottom: 28px;
+    }
+
+    .left-panel h1 span {
+      color: var(--orange);
+    }
+
+    .left-panel p {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 36px;
+    }
+
+    .feature-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .feature-pill {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .right-panel {
+      background: linear-gradient(180deg, #fffdfa 0%, #faf7f2 100%);
+      padding: 70px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .eyebrow {
+      color: var(--orange);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .form-title {
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #171717;
+    }
+
+    .form-sub {
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      max-width: 470px;
     }
 
     .mode-tabs {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
       margin-bottom: 22px;
     }
 
-    .tab-btn {
-      padding: 13px;
-      border: 2px solid #ff5a1f;
-      background: white;
-      color: #ff5a1f;
-      border-radius: 10px;
+    .mode-btn {
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: rgba(255,255,255,0.92);
+      color: #1f1f1f;
+      font-size: 0.96rem;
+      font-weight: 800;
       cursor: pointer;
-      font-weight: 700;
-      transition: 0.25s;
-      font-size: 15px;
+      transition: 0.25s ease;
     }
 
-    .tab-btn.active {
-      background: #ff5a1f;
+    .mode-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--orange);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
       color: white;
+      border-color: var(--orange);
+      box-shadow: 0 14px 30px rgba(255, 90, 10, 0.18);
+    }
+
+    .helper-box {
+      display: none;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #fff7f2;
+      color: #8b4b27;
+      border: 1px solid #f2d0bf;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .helper-box.show {
+      display: block;
+    }
+
+    .error-msg {
+      display: none;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #fff2f2;
+      color: #d03131;
+      border: 1px solid #f3c3c3;
+      font-size: 0.96rem;
+      font-weight: 600;
+      white-space: pre-line;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .success-msg {
+      display: none;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #eefcf4;
+      color: #127a45;
+      border: 1px solid #bfe8cf;
+      font-size: 0.96rem;
+      font-weight: 600;
+    }
+
+    .success-msg.show {
+      display: block;
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 7px;
-      font-weight: 700;
-      color: #333;
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .form-group input {
       width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 15px;
+      padding: 18px 20px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      background: rgba(255,255,255,0.92);
+      font-size: 1.08rem;
       outline: none;
-      transition: border 0.2s, box-shadow 0.2s;
+      transition: 0.25s ease;
+      color: var(--text);
     }
 
     .form-group input:focus {
-      border-color: #ff5a1f;
-      box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.12);
+      border-color: var(--orange);
+      box-shadow: 0 0 0 5px rgba(255, 90, 10, 0.12);
+      transform: translateY(-1px);
     }
 
-    .login-btn {
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin: 6px 0 26px;
+      flex-wrap: wrap;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2a2a2a;
+    }
+
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--orange);
+    }
+
+    .forgot {
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1rem;
+      transition: 0.2s ease;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
       width: 100%;
-      padding: 14px;
       border: none;
-      border-radius: 10px;
-      background: #ff5a1f;
+      border-radius: 18px;
+      padding: 18px 22px;
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
       color: white;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
       cursor: pointer;
-      transition: 0.25s;
-      margin-top: 6px;
+      transition: 0.25s ease;
+      box-shadow: 0 18px 40px rgba(255, 90, 10, 0.22);
     }
 
-    .login-btn:hover {
-      background: #e44c12;
+    .submit-btn:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 22px 45px rgba(255, 90, 10, 0.28);
     }
 
-    .login-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .message {
-      margin-top: 16px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .message.error {
-      background: #ffe7e7;
-      color: #b42318;
-      border: 1px solid #f5bcbc;
-    }
-
-    .message.success {
-      background: #e8fff0;
-      color: #067647;
-      border: 1px solid #b7ebc6;
-    }
-
-    .extra-links {
-      margin-top: 22px;
+    .bottom-link {
+      margin-top: 28px;
       text-align: center;
-      font-size: 14px;
-      color: #555;
+      color: #6f6f6f;
+      font-size: 1rem;
     }
 
-    .extra-links a {
-      color: #ff5a1f;
-      text-decoration: none;
-      font-weight: 700;
+    .bottom-link a {
+      color: var(--orange);
+      font-weight: 800;
     }
 
-    .extra-links a:hover {
+    .bottom-link a:hover {
       text-decoration: underline;
     }
 
-    .demo-box {
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 10px;
-      background: #fff4ee;
-      border: 1px solid #ffd8c7;
-      font-size: 13px;
-      color: #7a3d1f;
-      line-height: 1.6;
+    @media (max-width: 1100px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .left-panel {
+        min-height: 420px;
+      }
     }
 
-    .home-link {
-      display: inline-block;
-      margin-top: 14px;
-      color: #ff5a1f;
-      font-weight: 700;
-      text-decoration: none;
+    @media (max-width: 800px) {
+      .mode-tabs {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .home-link:hover {
-      text-decoration: underline;
+    @media (max-width: 700px) {
+      .page-shell {
+        width: 94%;
+        margin: 14px auto;
+      }
+
+      nav {
+        padding: 16px 18px;
+        border-radius: 22px;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+      }
+
+      .btn-outline {
+        padding: 12px 18px;
+        font-size: 0.95rem;
+      }
+
+      .left-panel,
+      .right-panel {
+        padding: 36px 24px;
+      }
+
+      .left-panel h1 {
+        letter-spacing: -2px;
+      }
+
+      .form-title {
+        letter-spacing: -1px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-header">
-      <h1>FeedMe</h1>
-      <p>Staff login portal</p>
-    </div>
-
-    <div class="login-body">
-      <div class="mode-tabs">
-        <button type="button" class="tab-btn active" id="adminTab">Admin Login</button>
-        <button type="button" class="tab-btn" id="riderTab">Rider Login</button>
-        <button type="button" class="tab-btn" id="restaurantTab">Restaurant Login</button>
+  <div class="page-shell">
+    <nav>
+      <a href="index.html" class="logo">FeedMe</a>
+      <div class="nav-right">
+        <button class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
       </div>
+    </nav>
 
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Enter your email" required />
+    <div class="main-grid">
+      <div class="left-panel">
+        <div class="badge">
+          <span class="dot"></span>
+          <span>Fast access • Live dashboard • Staff only</span>
         </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" required />
+        <h1>Welcome <span>back.</span></h1>
+
+        <p>
+          Login to manage orders, deliveries, and restaurant operations
+          with the same smooth FeedMe experience you had before.
+        </p>
+
+        <div class="feature-row">
+          <div class="feature-pill">🛠 Admin control</div>
+          <div class="feature-pill">🛵 Rider updates</div>
+          <div class="feature-pill">🍔 Restaurant dashboard</div>
         </div>
-
-        <button type="submit" class="login-btn" id="loginBtn">Login</button>
-
-        <div id="messageBox" class="message"></div>
-      </form>
-
-      <div class="extra-links">
-        <a href="index.html" class="home-link">← Back to Home</a>
       </div>
 
-      <div class="demo-box" id="demoBox">
-        <strong>Admin login:</strong><br>
-        Email: burgerplace@gmail.com<br>
-        Password: FeedMeNow
+      <div class="right-panel">
+        <div class="form-card">
+          <div class="eyebrow" id="modeEyebrow">Staff access only</div>
+          <div class="form-title" id="modeTitle">Login to FeedMe</div>
+          <div class="form-sub" id="modeSub">
+            Choose your staff role below and sign in with the correct dashboard credentials.
+          </div>
+
+          <div class="mode-tabs">
+            <button type="button" class="mode-btn active" id="adminBtn" onclick="setMode('admin', this)">Admin Login</button>
+            <button type="button" class="mode-btn" id="riderBtn" onclick="setMode('rider', this)">Rider Login</button>
+            <button type="button" class="mode-btn" id="restaurantBtn" onclick="setMode('restaurant', this)">Restaurant Login</button>
+          </div>
+
+          <div id="helperBox" class="helper-box show">
+            Admin credentials: burgerplace@gmail.com / FeedMeNow
+          </div>
+
+          <div id="error-alert" class="error-msg"></div>
+          <div id="success-alert" class="success-msg"></div>
+
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="row">
+              <div class="check-row">
+                <input type="checkbox" id="remember">
+                <label for="remember" style="margin:0; font-size:1rem; font-weight:600; text-transform:none; letter-spacing:0;">Remember me</label>
+              </div>
+
+              <a href="#" class="forgot">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">LOGIN NOW</button>
+          </form>
+
+          <div class="bottom-link">
+            Main landing page is <a href="index.html">index.html</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const loginForm = document.getElementById("loginForm");
-    const loginBtn = document.getElementById("loginBtn");
-    const messageBox = document.getElementById("messageBox");
+    let loginMode = 'admin';
 
-    const adminTab = document.getElementById("adminTab");
-    const riderTab = document.getElementById("riderTab");
-    const restaurantTab = document.getElementById("restaurantTab");
-    const demoBox = document.getElementById("demoBox");
-
-    let loginMode = "admin";
-
-    function showMessage(text, type) {
-      messageBox.textContent = text;
-      messageBox.className = `message ${type}`;
-      messageBox.style.display = "block";
-    }
-
-    function clearMessage() {
-      messageBox.style.display = "none";
-      messageBox.textContent = "";
-      messageBox.className = "message";
-    }
-
-    function setMode(mode) {
+    function setMode(mode, button) {
       loginMode = mode;
-      clearMessage();
 
-      adminTab.classList.remove("active");
-      riderTab.classList.remove("active");
-      restaurantTab.classList.remove("active");
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
 
-      if (mode === "admin") {
-        adminTab.classList.add("active");
-        demoBox.innerHTML = `
-          <strong>Admin login:</strong><br>
-          Email: burgerplace@gmail.com<br>
-          Password: FeedMeNow
-        `;
-      } else if (mode === "rider") {
-        riderTab.classList.add("active");
-        demoBox.innerHTML = `
-          <strong>Rider login:</strong><br>
-          Email: rider@gmail.com<br>
-          Password: RiderOnTheWay
-        `;
-      } else if (mode === "restaurant") {
-        restaurantTab.classList.add("active");
-        demoBox.innerHTML = `
-          <strong>Restaurant login:</strong><br>
-          Email: burgerpalace@gmail.com<br>
-          Password: FeedMeNow
-        `;
+      const eyebrow = document.getElementById('modeEyebrow');
+      const title = document.getElementById('modeTitle');
+      const sub = document.getElementById('modeSub');
+      const helperBox = document.getElementById('helperBox');
+      const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
+      const submitBtn = document.getElementById('submitBtn');
+
+      errorAlert.classList.remove('show');
+      successAlert.classList.remove('show');
+      helperBox.classList.remove('show');
+
+      if (mode === 'admin') {
+        eyebrow.textContent = 'Staff access only';
+        title.textContent = 'Admin Login';
+        sub.textContent = 'Use the admin email and password to access the FeedMe admin dashboard.';
+        helperBox.textContent = 'Admin credentials: burgerplace@gmail.com / FeedMeNow';
+        helperBox.classList.add('show');
+        submitBtn.textContent = 'LOGIN AS ADMIN';
+      }
+
+      if (mode === 'rider') {
+        eyebrow.textContent = 'Staff access only';
+        title.textContent = 'Rider Login';
+        sub.textContent = 'Use the rider email and password to access the rider delivery dashboard.';
+        helperBox.textContent = 'Rider credentials: rider@gmail.com / RiderOnTheWay';
+        helperBox.classList.add('show');
+        submitBtn.textContent = 'LOGIN AS RIDER';
+      }
+
+      if (mode === 'restaurant') {
+        eyebrow.textContent = 'Staff access only';
+        title.textContent = 'Restaurant Login';
+        sub.textContent = 'Use the restaurant email and password to access the restaurant dashboard.';
+        helperBox.textContent = 'Restaurant credentials: burgerpalace@gmail.com / FeedMeNow';
+        helperBox.classList.add('show');
+        submitBtn.textContent = 'LOGIN AS RESTAURANT';
       }
     }
 
-    adminTab.addEventListener("click", () => setMode("admin"));
-    riderTab.addEventListener("click", () => setMode("rider"));
-    restaurantTab.addEventListener("click", () => setMode("restaurant"));
+    function showError(message) {
+      const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
+      successAlert.classList.remove('show');
+      errorAlert.textContent = message;
+      errorAlert.classList.add('show');
+    }
 
-    loginForm.addEventListener("submit", async (e) => {
+    function showSuccess(message) {
+      const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
+      errorAlert.classList.remove('show');
+      successAlert.textContent = message;
+      successAlert.classList.add('show');
+    }
+
+    function saveSession(role, payload = {}) {
+      localStorage.setItem('feedmeLoggedIn', 'true');
+      localStorage.setItem('feedmeGuest', 'false');
+      localStorage.setItem('feedmeUserRole', role);
+
+      if (payload.token) {
+        localStorage.setItem('feedmeToken', payload.token);
+        localStorage.setItem('token', payload.token);
+      }
+
+      if (payload.user) {
+        localStorage.setItem('feedmeUser', JSON.stringify(payload.user));
+      }
+
+      if (payload.userId) {
+        localStorage.setItem('user_id', String(payload.userId));
+        localStorage.setItem('feedmeUserId', String(payload.userId));
+      }
+
+      if (payload.restaurantId) {
+        localStorage.setItem('restaurant_id', String(payload.restaurantId));
+      }
+
+      if (payload.restaurantName) {
+        localStorage.setItem('restaurant_name', payload.restaurantName);
+      }
+    }
+
+    function handleLogin(e) {
       e.preventDefault();
-      clearMessage();
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-      if (!email || !password) {
-        showMessage("Please enter email and password.", "error");
+      if (loginMode === 'admin') {
+        if (email === 'burgerplace@gmail.com' && password === 'FeedMeNow') {
+          saveSession('admin', {
+            token: 'admin-demo-token',
+            user: {
+              name: 'Admin',
+              email: 'burgerplace@gmail.com',
+              role: 'admin'
+            }
+          });
+
+          showSuccess('Admin login successful. Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'admin.html';
+          }, 700);
+        } else {
+          showError('Admin email or password is incorrect.');
+        }
         return;
       }
 
-      loginBtn.disabled = true;
-      loginBtn.textContent = "Logging in...";
+      if (loginMode === 'rider') {
+        if (email === 'rider@gmail.com' && password === 'RiderOnTheWay') {
+          saveSession('rider', {
+            token: 'rider-demo-token',
+            userId: 1,
+            user: {
+              name: 'Rider',
+              email: 'rider@gmail.com',
+              role: 'rider'
+            }
+          });
 
-      try {
-        if (loginMode === "admin") {
-          if (email === "burgerplace@gmail.com" && password === "FeedMeNow") {
-            localStorage.setItem("feedmeToken", "admin-demo-token");
-            localStorage.setItem("feedmeUserRole", "admin");
-            localStorage.setItem("feedmeUser", JSON.stringify({
-              name: "Admin",
-              email: "burgerplace@gmail.com",
-              role: "admin"
-            }));
-
-            showMessage("Admin login successful. Redirecting...", "success");
-            setTimeout(() => {
-              window.location.href = "admin.html";
-            }, 800);
-          } else {
-            showMessage("Invalid admin email or password.", "error");
-          }
-        } else if (loginMode === "rider") {
-          if (email === "rider@gmail.com" && password === "RiderOnTheWay") {
-            localStorage.setItem("feedmeToken", "rider-demo-token");
-            localStorage.setItem("feedmeUserRole", "rider");
-            localStorage.setItem("feedmeUser", JSON.stringify({
-              name: "Rider",
-              email: "rider@gmail.com",
-              role: "rider"
-            }));
-            localStorage.setItem("user_id", "1");
-            localStorage.setItem("feedmeUserId", "1");
-
-            showMessage("Rider login successful. Redirecting...", "success");
-            setTimeout(() => {
-              window.location.href = "rider.html";
-            }, 800);
-          } else {
-            showMessage("Invalid rider email or password.", "error");
-          }
-        } else if (loginMode === "restaurant") {
-          if (email === "burgerpalace@gmail.com" && password === "FeedMeNow") {
-            localStorage.setItem("feedmeToken", "restaurant-demo-token");
-            localStorage.setItem("feedmeUserRole", "restaurant");
-            localStorage.setItem("feedmeUser", JSON.stringify({
-              name: "Burger Palace",
-              email: "burgerpalace@gmail.com",
-              role: "restaurant"
-            }));
-            localStorage.setItem("restaurant_id", "1");
-            localStorage.setItem("restaurant_name", "Burger Palace");
-
-            showMessage("Restaurant login successful. Redirecting...", "success");
-            setTimeout(() => {
-              window.location.href = "restaurant-dashboard.html";
-            }, 800);
-          } else {
-            showMessage("Invalid restaurant email or password.", "error");
-          }
+          showSuccess('Rider login successful. Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'rider.html';
+          }, 700);
+        } else {
+          showError('Rider email or password is incorrect.');
         }
-      } catch (error) {
-        console.error("Login error:", error);
-        showMessage("Unable to connect to server.", "error");
-      } finally {
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Login";
+        return;
       }
-    });
 
-    setMode("admin");
+      if (loginMode === 'restaurant') {
+        if (email === 'burgerpalace@gmail.com' && password === 'FeedMeNow') {
+          saveSession('restaurant', {
+            token: 'restaurant-demo-token',
+            restaurantId: 1,
+            restaurantName: 'Burger Palace',
+            user: {
+              name: 'Burger Palace',
+              email: 'burgerpalace@gmail.com',
+              role: 'restaurant'
+            }
+          });
+
+          showSuccess('Restaurant login successful. Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'restaurant-dashboard.html';
+          }, 700);
+        } else {
+          showError('Restaurant email or password is incorrect.');
+        }
+      }
+    }
   </script>
 </body>
 </html>
