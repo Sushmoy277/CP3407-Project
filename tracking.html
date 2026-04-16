@@ -10,11 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --orange: #ff5a0a;
@@ -26,35 +22,26 @@
       --muted: #747474;
       --border: #e4ddd2;
       --green: #10b981;
-      --soft-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-      --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+      --soft-shadow: 0 20px 50px rgba(0,0,0,0.08);
       --font-main: 'Inter', sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
     }
 
     body {
       font-family: var(--font-main);
-      background:
-        radial-gradient(circle at top left, rgba(255, 90, 10, 0.08), transparent 25%),
-        linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
+      background: radial-gradient(circle at top left, rgba(255,90,10,0.08), transparent 25%),
+                  linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
       color: var(--text);
       min-height: 100vh;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+    a { text-decoration: none; color: inherit; }
 
-    .page-shell {
-      width: min(96%, 1500px);
-      margin: 22px auto;
-    }
+    .page-shell { width: min(96%, 1500px); margin: 22px auto; }
 
     nav {
-      background: rgba(255, 255, 255, 0.82);
+      background: rgba(255,255,255,0.82);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.8);
       border-radius: 28px;
       box-shadow: var(--soft-shadow);
@@ -63,38 +50,16 @@
       gap: 20px;
       padding: 18px 28px;
       margin-bottom: 22px;
-      flex-wrap: wrap;
     }
 
-    .logo {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--orange);
-      letter-spacing: -1px;
-    }
-
-    .back-link {
-      color: #7d7d7d;
-      font-weight: 700;
-      font-size: 1.12rem;
-      transition: 0.2s ease;
-    }
-
-    .back-link:hover {
-      color: var(--dark);
-    }
+    .logo { font-size: 2rem; font-weight: 800; color: var(--orange); letter-spacing: -1px; }
+    .back-link { color: #7d7d7d; font-weight: 700; font-size: 1.12rem; transition: 0.2s; }
+    .back-link:hover { color: var(--dark); }
 
     .hero {
-      background:
-        linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
-        repeating-linear-gradient(
-          45deg,
-          rgba(255,255,255,0.025) 0px,
-          rgba(255,255,255,0.025) 20px,
-          transparent 20px,
-          transparent 40px
-        ),
-        #111214;
+      background: linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
+                  repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 20px, transparent 20px, transparent 40px),
+                  #111214;
       color: white;
       border-radius: 30px;
       box-shadow: var(--soft-shadow);
@@ -120,72 +85,29 @@
     }
 
     .dot {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       background: #37d39a;
       border-radius: 50%;
       box-shadow: 0 0 18px #37d39a;
+      animation: pulse 1.5s infinite;
     }
 
-    .hero h1 {
-      font-size: clamp(2.3rem, 4vw, 4rem);
-      line-height: 1;
-      letter-spacing: -2px;
-      font-weight: 800;
-      margin-bottom: 12px;
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 18px #37d39a; }
+      50% { box-shadow: 0 0 30px #37d39a, 0 0 60px #37d39a; }
     }
 
-    .hero h1 span {
-      color: var(--orange);
-    }
+    .hero h1 { font-size: clamp(2.3rem, 4vw, 4rem); line-height: 1; letter-spacing: -2px; font-weight: 800; margin-bottom: 12px; }
+    .hero h1 span { color: var(--orange); }
+    .hero p { color: rgba(255,255,255,0.78); font-size: 1.05rem; line-height: 1.8; max-width: 680px; }
 
-    .hero p {
-      color: rgba(255,255,255,0.78);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      max-width: 680px;
-    }
+    .hero-side { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mini-stat { padding: 18px 16px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); }
+    .mini-stat strong { display: block; font-size: 1.9rem; margin-bottom: 6px; font-weight: 800; color: white; }
+    .mini-stat span { color: rgba(255,255,255,0.72); line-height: 1.5; font-size: 0.95rem; }
 
-    .hero-side {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .mini-stat {
-      padding: 18px 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .mini-stat strong {
-      display: block;
-      font-size: 1.9rem;
-      margin-bottom: 6px;
-      font-weight: 800;
-      color: white;
-    }
-
-    .mini-stat span {
-      color: rgba(255,255,255,0.72);
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-    }
+    .main { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+    .section-title { font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
 
     .panel {
       background: rgba(255,255,255,0.88);
@@ -196,22 +118,9 @@
       margin-bottom: 20px;
     }
 
-    .panel-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 18px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid #e6ddd0;
-      letter-spacing: -0.5px;
-    }
+    .panel-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #e6ddd0; letter-spacing: -0.5px; }
 
-    .order-id {
-      font-size: 1rem;
-      color: #857b70;
-      font-family: var(--font-mono);
-      line-height: 1.8;
-      margin-bottom: 10px;
-    }
+    .order-id { font-size: 1rem; color: #857b70; font-family: var(--font-mono); line-height: 1.8; margin-bottom: 10px; }
 
     .status-pill {
       display: inline-flex;
@@ -224,7 +133,17 @@
       background: #fff1c8;
       color: #9a5a00;
       margin-bottom: 24px;
+      transition: all 0.4s;
     }
+
+    /* Status pill colors */
+    .pill-pending    { background: #fff1c8; color: #9a5a00; }
+    .pill-confirmed  { background: #dbeafe; color: #1d4ed8; }
+    .pill-preparing  { background: #fef3c7; color: #92400e; }
+    .pill-ready      { background: #ede9fe; color: #6d28d9; }
+    .pill-dispatched { background: #d1fae5; color: #065f46; }
+    .pill-delivered  { background: #d1fae5; color: #065f46; }
+    .pill-cancelled  { background: #fee2e2; color: #991b1b; }
 
     .track-bar {
       display: flex;
@@ -253,15 +172,13 @@
       background: #ddd5ca;
       z-index: 0;
       border-radius: 999px;
+      transition: background 0.5s;
     }
 
-    .track-step.done:not(:last-child)::after {
-      background: var(--dark);
-    }
+    .track-step.done:not(:last-child)::after { background: var(--dark); }
 
     .track-dot {
-      width: 42px;
-      height: 42px;
+      width: 42px; height: 42px;
       border-radius: 50%;
       border: 3px solid #d8cfc3;
       background: white;
@@ -272,33 +189,23 @@
       font-weight: 800;
       z-index: 1;
       position: relative;
+      transition: all 0.4s;
     }
 
-    .track-dot.done {
-      background: var(--dark);
-      border-color: var(--dark);
-      color: white;
-    }
-
+    .track-dot.done  { background: var(--dark); border-color: var(--dark); color: white; }
     .track-dot.active {
-      background: var(--orange);
-      border-color: var(--orange);
-      color: white;
-      box-shadow: 0 0 0 6px rgba(255, 90, 10, 0.14);
+      background: var(--orange); border-color: var(--orange); color: white;
+      box-shadow: 0 0 0 6px rgba(255,90,10,0.14);
+      animation: activePulse 1.5s infinite;
     }
 
-    .track-label {
-      font-size: 0.95rem;
-      color: #8a8177;
-      text-align: center;
-      line-height: 1.4;
+    @keyframes activePulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(255,90,10,0.14); }
+      50% { box-shadow: 0 0 0 12px rgba(255,90,10,0.07); }
     }
 
-    .track-label.done,
-    .track-label.active {
-      color: var(--dark);
-      font-weight: 800;
-    }
+    .track-label { font-size: 0.95rem; color: #8a8177; text-align: center; line-height: 1.4; }
+    .track-label.done, .track-label.active { color: var(--dark); font-weight: 800; }
 
     .eta-box {
       background: #f7f3ed;
@@ -308,77 +215,14 @@
       border: 1px solid #ebe2d6;
     }
 
-    .eta-label {
-      font-size: 1rem;
-      color: #7b746b;
-      font-family: var(--font-mono);
-      margin-bottom: 8px;
-    }
+    .eta-label { font-size: 1rem; color: #7b746b; font-family: var(--font-mono); margin-bottom: 8px; }
+    .eta-time { font-size: clamp(2.3rem, 5vw, 4rem); font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
+    .eta-sub { font-size: 1rem; color: #8b8277; font-family: var(--font-mono); }
 
-    .eta-time {
-      font-size: clamp(2.3rem, 5vw, 4rem);
-      font-weight: 800;
-      color: var(--orange);
-      line-height: 1;
-      margin-bottom: 8px;
-      letter-spacing: -1px;
-    }
-
-    .eta-sub {
-      font-size: 1rem;
-      color: #8b8277;
-      font-family: var(--font-mono);
-    }
-
-    .rider-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .rider-avatar {
-      width: 66px;
-      height: 66px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #f2ede6, #e8e1d7);
-      border: 1px solid #e7dfd3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      flex-shrink: 0;
-    }
-
-    .rider-name {
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .rider-meta {
-      font-size: 1rem;
-      color: #857b70;
-      font-family: var(--font-mono);
-      line-height: 1.6;
-    }
-
-    .call-btn {
-      margin-left: auto;
-      border: none;
-      background: var(--dark);
-      color: white;
-      padding: 14px 22px;
-      border-radius: 16px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .call-btn:hover {
-      background: var(--orange);
-    }
+    .rider-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .rider-avatar { width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(180deg,#f2ede6,#e8e1d7); border: 1px solid #e7dfd3; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+    .rider-name { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+    .rider-meta { font-size: 1rem; color: #857b70; font-family: var(--font-mono); line-height: 1.6; }
 
     .map-box {
       background: #ebe7df;
@@ -406,91 +250,24 @@
         repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 32px);
     }
 
-    .map-box span {
-      position: relative;
-      z-index: 1;
-      font-size: 2rem;
-      text-align: center;
-      padding: 0 20px;
-    }
+    .map-box span { position: relative; z-index: 1; font-size: 2rem; text-align: center; padding: 0 20px; }
 
-    .order-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      font-size: 1.05rem;
-      margin-bottom: 12px;
-      color: #767676;
-    }
+    .order-line { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 1.05rem; margin-bottom: 12px; color: #767676; }
+    .order-line.total { color: var(--dark); font-weight: 800; font-size: 1.15rem; margin-top: 18px; padding-top: 16px; border-top: 1px solid #e6ddd0; }
+    .order-line.total span:last-child { color: var(--orange); }
 
-    .order-line.total {
-      color: var(--dark);
-      font-weight: 800;
-      font-size: 1.15rem;
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid #e6ddd0;
-    }
+    .loading-state { text-align: center; padding: 20px; color: var(--muted); font-family: var(--font-mono); }
+    .error-state { text-align: center; padding: 20px; color: #dc2626; font-family: var(--font-mono); }
 
-    .order-line.total span:last-child {
-      color: var(--orange);
-    }
-
-    @media (max-width: 1100px) {
-      .hero,
-      .main {
-        grid-template-columns: 1fr;
-      }
-    }
-
+    @media (max-width: 1100px) { .hero, .main { grid-template-columns: 1fr; } }
     @media (max-width: 760px) {
-      .page-shell {
-        width: 94%;
-        margin: 14px auto;
-      }
-
-      nav {
-        padding: 16px 18px;
-        border-radius: 22px;
-      }
-
-      .logo {
-        font-size: 1.75rem;
-      }
-
-      .hero,
-      .panel,
-      .map-box {
-        border-radius: 24px;
-      }
-
-      .hero,
-      .panel {
-        padding: 22px 18px;
-      }
-
-      .hero-side {
-        grid-template-columns: 1fr;
-      }
-
-      .track-bar {
-        gap: 4px;
-      }
-
-      .track-step:not(:last-child)::after {
-        left: 66%;
-        right: -34%;
-      }
-
-      .map-box span {
-        font-size: 1.4rem;
-      }
-
-      .call-btn {
-        margin-left: 0;
-        width: 100%;
-      }
+      .page-shell { width: 94%; margin: 14px auto; }
+      nav { padding: 16px 18px; border-radius: 22px; }
+      .logo { font-size: 1.75rem; }
+      .hero, .panel, .map-box { border-radius: 24px; }
+      .hero, .panel { padding: 22px 18px; }
+      .hero-side { grid-template-columns: 1fr; }
+      .track-bar { gap: 4px; }
     }
   </style>
 </head>
@@ -505,23 +282,19 @@
       <div>
         <div class="hero-badge">
           <span class="dot"></span>
-          <span>Live updates • Rider tracking • Fresh ETA</span>
+          <span id="liveLabel">Live updates • Tracking your order</span>
         </div>
         <h1>Track your <span>order live.</span></h1>
-        <p>
-          Follow your delivery in real time, check your rider details,
-          and stay updated from kitchen prep all the way to your door.
-        </p>
+        <p>Follow your delivery in real time, from kitchen prep all the way to your door.</p>
       </div>
-
       <div class="hero-side">
         <div class="mini-stat">
-          <strong id="heroMins">25</strong>
-          <span>Minutes remaining</span>
+          <strong id="heroStatus">⏳</strong>
+          <span>Current Status</span>
         </div>
         <div class="mini-stat">
-          <strong>4.8★</strong>
-          <span>Rider rating</span>
+          <strong id="heroRestaurant">—</strong>
+          <span>Restaurant</span>
         </div>
       </div>
     </div>
@@ -532,85 +305,225 @@
 
         <div class="panel">
           <div class="panel-title">📦 Order Details</div>
-          <div class="order-id">#ORD-20250401-7842 · Burger Palace · Placed 7:42 PM</div>
-          <div class="status-pill">⏳ PREPARING YOUR ORDER</div>
+          <div class="order-id" id="orderMeta">Loading order...</div>
+          <div class="status-pill" id="statusPill">⏳ Loading...</div>
 
-          <div class="track-bar">
-            <div class="track-step done">
-              <div class="track-dot done">✓</div>
-              <div class="track-label done">Received</div>
+          <!-- Tracking Steps -->
+          <div class="track-bar" id="trackBar">
+            <div class="track-step" id="step-placed">
+              <div class="track-dot" id="dot-placed">1</div>
+              <div class="track-label" id="label-placed">Received</div>
             </div>
-
-            <div class="track-step done">
-              <div class="track-dot active">★</div>
-              <div class="track-label active">Preparing</div>
+            <div class="track-step" id="step-preparing">
+              <div class="track-dot" id="dot-preparing">2</div>
+              <div class="track-label" id="label-preparing">Preparing</div>
             </div>
-
-            <div class="track-step">
-              <div class="track-dot">3</div>
-              <div class="track-label">Dispatched</div>
+            <div class="track-step" id="step-ready">
+              <div class="track-dot" id="dot-ready">3</div>
+              <div class="track-label" id="label-ready">Ready</div>
             </div>
-
-            <div class="track-step">
-              <div class="track-dot">4</div>
-              <div class="track-label">Delivered</div>
+            <div class="track-step" id="step-dispatched">
+              <div class="track-dot" id="dot-dispatched">4</div>
+              <div class="track-label" id="label-dispatched">Dispatched</div>
+            </div>
+            <div class="track-step" id="step-delivered">
+              <div class="track-dot" id="dot-delivered">5</div>
+              <div class="track-label" id="label-delivered">Delivered</div>
             </div>
           </div>
 
           <div class="eta-box">
-            <div class="eta-label">Estimated Delivery</div>
-            <div class="eta-time" id="eta">8:15 PM</div>
-            <div class="eta-sub">~<span id="mins">25</span> minutes remaining</div>
+            <div class="eta-label">Order placed at</div>
+            <div class="eta-time" id="orderTime">—</div>
+            <div class="eta-sub" id="etaSub">Fetching order details...</div>
           </div>
         </div>
 
         <div class="panel">
-          <div class="panel-title">🚴 Your Rider</div>
+          <div class="panel-title">🚴 Delivery Info</div>
           <div class="rider-row">
-            <div class="rider-avatar">😎</div>
+            <div class="rider-avatar">🚴</div>
             <div>
-              <div class="rider-name">Ahmad Rider</div>
-              <div class="rider-meta">⭐ 4.8 rating · Honda Beat WXY 1234</div>
+              <div class="rider-name" id="deliveryAddress">Loading address...</div>
+              <div class="rider-meta" id="deliveryStatus">Waiting for restaurant confirmation</div>
             </div>
-            <button class="call-btn">📞 CALL</button>
           </div>
         </div>
       </div>
 
       <div>
         <div class="section-title">Live Map</div>
-
         <div class="map-box">
-          <span>📍 Live Rider Location</span>
+          <span>📍 Live Rider Location<br><small style="font-size:0.8rem;opacity:0.6">Coming soon</small></span>
         </div>
 
         <div class="panel">
           <div class="panel-title">🧾 Items Ordered</div>
-          <div class="order-line"><span>Classic Beef Burger x2</span><span>$17.80</span></div>
-          <div class="order-line"><span>Fries (Large) x1</span><span>$3.90</span></div>
-          <div class="order-line"><span>Soft Drink x1</span><span>$2.50</span></div>
-          <div class="order-line total"><span>Total Paid</span><span>$29.13</span></div>
+          <div id="itemsList"><div class="loading-state">Loading items...</div></div>
+          <div class="order-line total" id="totalLine" style="display:none">
+            <span>Total Paid</span>
+            <span id="totalAmount">—</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    let mins = 25;
+    const API = 'http://18.212.234.225/api';
+    const token = localStorage.getItem('token');
 
-    function updateCountdown() {
-      document.getElementById('mins').textContent = mins;
-      document.getElementById('heroMins').textContent = mins;
+    // Get order_id from URL: tracking.html?order_id=123
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+
+    if (!token) window.location.href = 'login.html';
+    if (!orderId) {
+      document.getElementById('orderMeta').textContent = 'No order ID found. Go back and try again.';
     }
 
-    updateCountdown();
+    // Map statuses to step index (0-based)
+    const STATUS_STEPS = {
+      pending:          0,
+      confirmed:        1,
+      preparing:        1,
+      ready:            2,
+      out_for_delivery: 3,
+      delivered:        4,
+      cancelled:        -1
+    };
 
-    setInterval(() => {
-      if (mins > 0) {
-        mins--;
-        updateCountdown();
+    const STATUS_LABELS = {
+      pending:          '⏳ ORDER RECEIVED',
+      confirmed:        '✅ ORDER CONFIRMED',
+      preparing:        '👨‍🍳 PREPARING YOUR ORDER',
+      ready:            '🎉 ORDER READY',
+      out_for_delivery: '🚴 OUT FOR DELIVERY',
+      delivered:        '✅ DELIVERED!',
+      cancelled:        '❌ ORDER CANCELLED'
+    };
+
+    const STATUS_PILL_CLASS = {
+      pending:          'pill-pending',
+      confirmed:        'pill-confirmed',
+      preparing:        'pill-preparing',
+      ready:            'pill-ready',
+      out_for_delivery: 'pill-dispatched',
+      delivered:        'pill-delivered',
+      cancelled:        'pill-cancelled'
+    };
+
+    const STEP_IDS = ['placed', 'preparing', 'ready', 'dispatched', 'delivered'];
+
+    let lastStatus = null;
+
+    function updateTrackingUI(status) {
+      const activeStep = STATUS_STEPS[status] ?? 0;
+
+      STEP_IDS.forEach((stepId, index) => {
+        const dot = document.getElementById(`dot-${stepId}`);
+        const label = document.getElementById(`label-${stepId}`);
+        const step = document.getElementById(`step-${stepId}`);
+
+        dot.className = 'track-dot';
+        label.className = 'track-label';
+        step.className = 'track-step';
+
+        if (index < activeStep) {
+          dot.className = 'track-dot done';
+          dot.textContent = '✓';
+          label.className = 'track-label done';
+          step.className = 'track-step done';
+        } else if (index === activeStep) {
+          dot.className = 'track-dot active';
+          dot.textContent = '★';
+          label.className = 'track-label active';
+        } else {
+          dot.textContent = index + 1;
+        }
+      });
+
+      // Update status pill
+      const pill = document.getElementById('statusPill');
+      pill.textContent = STATUS_LABELS[status] || status.toUpperCase();
+      pill.className = `status-pill ${STATUS_PILL_CLASS[status] || ''}`;
+
+      // Update hero status
+      document.getElementById('heroStatus').textContent = STATUS_LABELS[status]?.split(' ').slice(0,1).join('') || '⏳';
+
+      // Update delivery status text
+      const deliveryMessages = {
+        pending: 'Waiting for restaurant confirmation',
+        confirmed: 'Restaurant confirmed your order!',
+        preparing: 'Your food is being prepared 🍳',
+        ready: 'Food is ready, waiting for rider 🎉',
+        out_for_delivery: 'Rider is on the way! 🚴',
+        delivered: 'Order delivered! Enjoy your meal 🎉',
+        cancelled: 'Order was cancelled'
+      };
+      document.getElementById('deliveryStatus').textContent = deliveryMessages[status] || status;
+    }
+
+    async function fetchOrder() {
+      if (!orderId) return;
+
+      try {
+        const res = await fetch(`${API}/orders/${orderId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error('Order not found');
+
+        const order = await res.json();
+        const status = order.order_status || order.status || 'pending';
+
+        // Update order meta
+        const orderTime = new Date(order.order_date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const orderDate = new Date(order.order_date).toLocaleDateString();
+        document.getElementById('orderMeta').textContent = `#ORD-${order.order_id} · ${order.restaurant_name || 'Restaurant'} · Placed ${orderTime}`;
+        document.getElementById('orderTime').textContent = orderTime;
+        document.getElementById('etaSub').textContent = `Placed on ${orderDate}`;
+        document.getElementById('heroRestaurant').textContent = order.restaurant_name || '🍽️';
+        document.getElementById('deliveryAddress').textContent = `📍 ${order.delivery_address || 'Address not set'}`;
+
+        // Update total
+        document.getElementById('totalAmount').textContent = `$${parseFloat(order.total_amount).toFixed(2)}`;
+        document.getElementById('totalLine').style.display = 'flex';
+
+        // Render items
+        if (order.items && order.items.length > 0) {
+          document.getElementById('itemsList').innerHTML = order.items.map(item =>
+            `<div class="order-line">
+              <span>${item.item_name} x${item.quantity}</span>
+              <span>$${(parseFloat(item.unit_price) * item.quantity).toFixed(2)}</span>
+            </div>`
+          ).join('');
+        } else {
+          document.getElementById('itemsList').innerHTML = '<div class="loading-state">No items found</div>';
+        }
+
+        // Only update tracking UI if status changed
+        if (status !== lastStatus) {
+          lastStatus = status;
+          updateTrackingUI(status);
+        }
+
+        // Stop polling if delivered or cancelled
+        if (status === 'delivered' || status === 'cancelled') {
+          clearInterval(pollingInterval);
+          document.getElementById('liveLabel').textContent = status === 'delivered' ? '✅ Order delivered!' : '❌ Order cancelled';
+        }
+
+      } catch (err) {
+        document.getElementById('orderMeta').innerHTML = `<span style="color:#dc2626">⚠️ Could not load order. Please check your connection.</span>`;
       }
-    }, 60000);
+    }
+
+    // Initial fetch
+    fetchOrder();
+
+    // Poll every 5 seconds for live updates
+    const pollingInterval = setInterval(fetchOrder, 5000);
   </script>
 </body>
 </html>
