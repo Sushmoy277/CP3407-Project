@@ -32,10 +32,6 @@ Use the links below to navigate through every section of this project. All items
 ### 1. Requirements
 > User stories with priorities, estimates, and iteration assignments.
 
-- [User Stories]
-- [Pages and Features]
-- [Project Plan]
-
 ---
 
 ### 2. Design
