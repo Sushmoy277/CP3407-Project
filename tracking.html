@@ -1,3 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedMe — Order Tracking</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --orange: #ff5a0a;
+      --orange-dark: #e64d00;
+      --dark: #111111;
+      --light: #f7f4ef;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #747474;
+      --border: #e4ddd2;
+      --green: #10b981;
+      --soft-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top left, rgba(255,90,10,0.08), transparent 25%),
+                  linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    .page-shell { width: min(96%, 1500px); margin: 22px auto; }
+
+    nav {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 28px;
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 28px;
+      margin-bottom: 22px;
+    }
+
+    .logo { font-size: 2rem; font-weight: 800; color: var(--orange); letter-spacing: -1px; }
+    .back-link { color: #7d7d7d; font-weight: 700; font-size: 1.12rem; transition: 0.2s; }
+    .back-link:hover { color: var(--dark); }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
+                  repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 20px, transparent 20px, transparent 40px),
+                  #111214;
+      color: white;
+      border-radius: 30px;
+      box-shadow: var(--soft-shadow);
+      padding: 34px 32px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 20px;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      background: #37d39a;
+      border-radius: 50%;
+      box-shadow: 0 0 18px #37d39a;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 18px #37d39a; }
+      50% { box-shadow: 0 0 30px #37d39a, 0 0 60px #37d39a; }
+    }
+
+    .hero h1 { font-size: clamp(2.3rem, 4vw, 4rem); line-height: 1; letter-spacing: -2px; font-weight: 800; margin-bottom: 12px; }
+    .hero h1 span { color: var(--orange); }
+    .hero p { color: rgba(255,255,255,0.78); font-size: 1.05rem; line-height: 1.8; max-width: 680px; }
+
+    .hero-side { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mini-stat { padding: 18px 16px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); }
+    .mini-stat strong { display: block; font-size: 1.9rem; margin-bottom: 6px; font-weight: 800; color: white; }
+    .mini-stat span { color: rgba(255,255,255,0.72); line-height: 1.5; font-size: 0.95rem; }
+
+    .main { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+    .section-title { font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+
+    .panel {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      box-shadow: var(--soft-shadow);
+      padding: 26px;
+      margin-bottom: 20px;
+    }
+
+    .panel-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #e6ddd0; letter-spacing: -0.5px; }
+    .order-id { font-size: 1rem; color: #857b70; font-family: var(--font-mono); line-height: 1.8; margin-bottom: 10px; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+      transition: all 0.4s;
+    }
+
+    .pill-pending    { background: #fff1c8; color: #9a5a00; }
+    .pill-confirmed  { background: #dbeafe; color: #1d4ed8; }
+    .pill-preparing  { background: #fef3c7; color: #92400e; }
+    .pill-ready      { background: #ede9fe; color: #6d28d9; }
+    .pill-dispatched { background: #d1fae5; color: #065f46; }
+    .pill-delivered  { background: #d1fae5; color: #065f46; }
+    .pill-cancelled  { background: #fee2e2; color: #991b1b; }
+
+    .track-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 8px 0 26px;
+    }
+
+    .track-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .track-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 62%;
+      right: -38%;
+      height: 4px;
+      background: #ddd5ca;
+      z-index: 0;
+      border-radius: 999px;
+      transition: background 0.5s;
+    }
+
+    .track-step.done:not(:last-child)::after { background: var(--dark); }
+
+    .track-dot {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 3px solid #d8cfc3;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      z-index: 1;
+      position: relative;
+      transition: all 0.4s;
+    }
+
+    .track-dot.done  { background: var(--dark); border-color: var(--dark); color: white; }
+    .track-dot.active {
+      background: var(--orange); border-color: var(--orange); color: white;
+      box-shadow: 0 0 0 6px rgba(255,90,10,0.14);
+      animation: activePulse 1.5s infinite;
+    }
+
+    @keyframes activePulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(255,90,10,0.14); }
+      50% { box-shadow: 0 0 0 12px rgba(255,90,10,0.07); }
+    }
+
+    .track-label { font-size: 0.95rem; color: #8a8177; text-align: center; line-height: 1.4; }
+    .track-label.done, .track-label.active { color: var(--dark); font-weight: 800; }
+
+    .eta-box {
+      background: #f7f3ed;
+      border-radius: 24px;
+      padding: 24px 28px;
+      margin-top: 4px;
+      border: 1px solid #ebe2d6;
+    }
+
+    .eta-label { font-size: 1rem; color: #7b746b; font-family: var(--font-mono); margin-bottom: 8px; }
+    .eta-time { font-size: clamp(2.3rem, 5vw, 4rem); font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
+    .eta-sub { font-size: 1rem; color: #8b8277; font-family: var(--font-mono); }
+
+    .rider-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .rider-avatar { width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(180deg,#f2ede6,#e8e1d7); border: 1px solid #e7dfd3; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+    .rider-name { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+    .rider-meta { font-size: 1rem; color: #857b70; font-family: var(--font-mono); line-height: 1.6; }
+
+    .map-box {
+      background: #ebe7df;
+      border-radius: 28px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-family: var(--font-mono);
+      color: #8c8378;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--soft-shadow);
+      margin-bottom: 20px;
+      border: 1px solid #e2dace;
+    }
+
+    .map-box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 32px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 32px);
+    }
+
+    .map-box span { position: relative; z-index: 1; font-size: 2rem; text-align: center; padding: 0 20px; }
+
+    .order-line { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 1.05rem; margin-bottom: 12px; color: #767676; }
+    .order-line.total { color: var(--dark); font-weight: 800; font-size: 1.15rem; margin-top: 18px; padding-top: 16px; border-top: 1px solid #e6ddd0; }
+    .order-line.total span:last-child { color: var(--orange); }
+
+    .loading-state { text-align: center; padding: 20px; color: var(--muted); font-family: var(--font-mono); }
+    @media (max-width: 1100px) { .hero, .main { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) {
+      .page-shell { width: 94%; margin: 14px auto; }
+      nav { padding: 16px 18px; border-radius: 22px; }
+      .logo { font-size: 1.75rem; }
+      .hero, .panel, .map-box { border-radius: 24px; }
+      .hero, .panel { padding: 22px 18px; }
+      .hero-side { grid-template-columns: 1fr; }
+      .track-bar { gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <nav>
+      <a href="index.html" class="logo">FeedMe</a>
+      <a href="history.html" class="back-link">← My Orders</a>
+    </nav>
+
+    <div class="hero">
+      <div>
+        <div class="hero-badge">
+          <span class="dot"></span>
+          <span id="liveLabel">Live updates • Tracking your order</span>
+        </div>
+        <h1>Track your <span>order live.</span></h1>
+        <p>Follow your delivery in real time, from kitchen prep all the way to your door.</p>
+      </div>
+      <div class="hero-side">
+        <div class="mini-stat">
+          <strong id="heroStatus">⏳</strong>
+          <span>Current Status</span>
+        </div>
+        <div class="mini-stat">
+          <strong id="heroRestaurant">—</strong>
+          <span>Restaurant</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div>
+        <div class="section-title">Order Tracking</div>
+
+        <div class="panel">
+          <div class="panel-title">📦 Order Details</div>
+          <div class="order-id" id="orderMeta">Loading order...</div>
+          <div class="status-pill" id="statusPill">⏳ Loading...</div>
+
+          <div class="track-bar">
+            <div class="track-step" id="step-placed">
+              <div class="track-dot" id="dot-placed">1</div>
+              <div class="track-label" id="label-placed">Received</div>
+            </div>
+            <div class="track-step" id="step-preparing">
+              <div class="track-dot" id="dot-preparing">2</div>
+              <div class="track-label" id="label-preparing">Preparing</div>
+            </div>
+            <div class="track-step" id="step-ready">
+              <div class="track-dot" id="dot-ready">3</div>
+              <div class="track-label" id="label-ready">Ready</div>
+            </div>
+            <div class="track-step" id="step-dispatched">
+              <div class="track-dot" id="dot-dispatched">4</div>
+              <div class="track-label" id="label-dispatched">Dispatched</div>
+            </div>
+            <div class="track-step" id="step-delivered">
+              <div class="track-dot" id="dot-delivered">5</div>
+              <div class="track-label" id="label-delivered">Delivered</div>
+            </div>
+          </div>
+
+          <div class="eta-box">
+            <div class="eta-label">Order placed at</div>
+            <div class="eta-time" id="orderTime">—</div>
+            <div class="eta-sub" id="etaSub">Fetching order details...</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">🚴 Delivery Info</div>
+          <div class="rider-row">
+            <div class="rider-avatar">🚴</div>
+            <div>
+              <div class="rider-name" id="deliveryAddress">Loading address...</div>
+              <div class="rider-meta" id="deliveryStatus">Waiting for restaurant confirmation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Live Map</div>
+        <div class="map-box">
+          <span>📍 Live Rider Location<br><small style="font-size:0.8rem;opacity:0.6">Coming soon</small></span>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">🧾 Items Ordered</div>
+          <div id="itemsList"><div class="loading-state">Loading items...</div></div>
+          <div class="order-line total" id="totalLine" style="display:none">
+            <span>Total Paid</span>
+            <span id="totalAmount">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
 const API = 'http://18.212.234.225:5001/api';
 const SOCKET_URL = 'http://18.212.234.225:5001';
 
@@ -5,7 +369,7 @@ const token = localStorage.getItem('token');
 const params = new URLSearchParams(window.location.search);
 const orderId = params.get('order_id') || localStorage.getItem('current_order_id');
 
-// --- CHANGE MADE HERE: Removed the window.location.href = 'login.html' redirect ---
+// --- Updated: Removed forced redirect to login ---
 if (!token) {
   console.warn("No token found. Operating in Guest Mode.");
   document.getElementById('liveLabel').textContent = 'Guest Mode • Viewing Demo Tracking';
@@ -14,7 +378,6 @@ if (!token) {
 if (orderId) {
   localStorage.setItem('current_order_id', orderId);
 } else {
-  // Fallback text if no order is selected
   document.getElementById('orderMeta').textContent = 'No active order found. Please select an order from your history.';
 }
 
@@ -118,7 +481,6 @@ function updateTrackingUI(status) {
 }
 
 async function fetchOrder() {
-  // If no orderId or no token, we just stop the fetch to prevent 401/404 errors
   if (!orderId || !token) return;
 
   try {
@@ -152,6 +514,8 @@ async function fetchOrder() {
           <span>$${(Number(item.unit_price) * Number(item.quantity)).toFixed(2)}</span>
         </div>
       `).join('');
+    } else {
+      document.getElementById('itemsList').innerHTML = '<div class="loading-state">No items found</div>';
     }
 
     if (status !== lastStatus) {
@@ -161,9 +525,11 @@ async function fetchOrder() {
 
     if (status === 'delivered' || status === 'cancelled') {
       if (pollingInterval) clearInterval(pollingInterval);
+      document.getElementById('liveLabel').textContent =
+        status === 'delivered' ? '✅ Order delivered!' : '❌ Order cancelled';
     }
   } catch (err) {
-    console.error(err);
+    document.getElementById('orderMeta').innerHTML = '<span style="color:#dc2626">⚠️ Could not load order details.</span>';
   }
 }
 
@@ -171,5 +537,12 @@ socket.on('order_status_updated', (data) => {
   if (String(data.order_id) === String(orderId)) fetchOrder();
 });
 
+socket.on('delivery_status_updated', (data) => {
+  if (String(data.order_id) === String(orderId)) fetchOrder();
+});
+
 fetchOrder();
 pollingInterval = setInterval(fetchOrder, 15000);
+</script>
+</body>
+</html>
