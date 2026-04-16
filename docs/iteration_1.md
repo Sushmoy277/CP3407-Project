@@ -89,7 +89,7 @@ By the end of Iteration 1, the following features were fully functional and depl
 
 > *The core ordering flow works well end to end. Login and registration are smooth. The restaurant listing page loads quickly. Suggested improvements for Iteration 2: add order status tracking so customers can see what's happening after they place an order, and build the restaurant owner dashboard so owners can see and manage incoming orders.*
 
-— Team review session, [add date]
+— Team review session, [16/04/2026]
 
 ---
 
