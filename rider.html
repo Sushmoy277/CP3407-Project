@@ -1,214 +1,1255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FeedMe — Rider Dashboard</title>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--blue:#3B82F6;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
-  body{font-family:var(--font);background:var(--light);color:var(--dark);display:flex;min-height:100vh}
-  .sidebar{width:240px;background:var(--dark);flex-shrink:0;display:flex;flex-direction:column}
-  .sidebar-brand{padding:20px;border-bottom:1px solid #333}
-  .sidebar-avatar{width:48px;height:48px;border-radius:50%;background:#333;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px}
-  .sidebar-name{font-size:14px;font-weight:700;color:var(--white)}
-  .sidebar-sub{font-size:11px;color:#888;font-family:var(--mono);margin-top:2px}
-  .online-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.2);color:var(--green);font-size:11px;font-family:var(--mono);padding:3px 8px;border-radius:4px;margin-top:8px;font-weight:700}
-  .sidebar-section{font-size:10px;font-family:var(--mono);color:#555;text-transform:uppercase;letter-spacing:2px;padding:14px 20px 5px}
-  .sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer;transition:all .2s;text-decoration:none}
-  .sidebar-item:hover{color:var(--white);background:rgba(255,255,255,.05)}
-  .sidebar-item.active{color:var(--white);background:var(--orange)}
-  .main{flex:1;overflow:auto}
-  .topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
-  .topbar-title{font-size:18px;font-weight:800}
-  .toggle-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);border:2px solid var(--green);background:transparent;color:var(--green)}
-  .content{padding:28px 32px}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
-  .stat-card{background:var(--white);border:2px solid var(--border);border-left:5px solid var(--orange);border-radius:10px;padding:16px 20px}
-  .stat-card:nth-child(2){border-left-color:var(--green)}
-  .stat-card:nth-child(3){border-left-color:var(--blue)}
-  .stat-val{font-size:26px;font-weight:800;font-family:var(--mono)}
-  .stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);margin-top:4px}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .panel{background:var(--white);border:2px solid var(--border);border-radius:10px;padding:20px}
-  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
-  .delivery-card{border:2px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
-  .delivery-card.urgent{border-color:var(--orange);background:#FFF5F2}
-  .d-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .d-num{font-size:13px;font-weight:800;font-family:var(--mono)}
-  .d-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono)}
-  .b-pickup{background:#FEF3C7;color:#92400E}
-  .b-onway{background:#DBEAFE;color:#1E40AF}
-  .b-done{background:#D1FAE5;color:#065F46}
-  .d-info{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:5px;display:flex;align-items:flex-start;gap:6px}
-  .action-btn{width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;margin-top:8px}
-  .action-orange{background:var(--orange);color:var(--white)}
-  .action-green{background:var(--green);color:var(--white)}
-  .map-box{background:#E8E6E0;border:2px solid var(--border);border-radius:10px;height:280px;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:var(--mono);color:var(--gray)}
-  .info-note{font-size:12px;font-family:var(--mono);color:var(--gray);text-align:center;margin-top:10px;padding:8px;background:var(--light);border-radius:6px}
-  @media(max-width:900px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
-</style>
-</head>
-<body>
-<div class="sidebar">
-  <div class="sidebar-brand">
-    <div class="sidebar-avatar">😎</div>
-    <div class="sidebar-name">Rider Dashboard</div>
-    <div class="sidebar-sub">Live delivery panel</div>
-    <div class="online-badge">● ONLINE</div>
-  </div>
-  <div class="sidebar-section">DELIVERIES</div>
-  <a class="sidebar-item active" href="rider.html">📦 My Deliveries</a>
-  <a class="sidebar-item" href="login.html">🚪 Logout</a>
-</div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedMe — Rider Dashboard</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title">My Deliveries</div>
-    <button class="toggle-btn" onclick="toggleStatus(this)">● GO OFFLINE</button>
-  </div>
-
-  <div class="content">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-val" id="activeCount">0</div><div class="stat-label">Active Orders</div></div>
-      <div class="stat-card"><div class="stat-val" id="todayEarnings">$0.00</div><div class="stat-label">Today's Earnings</div></div>
-      <div class="stat-card"><div class="stat-val">Live</div><div class="stat-label">Rider Status</div></div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="panel-title" style="font-size:16px;font-weight:800;margin-bottom:16px">Active Deliveries</div>
-        <div id="deliveriesList"></div>
-      </div>
-
-      <div>
-        <div class="panel-title" style="font-size:16px;font-weight:800;margin-bottom:16px">Delivery Map</div>
-        <div class="map-box">🗺️ Live Route View</div>
-        <div class="info-note">📍 Your location is shared in real-time</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const API_BASE = "http://18.212.234.225:5001/api";
-const SOCKET_BASE = "http://18.212.234.225:5001";
-
-const token = localStorage.getItem("token");
-const riderId = localStorage.getItem("user_id");
-
-if (!token) {
-  alert("Please login first.");
-  window.location.href = "login.html";
-}
-
-const socket = io(SOCKET_BASE);
-
-socket.on("connect", () => {
-  if (riderId) {
-    socket.emit("join_rider_room", riderId);
-  }
-});
-
-socket.on("delivery_assigned", () => {
-  loadDeliveries();
-});
-
-function toggleStatus(btn){
-  const online = btn.textContent.includes('OFFLINE');
-  btn.textContent = online ? '● GO ONLINE' : '● GO OFFLINE';
-}
-
-async function loadDeliveries() {
-  try {
-    const res = await fetch(`${API_BASE}/delivery/rider/my`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-
-    const data = await res.json();
-
-    const list = document.getElementById("deliveriesList");
-    list.innerHTML = "";
-
-    let activeCount = 0;
-    let earnings = 0;
-
-    data.forEach(delivery => {
-      const isCompleted = delivery.delivery_status === "delivered";
-      if (!isCompleted) activeCount++;
-
-      earnings += Number(delivery.total_amount || 0);
-
-      const badgeClass =
-        delivery.delivery_status === "assigned" ? "b-pickup" :
-        delivery.delivery_status === "picked_up" || delivery.delivery_status === "on_the_way" ? "b-onway" :
-        "b-done";
-
-      const badgeText =
-        delivery.delivery_status === "assigned" ? "PICK UP NOW" :
-        delivery.delivery_status === "picked_up" || delivery.delivery_status === "on_the_way" ? "ON THE WAY" :
-        "COMPLETED";
-
-      let buttonHtml = "";
-      if (delivery.delivery_status === "assigned") {
-        buttonHtml = `<button class="action-btn action-orange" onclick="updateDeliveryStatus(${delivery.delivery_id}, 'picked_up')">MARK AS PICKED UP</button>`;
-      } else if (delivery.delivery_status === "picked_up" || delivery.delivery_status === "on_the_way") {
-        buttonHtml = `<button class="action-btn action-green" onclick="updateDeliveryStatus(${delivery.delivery_id}, 'delivered')">✓ MARK AS DELIVERED</button>`;
-      }
-
-      list.innerHTML += `
-        <div class="delivery-card ${delivery.delivery_status === 'assigned' ? 'urgent' : ''}">
-          <div class="d-top">
-            <span class="d-num">#ORD-${delivery.order_id}</span>
-            <span class="d-badge ${badgeClass}">${badgeText}</span>
-          </div>
-          <div class="d-info">🍔 Restaurant: ${delivery.restaurant_name || 'Restaurant'}</div>
-          <div class="d-info">🏠 Deliver to: ${delivery.delivery_address}</div>
-          <div class="d-info">👤 Customer: ${delivery.customer_name || 'Customer'}</div>
-          <div class="d-info">💰 Order total: $${Number(delivery.total_amount || 0).toFixed(2)}</div>
-          ${buttonHtml}
-        </div>
-      `;
-    });
-
-    document.getElementById("activeCount").textContent = activeCount;
-    document.getElementById("todayEarnings").textContent = `$${earnings.toFixed(2)}`;
-  } catch (err) {
-    console.error("Failed to load deliveries:", err);
-  }
-}
-
-async function updateDeliveryStatus(deliveryId, status) {
-  try {
-    const res = await fetch(`${API_BASE}/delivery/${deliveryId}/status`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ delivery_status: status })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Failed to update delivery.");
-      return;
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    loadDeliveries();
-  } catch (err) {
-    console.error(err);
-    alert("Error updating delivery status.");
-  }
-}
+    :root {
+      --orange: #ff5a0a;
+      --orange-dark: #e64d00;
+      --dark: #0d1015;
+      --dark-2: #151922;
+      --light: #f6f2ec;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #777;
+      --border: #e3ddd2;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.06);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
 
-loadDeliveries();
-setInterval(loadDeliveries, 5000);
-</script>
+    body {
+      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top left, rgba(255, 90, 10, 0.07), transparent 24%),
+        linear-gradient(180deg, #fbf8f4 0%, #f3efe8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar {
+      width: 260px;
+      background:
+        linear-gradient(180deg, rgba(255,90,10,0.08), transparent 22%),
+        linear-gradient(180deg, #0d1015 0%, #090b10 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 22px 16px;
+      position: sticky;
+      top: 0;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sidebar-brand {
+      padding: 12px 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 18px;
+    }
+
+    .sidebar-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .sidebar-sub {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      font-family: var(--font-mono);
+      margin-bottom: 10px;
+    }
+
+    .online-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(16,185,129,.15);
+      color: var(--green);
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .sidebar-section {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.28);
+      font-family: var(--font-mono);
+      padding: 18px 14px 10px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      margin-bottom: 8px;
+      border-radius: 16px;
+      color: rgba(255,255,255,0.74);
+      font-weight: 700;
+      transition: 0.22s ease;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      box-shadow: 0 16px 35px rgba(255, 90, 10, 0.22);
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #ebe4d8;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+
+    .topbar-sub {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chip,
+    .clock-box,
+    .toggle-btn {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-soft);
+      font-size: 0.92rem;
+    }
+
+    .chip {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .chip.offline {
+      color: var(--red);
+    }
+
+    .clock-box {
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .toggle-btn {
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: transparent;
+      font-family: var(--font-main);
+    }
+
+    .toggle-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .toggle-btn.offline {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .hero-card,
+    .quick-card,
+    .panel,
+    .stat-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card {
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(59,130,246,0.10), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero-card h2 {
+      font-size: 2.35rem;
+      line-height: 1.02;
+      letter-spacing: -1.2px;
+      margin-bottom: 12px;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      box-shadow: 0 16px 35px rgba(255, 90, 10, 0.22);
+    }
+
+    .action-btn.secondary {
+      background: #fff;
+      color: var(--dark);
+      border: 2px solid var(--border);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .quick-card {
+      padding: 24px;
+    }
+
+    .quick-card h3 {
+      font-size: 1.45rem;
+      margin-bottom: 8px;
+    }
+
+    .quick-card p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .health-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .health-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .health-item span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .health-badge {
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+    }
+
+    .ok { background: #dcfce7; color: #166534; }
+    .warn { background: #fef3c7; color: #92400e; }
+    .neutral { background: #dbeafe; color: #1e40af; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      border-left: 5px solid var(--orange);
+      transition: 0.2s ease;
+    }
+
+    .stat-card:nth-child(2) { border-left-color: var(--green); }
+    .stat-card:nth-child(3) { border-left-color: var(--blue); }
+    .stat-card:nth-child(4) { border-left-color: var(--purple); }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.10);
+    }
+
+    .stat-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.84rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-family: var(--font-mono);
+      margin-bottom: 10px;
+    }
+
+    .stat-change {
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+    }
+
+    .filters-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 2px solid var(--border);
+      background: #fff;
+      padding: 11px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 0.92rem;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+    }
+
+    .search-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 0 14px;
+    }
+
+    .search-mini input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 12px 4px;
+      min-width: 220px;
+      font-family: var(--font-main);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #ebe2d6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    .deliveries-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .delivery-card {
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      transition: 0.24s ease;
+      background: #fff;
+    }
+
+    .delivery-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .delivery-card.assigned {
+      border-color: var(--orange);
+      background: #fff7f2;
+    }
+
+    .delivery-card.picked_up,
+    .delivery-card.on_the_way {
+      border-color: var(--blue);
+      background: #f4f9ff;
+    }
+
+    .delivery-card.delivered {
+      border-color: var(--green);
+      background: #f4fff8;
+    }
+
+    .delivery-card.cancelled {
+      border-color: var(--red);
+      background: #fff5f5;
+    }
+
+    .d-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .d-num {
+      font-size: 1.04rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    .d-badge {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .b-assigned { background: var(--orange); }
+    .b-picked { background: var(--yellow); }
+    .b-onway { background: var(--blue); }
+    .b-done { background: var(--green); }
+    .b-cancelled { background: var(--red); }
+
+    .d-info {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.6;
+    }
+
+    .info-block {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #faf7f2;
+      border: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: 0.2s ease;
+      border: 2px solid var(--border);
+      background: transparent;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn-accept {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      border-color: var(--orange);
+    }
+
+    .btn-picked {
+      background: var(--yellow);
+      color: #fff;
+      border-color: var(--yellow);
+    }
+
+    .btn-route {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .btn-done {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    .btn-track {
+      background: #fff;
+      color: var(--orange);
+      border-color: #ffd7c6;
+    }
+
+    .loading,
+    .empty {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .map-box {
+      background: #e8e6e0;
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-family: var(--font-mono);
+      color: var(--muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 32px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 32px);
+    }
+
+    .map-box span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-note {
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      padding: 12px;
+      background: var(--light);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--dark);
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--red); }
+
+    @media (max-width: 1200px) {
+      .hero-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+
+      .content,
+      .topbar {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-right {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-mini input {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-avatar">😎</div>
+      <div class="sidebar-name">Rider Dashboard</div>
+      <div class="sidebar-sub">Live delivery panel</div>
+      <div class="online-badge" id="sideStatus">● ONLINE</div>
+    </div>
+
+    <div class="sidebar-section">Deliveries</div>
+    <a class="sidebar-item active" href="rider.html">📦 My Deliveries</a>
+    <a class="sidebar-item" href="tracking.html">📍 Tracking</a>
+    <a class="sidebar-item" href="login.html" onclick="logout()">🚪 Logout</a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">My Deliveries</div>
+        <div class="topbar-sub">Accept assigned deliveries, update ride status, and sync customer tracking live.</div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="chip" id="liveChip">🟢 Live connected</div>
+        <div class="clock-box" id="clock"></div>
+        <button class="toggle-btn" id="toggleStatusBtn" onclick="toggleStatus()">● GO OFFLINE</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="errorMsg" class="error-msg"></div>
+
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">Live Rider Flow</div>
+          <h2>See new deliveries, accept jobs, and push delivery progress in real time.</h2>
+          <p>
+            When the restaurant marks an order ready and your backend assigns it to a rider,
+            it should appear here. After you accept it, you can move it through pickup, on-the-way,
+            and delivered states while keeping the customer tracking view updated.
+          </p>
+
+          <div class="hero-actions">
+            <button class="action-btn primary" onclick="loadDeliveries(true)">Refresh Deliveries</button>
+            <button class="action-btn secondary" onclick="scrollToDeliveries()">Go to Active Deliveries</button>
+          </div>
+        </div>
+
+        <div class="quick-card">
+          <div class="eyebrow">Delivery Health</div>
+          <h3>Rider channel is active.</h3>
+          <p>Connection, rider session, and delivery assignments are monitored here.</p>
+
+          <div class="health-list">
+            <div class="health-item">
+              <span>Socket Connection</span>
+              <div class="health-badge ok" id="socketHealth">ONLINE</div>
+            </div>
+            <div class="health-item">
+              <span>Rider Session</span>
+              <div class="health-badge ok" id="sessionHealth">ACTIVE</div>
+            </div>
+            <div class="health-item">
+              <span>Availability</span>
+              <div class="health-badge neutral" id="availabilityHealth">READY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="activeCount">0</div>
+          <div class="stat-label">Active Deliveries</div>
+          <div class="stat-change" id="activeSub">Waiting for assignments</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="todayEarnings">$0.00</div>
+          <div class="stat-label">Today's Earnings</div>
+          <div class="stat-change">Based on assigned delivery totals</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="completedCount">0</div>
+          <div class="stat-label">Completed Today</div>
+          <div class="stat-change">Delivered successfully</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="riderStateText">LIVE</div>
+          <div class="stat-label">Rider Status</div>
+          <div class="stat-change" id="riderStateSub">Connected and ready</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <section class="panel" id="deliveriesPanel">
+          <div class="panel-title">
+            <span>Active Deliveries</span>
+            <span class="panel-sub" id="lastUpdated"></span>
+          </div>
+
+          <div class="filters-row">
+            <div class="tabs">
+              <button class="tab-btn active" data-filter="all">All</button>
+              <button class="tab-btn" data-filter="assigned">Assigned</button>
+              <button class="tab-btn" data-filter="picked_up">Picked Up</button>
+              <button class="tab-btn" data-filter="on_the_way">On The Way</button>
+              <button class="tab-btn" data-filter="delivered">Delivered</button>
+            </div>
+
+            <div class="search-mini">
+              <span>🔎</span>
+              <input type="text" id="deliverySearch" placeholder="Search by order or customer">
+            </div>
+          </div>
+
+          <div id="deliveriesList" class="deliveries-list">
+            <div class="loading">Loading deliveries...</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">Delivery Map</div>
+          <div class="map-box"><span>🗺️ Live Route View</span></div>
+          <div class="info-note">📍 Rider location and route updates should appear here in a full map integration.</div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Use the same backend port your server.js is actually running on.
+    // If your backend starts on 5001, keep 5001 here.
+    // If you changed server.js to 5000 and restarted successfully, change both lines to 5000.
+    const API_BASE = "http://18.212.234.225:5001/api";
+    const SOCKET_BASE = "http://18.212.234.225:5001";
+
+    const token = localStorage.getItem("token");
+    const riderId = localStorage.getItem("user_id") || localStorage.getItem("feedmeUserId") || "1";
+
+    let allDeliveries = [];
+    let activeFilter = "all";
+    let isOnline = localStorage.getItem("feedme_rider_online") !== "false";
+
+    if (!token) {
+      alert("Please login first.");
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("sessionHealth").textContent = token ? "ACTIVE" : "MISSING";
+
+    const socket = io(SOCKET_BASE, {
+      transports: ['websocket', 'polling']
+    });
+
+    socket.on("connect", () => {
+      socket.emit("join_rider_room", riderId);
+      document.getElementById("liveChip").textContent = "🟢 Live connected";
+      document.getElementById("liveChip").classList.remove("offline");
+      document.getElementById("socketHealth").textContent = "ONLINE";
+    });
+
+    socket.on("disconnect", () => {
+      document.getElementById("liveChip").textContent = "🔴 Disconnected";
+      document.getElementById("liveChip").classList.add("offline");
+      document.getElementById("socketHealth").textContent = "OFFLINE";
+    });
+
+    socket.on("delivery_assigned", (payload) => {
+      showToast("🆕 New delivery assigned", "success");
+      loadDeliveries(false);
+    });
+
+    socket.on("delivery_status_updated", () => {
+      loadDeliveries(false);
+    });
+
+    function logout() {
+      localStorage.removeItem("feedmeLoggedIn");
+      localStorage.removeItem("feedmeGuest");
+      localStorage.removeItem("feedmeUserEmail");
+      localStorage.removeItem("feedmeUserRole");
+      localStorage.removeItem("feedme_rider_online");
+    }
+
+    function updateClock() {
+      document.getElementById("clock").textContent = new Date().toLocaleString();
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    function syncOnlineUI() {
+      const btn = document.getElementById("toggleStatusBtn");
+      const side = document.getElementById("sideStatus");
+      const state = document.getElementById("riderStateText");
+      const stateSub = document.getElementById("riderStateSub");
+      const avail = document.getElementById("availabilityHealth");
+
+      if (isOnline) {
+        btn.textContent = "● GO OFFLINE";
+        btn.classList.remove("offline");
+        side.textContent = "● ONLINE";
+        state.textContent = "LIVE";
+        stateSub.textContent = "Connected and ready";
+        avail.textContent = "READY";
+      } else {
+        btn.textContent = "● GO ONLINE";
+        btn.classList.add("offline");
+        side.textContent = "● OFFLINE";
+        state.textContent = "OFFLINE";
+        stateSub.textContent = "Not accepting new jobs";
+        avail.textContent = "PAUSED";
+      }
+    }
+
+    function toggleStatus() {
+      isOnline = !isOnline;
+      localStorage.setItem("feedme_rider_online", String(isOnline));
+      syncOnlineUI();
+      showToast(isOnline ? "Rider is now online" : "Rider is now offline", isOnline ? "success" : "error");
+    }
+
+    syncOnlineUI();
+
+    function showToast(msg, type = "success") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => {
+        t.className = "toast";
+      }, 2800);
+    }
+
+    function showError(msg) {
+      const box = document.getElementById("errorMsg");
+      box.style.display = "block";
+      box.textContent = msg;
+    }
+
+    function hideError() {
+      document.getElementById("errorMsg").style.display = "none";
+    }
+
+    function getBadge(deliveryStatus) {
+      if (deliveryStatus === "assigned") return `<span class="d-badge b-assigned">ASSIGNED</span>`;
+      if (deliveryStatus === "picked_up") return `<span class="d-badge b-picked">PICKED UP</span>`;
+      if (deliveryStatus === "on_the_way") return `<span class="d-badge b-onway">ON THE WAY</span>`;
+      if (deliveryStatus === "delivered") return `<span class="d-badge b-done">DELIVERED</span>`;
+      if (deliveryStatus === "cancelled") return `<span class="d-badge b-cancelled">CANCELLED</span>`;
+      return `<span class="d-badge b-assigned">${deliveryStatus}</span>`;
+    }
+
+    function saveTrackingStatus(delivery, nextStatus = null) {
+      const orderId = delivery.order_id;
+      const status = nextStatus || delivery.delivery_status || "assigned";
+
+      const current = JSON.parse(localStorage.getItem(`feedme_tracking_${orderId}`) || "{}");
+
+      let trackingStep = current.tracking_step || 3;
+      let trackingPill = current.tracking_pill || "🛵 OUT FOR DELIVERY";
+      let eta = current.eta_minutes || 15;
+
+      if (status === "assigned") {
+        trackingStep = 2;
+        trackingPill = "📦 RIDER ASSIGNED";
+        eta = 18;
+      } else if (status === "picked_up") {
+        trackingStep = 3;
+        trackingPill = "🛵 ORDER PICKED UP";
+        eta = 12;
+      } else if (status === "on_the_way") {
+        trackingStep = 3;
+        trackingPill = "🛵 ON THE WAY";
+        eta = 8;
+      } else if (status === "delivered") {
+        trackingStep = 4;
+        trackingPill = "🎉 DELIVERED";
+        eta = 0;
+      }
+
+      const payload = {
+        ...current,
+        order_id: orderId,
+        rider_name: "Ahmad Rider",
+        rider_rating: "4.8",
+        rider_vehicle: "Honda Beat WXY 1234",
+        order_status: current.order_status || "out_for_delivery",
+        delivery_status: status,
+        tracking_step: trackingStep,
+        tracking_pill: trackingPill,
+        eta_minutes: eta,
+        delivery_address: delivery.delivery_address || current.delivery_address || "Address unavailable",
+        customer_name: delivery.customer_name || current.customer_name || "Customer",
+        total_amount: Number(delivery.total_amount || current.total_amount || 0)
+      };
+
+      localStorage.setItem(`feedme_tracking_${orderId}`, JSON.stringify(payload));
+      localStorage.setItem("feedme_last_tracking_order", String(orderId));
+    }
+
+    function openTracking(orderId) {
+      localStorage.setItem("feedme_last_tracking_order", String(orderId));
+      window.location.href = "tracking.html";
+    }
+
+    function renderActionButtons(delivery) {
+      const id = delivery.delivery_id;
+      const status = delivery.delivery_status;
+
+      if (status === "assigned") {
+        return `
+          <button class="btn btn-accept" onclick="updateDeliveryStatus(${id}, 'picked_up')">ACCEPT & PICK UP</button>
+          <button class="btn btn-track" onclick="openTracking(${delivery.order_id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === "picked_up") {
+        return `
+          <button class="btn btn-route" onclick="updateDeliveryStatus(${id}, 'on_the_way')">START ROUTE</button>
+          <button class="btn btn-track" onclick="openTracking(${delivery.order_id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === "on_the_way") {
+        return `
+          <button class="btn btn-done" onclick="updateDeliveryStatus(${id}, 'delivered')">MARK DELIVERED</button>
+          <button class="btn btn-track" onclick="openTracking(${delivery.order_id})">OPEN TRACKING</button>
+        `;
+      }
+
+      return `
+        <button class="btn btn-track" onclick="openTracking(${delivery.order_id})">OPEN TRACKING</button>
+      `;
+    }
+
+    function renderDeliveries() {
+      const list = document.getElementById("deliveriesList");
+      const searchText = document.getElementById("deliverySearch").value.toLowerCase().trim();
+
+      const filtered = allDeliveries.filter(delivery => {
+        const statusMatch = activeFilter === "all" || delivery.delivery_status === activeFilter;
+        const haystack = `${delivery.order_id} ${delivery.customer_name || ""} ${delivery.delivery_address || ""}`.toLowerCase();
+        const textMatch = haystack.includes(searchText);
+        return statusMatch && textMatch;
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty">No deliveries found 🚚</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(delivery => {
+        const total = Number(delivery.total_amount || 0).toFixed(2);
+        const status = delivery.delivery_status || "assigned";
+        const phone = delivery.customer_phone || delivery.phone || "Not available";
+        const notes = delivery.delivery_notes || delivery.notes || "No extra notes";
+
+        saveTrackingStatus(delivery);
+
+        return `
+          <div class="delivery-card ${status}">
+            <div class="d-top">
+              <span class="d-num">#ORD-${delivery.order_id}</span>
+              ${getBadge(status)}
+            </div>
+
+            <div class="d-info">🍔 Restaurant: ${delivery.restaurant_name || "Burger Palace"}</div>
+            <div class="d-info">👤 Customer: ${delivery.customer_name || "Customer"}</div>
+            <div class="d-info">🏠 Address: ${delivery.delivery_address || "Address unavailable"}</div>
+            <div class="d-info">📞 Phone: ${phone}</div>
+            <div class="d-info">💰 Order total: $${total}</div>
+
+            <div class="info-block">
+              <strong style="display:block; margin-bottom:6px; color:#222;">Delivery Notes</strong>
+              ${notes}
+            </div>
+
+            <div class="btn-row">
+              ${renderActionButtons(delivery)}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function loadDeliveries(showRefreshToast = false) {
+      try {
+        hideError();
+
+        const res = await fetch(`${API_BASE}/delivery/rider/my`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to load deliveries");
+        }
+
+        allDeliveries = Array.isArray(data) ? data : [];
+
+        const active = allDeliveries.filter(d => !["delivered", "cancelled"].includes(d.delivery_status));
+        const completed = allDeliveries.filter(d => d.delivery_status === "delivered");
+
+        const earnings = allDeliveries.reduce((sum, d) => sum + Number(d.total_amount || 0), 0);
+
+        document.getElementById("activeCount").textContent = active.length;
+        document.getElementById("todayEarnings").textContent = `$${earnings.toFixed(2)}`;
+        document.getElementById("completedCount").textContent = completed.length;
+        document.getElementById("activeSub").textContent =
+          active.length > 0 ? `${active.length} jobs currently active` : "Waiting for assignments";
+
+        document.getElementById("lastUpdated").textContent =
+          `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        renderDeliveries();
+
+        if (showRefreshToast) {
+          showToast("🔄 Deliveries refreshed", "success");
+        }
+      } catch (err) {
+        showError("⚠️ Could not load rider deliveries. Check token, rider assignment, or backend route.");
+        document.getElementById("deliveriesList").innerHTML = `<div class="empty">Failed to load deliveries</div>`;
+      }
+    }
+
+    async function updateDeliveryStatus(deliveryId, status) {
+      try {
+        const target = allDeliveries.find(d => Number(d.delivery_id) === Number(deliveryId));
+
+        const res = await fetch(`${API_BASE}/delivery/${deliveryId}/status`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ delivery_status: status })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to update delivery");
+        }
+
+        if (target) {
+          target.delivery_status = status;
+          saveTrackingStatus(target, status);
+        }
+
+        showToast(`✅ Delivery updated to ${status}`, "success");
+        renderDeliveries();
+        loadDeliveries(false);
+      } catch (err) {
+        showToast(`❌ ${err.message}`, "error");
+      }
+    }
+
+    function scrollToDeliveries() {
+      document.getElementById("deliveriesPanel").scrollIntoView({ behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilter = btn.dataset.filter;
+        renderDeliveries();
+      });
+    });
+
+    document.getElementById("deliverySearch").addEventListener("input", renderDeliveries);
+
+    loadDeliveries();
+    setInterval(loadDeliveries, 5000);
+  </script>
 </body>
 </html>
