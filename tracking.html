@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FeedMe — Order Tracking</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,6 @@
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
       --orange: #ff5a0a;
       --orange-dark: #e64d00;
@@ -36,7 +36,6 @@
     }
 
     a { text-decoration: none; color: inherit; }
-
     .page-shell { width: min(96%, 1500px); margin: 22px auto; }
 
     nav {
@@ -119,7 +118,6 @@
     }
 
     .panel-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #e6ddd0; letter-spacing: -0.5px; }
-
     .order-id { font-size: 1rem; color: #857b70; font-family: var(--font-mono); line-height: 1.8; margin-bottom: 10px; }
 
     .status-pill {
@@ -130,13 +128,10 @@
       border-radius: 999px;
       font-size: 0.95rem;
       font-weight: 800;
-      background: #fff1c8;
-      color: #9a5a00;
       margin-bottom: 24px;
       transition: all 0.4s;
     }
 
-    /* Status pill colors */
     .pill-pending    { background: #fff1c8; color: #9a5a00; }
     .pill-confirmed  { background: #dbeafe; color: #1d4ed8; }
     .pill-preparing  { background: #fef3c7; color: #92400e; }
@@ -257,8 +252,6 @@
     .order-line.total span:last-child { color: var(--orange); }
 
     .loading-state { text-align: center; padding: 20px; color: var(--muted); font-family: var(--font-mono); }
-    .error-state { text-align: center; padding: 20px; color: #dc2626; font-family: var(--font-mono); }
-
     @media (max-width: 1100px) { .hero, .main { grid-template-columns: 1fr; } }
     @media (max-width: 760px) {
       .page-shell { width: 94%; margin: 14px auto; }
@@ -308,8 +301,7 @@
           <div class="order-id" id="orderMeta">Loading order...</div>
           <div class="status-pill" id="statusPill">⏳ Loading...</div>
 
-          <!-- Tracking Steps -->
-          <div class="track-bar" id="trackBar">
+          <div class="track-bar">
             <div class="track-step" id="step-placed">
               <div class="track-dot" id="dot-placed">1</div>
               <div class="track-label" id="label-placed">Received</div>
@@ -369,161 +361,197 @@
     </div>
   </div>
 
-  <script>
-    const API = 'http://18.212.234.225/api';
-    const token = localStorage.getItem('token');
+<script>
+const API = 'http://18.212.234.225:5001/api';
+const SOCKET_URL = 'http://18.212.234.225:5001';
 
-    // Get order_id from URL: tracking.html?order_id=123
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('order_id');
+const token = localStorage.getItem('token');
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get('order_id') || localStorage.getItem('current_order_id');
 
-    if (!token) window.location.href = 'login.html';
-    if (!orderId) {
-      document.getElementById('orderMeta').textContent = 'No order ID found. Go back and try again.';
+if (!token) {
+  window.location.href = 'login.html';
+}
+
+if (!orderId) {
+  document.getElementById('orderMeta').textContent = 'No order ID found.';
+}
+
+if (orderId) {
+  localStorage.setItem('current_order_id', orderId);
+}
+
+const socket = io(SOCKET_URL, {
+  transports: ['websocket', 'polling']
+});
+
+socket.on('connect', () => {
+  if (orderId) {
+    socket.emit('join_order_room', orderId);
+  }
+});
+
+const STATUS_STEPS = {
+  pending: 0,
+  confirmed: 1,
+  preparing: 1,
+  ready: 2,
+  out_for_delivery: 3,
+  delivered: 4,
+  cancelled: -1
+};
+
+const STATUS_LABELS = {
+  pending: '⏳ ORDER RECEIVED',
+  confirmed: '✅ ORDER CONFIRMED',
+  preparing: '👨‍🍳 PREPARING YOUR ORDER',
+  ready: '🎉 ORDER READY',
+  out_for_delivery: '🚴 OUT FOR DELIVERY',
+  delivered: '✅ DELIVERED!',
+  cancelled: '❌ ORDER CANCELLED'
+};
+
+const STATUS_PILL_CLASS = {
+  pending: 'pill-pending',
+  confirmed: 'pill-confirmed',
+  preparing: 'pill-preparing',
+  ready: 'pill-ready',
+  out_for_delivery: 'pill-dispatched',
+  delivered: 'pill-delivered',
+  cancelled: 'pill-cancelled'
+};
+
+const STEP_IDS = ['placed', 'preparing', 'ready', 'dispatched', 'delivered'];
+let pollingInterval = null;
+let lastStatus = null;
+
+function updateTrackingUI(status) {
+  const activeStep = STATUS_STEPS[status] ?? 0;
+
+  STEP_IDS.forEach((stepId, index) => {
+    const dot = document.getElementById(`dot-${stepId}`);
+    const label = document.getElementById(`label-${stepId}`);
+    const step = document.getElementById(`step-${stepId}`);
+
+    dot.className = 'track-dot';
+    label.className = 'track-label';
+    step.className = 'track-step';
+
+    if (status === 'cancelled') {
+      dot.textContent = index + 1;
+      return;
     }
 
-    // Map statuses to step index (0-based)
-    const STATUS_STEPS = {
-      pending:          0,
-      confirmed:        1,
-      preparing:        1,
-      ready:            2,
-      out_for_delivery: 3,
-      delivered:        4,
-      cancelled:        -1
-    };
-
-    const STATUS_LABELS = {
-      pending:          '⏳ ORDER RECEIVED',
-      confirmed:        '✅ ORDER CONFIRMED',
-      preparing:        '👨‍🍳 PREPARING YOUR ORDER',
-      ready:            '🎉 ORDER READY',
-      out_for_delivery: '🚴 OUT FOR DELIVERY',
-      delivered:        '✅ DELIVERED!',
-      cancelled:        '❌ ORDER CANCELLED'
-    };
-
-    const STATUS_PILL_CLASS = {
-      pending:          'pill-pending',
-      confirmed:        'pill-confirmed',
-      preparing:        'pill-preparing',
-      ready:            'pill-ready',
-      out_for_delivery: 'pill-dispatched',
-      delivered:        'pill-delivered',
-      cancelled:        'pill-cancelled'
-    };
-
-    const STEP_IDS = ['placed', 'preparing', 'ready', 'dispatched', 'delivered'];
-
-    let lastStatus = null;
-
-    function updateTrackingUI(status) {
-      const activeStep = STATUS_STEPS[status] ?? 0;
-
-      STEP_IDS.forEach((stepId, index) => {
-        const dot = document.getElementById(`dot-${stepId}`);
-        const label = document.getElementById(`label-${stepId}`);
-        const step = document.getElementById(`step-${stepId}`);
-
-        dot.className = 'track-dot';
-        label.className = 'track-label';
-        step.className = 'track-step';
-
-        if (index < activeStep) {
-          dot.className = 'track-dot done';
-          dot.textContent = '✓';
-          label.className = 'track-label done';
-          step.className = 'track-step done';
-        } else if (index === activeStep) {
-          dot.className = 'track-dot active';
-          dot.textContent = '★';
-          label.className = 'track-label active';
-        } else {
-          dot.textContent = index + 1;
-        }
-      });
-
-      // Update status pill
-      const pill = document.getElementById('statusPill');
-      pill.textContent = STATUS_LABELS[status] || status.toUpperCase();
-      pill.className = `status-pill ${STATUS_PILL_CLASS[status] || ''}`;
-
-      // Update hero status
-      document.getElementById('heroStatus').textContent = STATUS_LABELS[status]?.split(' ').slice(0,1).join('') || '⏳';
-
-      // Update delivery status text
-      const deliveryMessages = {
-        pending: 'Waiting for restaurant confirmation',
-        confirmed: 'Restaurant confirmed your order!',
-        preparing: 'Your food is being prepared 🍳',
-        ready: 'Food is ready, waiting for rider 🎉',
-        out_for_delivery: 'Rider is on the way! 🚴',
-        delivered: 'Order delivered! Enjoy your meal 🎉',
-        cancelled: 'Order was cancelled'
-      };
-      document.getElementById('deliveryStatus').textContent = deliveryMessages[status] || status;
+    if (index < activeStep) {
+      dot.className = 'track-dot done';
+      dot.textContent = '✓';
+      label.className = 'track-label done';
+      step.className = 'track-step done';
+    } else if (index === activeStep) {
+      dot.className = 'track-dot active';
+      dot.textContent = '★';
+      label.className = 'track-label active';
+    } else {
+      dot.textContent = index + 1;
     }
+  });
 
-    async function fetchOrder() {
-      if (!orderId) return;
+  const pill = document.getElementById('statusPill');
+  pill.textContent = STATUS_LABELS[status] || status;
+  pill.className = `status-pill ${STATUS_PILL_CLASS[status] || ''}`;
 
-      try {
-        const res = await fetch(`${API}/orders/${orderId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+  const heroMap = {
+    pending: '⏳',
+    confirmed: '✅',
+    preparing: '👨‍🍳',
+    ready: '🎉',
+    out_for_delivery: '🚴',
+    delivered: '✅',
+    cancelled: '❌'
+  };
+  document.getElementById('heroStatus').textContent = heroMap[status] || '⏳';
 
-        if (!res.ok) throw new Error('Order not found');
+  const deliveryMessages = {
+    pending: 'Waiting for restaurant confirmation',
+    confirmed: 'Restaurant confirmed your order!',
+    preparing: 'Your food is being prepared 🍳',
+    ready: 'Food is ready, waiting for rider 🎉',
+    out_for_delivery: 'Rider is on the way! 🚴',
+    delivered: 'Order delivered! Enjoy your meal 🎉',
+    cancelled: 'Order was cancelled'
+  };
+  document.getElementById('deliveryStatus').textContent = deliveryMessages[status] || status;
+}
 
-        const order = await res.json();
-        const status = order.order_status || order.status || 'pending';
+async function fetchOrder() {
+  if (!orderId) return;
 
-        // Update order meta
-        const orderTime = new Date(order.order_date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        const orderDate = new Date(order.order_date).toLocaleDateString();
-        document.getElementById('orderMeta').textContent = `#ORD-${order.order_id} · ${order.restaurant_name || 'Restaurant'} · Placed ${orderTime}`;
-        document.getElementById('orderTime').textContent = orderTime;
-        document.getElementById('etaSub').textContent = `Placed on ${orderDate}`;
-        document.getElementById('heroRestaurant').textContent = order.restaurant_name || '🍽️';
-        document.getElementById('deliveryAddress').textContent = `📍 ${order.delivery_address || 'Address not set'}`;
-
-        // Update total
-        document.getElementById('totalAmount').textContent = `$${parseFloat(order.total_amount).toFixed(2)}`;
-        document.getElementById('totalLine').style.display = 'flex';
-
-        // Render items
-        if (order.items && order.items.length > 0) {
-          document.getElementById('itemsList').innerHTML = order.items.map(item =>
-            `<div class="order-line">
-              <span>${item.item_name} x${item.quantity}</span>
-              <span>$${(parseFloat(item.unit_price) * item.quantity).toFixed(2)}</span>
-            </div>`
-          ).join('');
-        } else {
-          document.getElementById('itemsList').innerHTML = '<div class="loading-state">No items found</div>';
-        }
-
-        // Only update tracking UI if status changed
-        if (status !== lastStatus) {
-          lastStatus = status;
-          updateTrackingUI(status);
-        }
-
-        // Stop polling if delivered or cancelled
-        if (status === 'delivered' || status === 'cancelled') {
-          clearInterval(pollingInterval);
-          document.getElementById('liveLabel').textContent = status === 'delivered' ? '✅ Order delivered!' : '❌ Order cancelled';
-        }
-
-      } catch (err) {
-        document.getElementById('orderMeta').innerHTML = `<span style="color:#dc2626">⚠️ Could not load order. Please check your connection.</span>`;
+  try {
+    const res = await fetch(`${API}/orders/${orderId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
+    });
+
+    if (!res.ok) {
+      throw new Error('Order not found');
     }
 
-    // Initial fetch
-    fetchOrder();
+    const order = await res.json();
+    const status = order.order_status || 'pending';
 
-    // Poll every 5 seconds for live updates
-    const pollingInterval = setInterval(fetchOrder, 5000);
-  </script>
+    const orderDateObj = new Date(order.order_date);
+    const orderTime = orderDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const orderDate = orderDateObj.toLocaleDateString();
+
+    document.getElementById('orderMeta').textContent = `#ORD-${order.order_id} · ${order.restaurant_name || 'Restaurant'} · Placed ${orderTime}`;
+    document.getElementById('orderTime').textContent = orderTime;
+    document.getElementById('etaSub').textContent = `Placed on ${orderDate}`;
+    document.getElementById('heroRestaurant').textContent = order.restaurant_name || '🍽️';
+    document.getElementById('deliveryAddress').textContent = `📍 ${order.delivery_address || 'Address not set'}`;
+    document.getElementById('totalAmount').textContent = `$${Number(order.total_amount || 0).toFixed(2)}`;
+    document.getElementById('totalLine').style.display = 'flex';
+
+    if (order.items && order.items.length > 0) {
+      document.getElementById('itemsList').innerHTML = order.items.map(item => `
+        <div class="order-line">
+          <span>${item.item_name} x${item.quantity}</span>
+          <span>$${(Number(item.unit_price) * Number(item.quantity)).toFixed(2)}</span>
+        </div>
+      `).join('');
+    } else {
+      document.getElementById('itemsList').innerHTML = '<div class="loading-state">No items found</div>';
+    }
+
+    if (status !== lastStatus) {
+      lastStatus = status;
+      updateTrackingUI(status);
+    }
+
+    if (status === 'delivered' || status === 'cancelled') {
+      if (pollingInterval) clearInterval(pollingInterval);
+      document.getElementById('liveLabel').textContent =
+        status === 'delivered' ? '✅ Order delivered!' : '❌ Order cancelled';
+    }
+  } catch (err) {
+    document.getElementById('orderMeta').innerHTML = '<span style="color:#dc2626">⚠️ Could not load order. Please check your connection.</span>';
+  }
+}
+
+socket.on('order_status_updated', (data) => {
+  if (String(data.order_id) === String(orderId)) {
+    fetchOrder();
+  }
+});
+
+socket.on('delivery_status_updated', (data) => {
+  if (String(data.order_id) === String(orderId)) {
+    fetchOrder();
+  }
+});
+
+fetchOrder();
+pollingInterval = setInterval(fetchOrder, 15000);
+</script>
 </body>
 </html>
