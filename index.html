@@ -122,7 +122,6 @@
       transform: translateX(4px);
     }
 
-    /* NAVBAR */
     .nav-wrap {
       position: sticky;
       top: 0;
@@ -153,6 +152,15 @@
       font-weight: 700;
       color: var(--orange);
       letter-spacing: -0.04em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 44px;
+      width: auto;
+      display: block;
     }
 
     .nav-left,
@@ -244,7 +252,6 @@
       border: none;
     }
 
-    /* HERO */
     .hero {
       padding: 38px 0 48px;
     }
@@ -325,6 +332,7 @@
       color: var(--orange);
       display: inline-block;
       text-shadow: 0 6px 18px rgba(255, 90, 31, 0.16);
+      transition: opacity 0.2s ease;
     }
 
     .hero p {
@@ -513,7 +521,6 @@
       100% { transform: scale(2.6); opacity: 0; }
     }
 
-    /* CATEGORY BAR */
     .category-wrap {
       padding: 14px 0 6px;
     }
@@ -552,7 +559,6 @@
       transform: translateY(-2px);
     }
 
-    /* PROMOS */
     .promo-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -617,7 +623,7 @@
       gap: 12px;
     }
 
-    .badge {
+    .promo-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -635,7 +641,6 @@
     .new { background: #3b82f6; }
     .value { background: #f59e0b; }
 
-    /* RESTAURANTS */
     .restaurant-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -799,7 +804,6 @@
       background: #ffe8dd;
     }
 
-    /* HIGHLIGHT BAND */
     .highlight-band {
       margin-top: 24px;
       display: grid;
@@ -826,7 +830,6 @@
       font-size: 14px;
     }
 
-    /* EMPTY SEARCH STATE */
     .empty-state {
       display: none;
       text-align: center;
@@ -836,7 +839,6 @@
       font-weight: 600;
     }
 
-    /* FOOTER */
     footer {
       margin-top: 84px;
       background: linear-gradient(180deg, #111111, #0b0b0b);
@@ -869,7 +871,6 @@
       color: var(--orange);
     }
 
-    /* ANIMATIONS */
     .fade-up {
       opacity: 0;
       transform: translateY(26px);
@@ -887,7 +888,6 @@
       }
     }
 
-    /* RESPONSIVE */
     @media (max-width: 1120px) {
       .hero-grid,
       .promo-grid,
@@ -1002,8 +1002,8 @@
     <nav>
       <div class="nav-left">
         <a href="index.html" class="logo">
-  <img src=""C:\Users\ornyb\OneDrive\Desktop\Logo.png"" alt="FeedMe Logo">
-</a>
+          <span>FeedMe</span>
+        </a>
       </div>
 
       <button class="menu-toggle" id="menuToggle">☰</button>
@@ -1014,9 +1014,9 @@
         <a href="tracking.html">Track Order</a>
       </div>
 
-      <div class="nav-right">
-        <button class="btn btn-outline" onclick="location.href='login.html'">Login</button>
-        <button class="btn btn-dark" onclick="location.href='register.html'">Sign Up</button>
+      <div class="nav-right" id="navRight">
+        <button class="btn btn-outline" id="loginBtn" onclick="location.href='login.html'">Login</button>
+        <button class="btn btn-dark" id="registerBtn" onclick="location.href='register.html'">Sign Up</button>
         <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
       </div>
     </nav>
@@ -1145,7 +1145,7 @@
               <p>Get your Friday burger fix with a massive discount on selected meals.</p>
               <div class="promo-meta">
                 <span style="color:var(--muted); font-size:13px;">Valid until 30 Apr</span>
-                <span class="badge hot">HOT</span>
+                <span class="promo-badge hot">HOT</span>
               </div>
             </div>
           </div>
@@ -1157,7 +1157,7 @@
               <p>Order from selected restaurants and skip the delivery fee tonight.</p>
               <div class="promo-meta">
                 <span style="color:var(--muted); font-size:13px;">Every Friday</span>
-                <span class="badge free">FREE</span>
+                <span class="promo-badge free">FREE</span>
               </div>
             </div>
           </div>
@@ -1169,7 +1169,7 @@
               <p>First order? Perfect. Start strong with instant savings on checkout.</p>
               <div class="promo-meta">
                 <span style="color:var(--muted); font-size:13px;">First order only</span>
-                <span class="badge new">NEW</span>
+                <span class="promo-badge new">NEW</span>
               </div>
             </div>
           </div>
@@ -1181,7 +1181,7 @@
               <p>Budget-friendly combos that still feel premium and satisfying.</p>
               <div class="promo-meta">
                 <span style="color:var(--muted); font-size:13px;">All day</span>
-                <span class="badge value">VALUE</span>
+                <span class="promo-badge value">VALUE</span>
               </div>
             </div>
           </div>
@@ -1353,10 +1353,36 @@
   <script>
     const isLoggedIn = localStorage.getItem('feedmeLoggedIn') === 'true';
     const isGuest = localStorage.getItem('feedmeGuest') === 'true';
-    
+
     if (!isLoggedIn && !isGuest) {
       window.location.href = 'login.html';
     }
+
+    const navRight = document.getElementById("navRight");
+
+    if (isLoggedIn && !isGuest) {
+      navRight.innerHTML = `
+        <button class="btn btn-outline" onclick="logoutUser()">Logout</button>
+        <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
+      `;
+    } else if (isGuest) {
+      navRight.innerHTML = `
+        <button class="btn btn-outline" onclick="location.href='login.html'">Login</button>
+        <button class="btn btn-dark" onclick="location.href='register.html'">Sign Up</button>
+        <button class="btn btn-orange" onclick="location.href='cart.html'">🛒 Cart (0)</button>
+      `;
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('feedmeLoggedIn');
+      localStorage.removeItem('feedmeGuest');
+      localStorage.removeItem('feedmeToken');
+      localStorage.removeItem('feedmeUser');
+      localStorage.removeItem('feedmeUserEmail');
+      localStorage.removeItem('feedmeUserRole');
+      window.location.href = 'login.html';
+    }
+
     const menuToggle = document.getElementById("menuToggle");
     const navLinks = document.getElementById("navLinks");
 
@@ -1382,9 +1408,7 @@
         const category = item.dataset.category.toLowerCase();
 
         const matchesCategory = activeCategory === "all" || category === activeCategory;
-        const matchesSearch =
-          name.includes(searchText) ||
-          category.includes(searchText);
+        const matchesSearch = name.includes(searchText) || category.includes(searchText);
 
         if (matchesCategory && matchesSearch) {
           item.style.display = "block";
