@@ -8,8 +8,8 @@ This document outlines the architectural, database, and interface designs for th
 To achieve High Distinction (HD) standards, FeedMe utilizes modern cloud services, specifically the **Amazon Web Services (AWS)** ecosystem.
 
 * **Frontend/Application Tier:** Hosted on an **AWS EC2** instance for reliable compute power.
-* **Storage Tier:** **Amazon S3** is used to store static assets, such as restaurant logos and food item photos, ensuring high availability and faster load times[cite: 109].
-* **Security:** **AWS Cognito** provides secure user authentication and role-based access control for Customers, Owners, and Riders[cite: 111, 152].
+* **Storage Tier:** **Amazon S3** is used to store static assets, such as restaurant logos and food item photos, ensuring high availability and faster load times.
+* **Security:** **AWS Cognito** provides secure user authentication and role-based access control for Customers, Owners, and Riders.
 
 ---
 
@@ -31,7 +31,7 @@ The user interface (GUI) was designed with a focus on **Intuitive Navigation** a
 * **Owner Dashboard:** A robust platform for managing bookings, tracking schedules, and updating menus.
 * **Accessibility:** Designed with color contrast and clear labels to remain usable for all individuals, including those with disabilities.
 
-**Wireframes and Prototypes (Created with NinjaMock):**
+**Wireframes and Prototypes (Created with Figma):**
 (https://www.figma.com/board/7PcOZ8ORDOZHcP3hYhWP62/CP3407-Project?node-id=0-1&t=e1gwEUJ5Nc1GZGBH-0)
 
 
