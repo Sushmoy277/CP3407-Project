@@ -3,41 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FeedMe — Login</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+  <title>FeedMe - Home</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
-
-    :root {
-      --orange: #ff5a0a;
-      --orange-dark: #e64d00;
-      --dark: #111111;
-      --light: #f7f4ef;
-      --white: #ffffff;
-      --text: #171717;
-      --muted: #747474;
-      --border: #e3ddd3;
-      --soft-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-      --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-      --font-main: 'Inter', sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      font-family: var(--font-main);
-      background:
-        radial-gradient(circle at top left, rgba(255, 90, 10, 0.08), transparent 25%),
-        linear-gradient(180deg, #faf8f4 0%, #f4efe8 100%);
-      color: var(--text);
-      min-height: 100vh;
+      background: #fffaf5;
+      color: #222;
+      line-height: 1.6;
     }
 
     a {
@@ -45,741 +23,484 @@
       color: inherit;
     }
 
-    .page-shell {
-      width: min(96%, 1500px);
-      margin: 22px auto;
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
     }
 
-    nav {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.8);
-      border-radius: 28px;
-      box-shadow: var(--soft-shadow);
+    header {
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 18px 28px;
-      margin-bottom: 22px;
+      align-items: center;
+      padding: 18px 0;
     }
 
     .logo {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--orange);
-      letter-spacing: -1px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #ff5a1f;
     }
 
-    .nav-right {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #ff5a1f;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #ff5a1f;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #e14a12;
     }
 
     .btn-outline {
-      border: 2px solid #d8cec0;
-      background: rgba(255,255,255,0.75);
-      color: var(--text);
-      padding: 14px 30px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      transition: all 0.25s ease;
+      border: 2px solid #ff5a1f;
+      color: #ff5a1f;
+      background: transparent;
     }
 
     .btn-outline:hover {
-      transform: translateY(-2px);
-      border-color: var(--dark);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      border-radius: 30px;
-      overflow: hidden;
-      min-height: calc(100vh - 150px);
-      box-shadow: var(--soft-shadow);
-      background: var(--white);
-    }
-
-    .left-panel {
-      position: relative;
-      background:
-        linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
-        repeating-linear-gradient(
-          45deg,
-          rgba(255,255,255,0.025) 0px,
-          rgba(255,255,255,0.025) 20px,
-          transparent 20px,
-          transparent 40px
-        ),
-        #111214;
-      padding: 70px 60px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      background: #ff5a1f;
       color: white;
     }
 
-    .left-panel::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at bottom right, rgba(255, 90, 10, 0.12), transparent 22%);
-      pointer-events: none;
-    }
-
-    .badge {
-      position: relative;
-      z-index: 1;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      padding: 14px 22px;
-      background: rgba(255,255,255,0.09);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #f5f5f5;
-      border-radius: 999px;
-      font-weight: 700;
-      margin-bottom: 36px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      background: #37d39a;
-      border-radius: 50%;
-      box-shadow: 0 0 18px #37d39a;
-    }
-
-    .left-panel h1 {
-      position: relative;
-      z-index: 1;
-      font-size: clamp(3rem, 7vw, 6rem);
-      line-height: 0.95;
-      letter-spacing: -3px;
-      font-weight: 800;
-      margin-bottom: 28px;
-    }
-
-    .left-panel h1 span {
-      color: var(--orange);
-    }
-
-    .left-panel p {
-      position: relative;
-      z-index: 1;
-      max-width: 640px;
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 36px;
-    }
-
-    .feature-row {
-      position: relative;
-      z-index: 1;
+    .hero {
+      min-height: 85vh;
       display: flex;
+      align-items: center;
+      background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 650px;
+      padding: 60px 0;
+    }
+
+    .hero-content h1 {
+      font-size: 52px;
+      margin-bottom: 18px;
+      line-height: 1.15;
+    }
+
+    .hero-content p {
+      font-size: 18px;
+      margin-bottom: 28px;
+      color: #f3f3f3;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
       flex-wrap: wrap;
-      gap: 14px;
     }
 
-    .feature-pill {
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.88);
+    .section {
+      padding: 80px 0;
     }
 
-    .right-panel {
-      background: linear-gradient(180deg, #fffdfa 0%, #faf7f2 100%);
-      padding: 70px 60px;
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 14px;
+      color: #222;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 45px;
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 28px 22px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-icon {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .card p {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .restaurants-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .restaurant-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .restaurant-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .restaurant-content {
+      padding: 20px;
+    }
+
+    .restaurant-content h3 {
+      margin-bottom: 8px;
+      color: #222;
+    }
+
+    .restaurant-content p {
+      color: #666;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #fff1ea;
+      color: #ff5a1f;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+
+    .steps-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .step-number {
+      width: 55px;
+      height: 55px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: #ff5a1f;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .form-card {
-      width: 100%;
-      max-width: 560px;
+    .cta {
+      background: linear-gradient(135deg, #ff5a1f, #ff7b47);
+      color: white;
+      text-align: center;
+      border-radius: 18px;
+      padding: 60px 25px;
     }
 
-    .eyebrow {
-      color: var(--orange);
-      font-size: 0.95rem;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 14px;
+    .cta h2 {
+      font-size: 38px;
+      margin-bottom: 15px;
     }
 
-    .form-title {
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      line-height: 1;
-      letter-spacing: -2px;
-      font-weight: 800;
-      margin-bottom: 14px;
-      color: #171717;
-    }
-
-    .form-sub {
-      color: var(--muted);
-      font-size: 1.1rem;
-      line-height: 1.7;
+    .cta p {
+      font-size: 17px;
       margin-bottom: 24px;
-      max-width: 500px;
+      color: #fff5f2;
     }
 
-    .mode-switch {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 22px;
+    footer {
+      background: #1f1f1f;
+      color: white;
+      padding: 28px 0;
+      margin-top: 60px;
     }
 
-    .mode-btn {
-      border: 2px solid var(--border);
-      background: rgba(255,255,255,0.95);
-      color: var(--dark);
-      padding: 12px 10px;
-      border-radius: 16px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.25s ease;
-    }
-
-    .mode-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow);
-    }
-
-    .mode-btn.active {
-      background: var(--dark);
-      color: var(--white);
-      border-color: var(--dark);
-    }
-
-    .helper-box {
-      margin-bottom: 18px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: #fff8f3;
-      border: 1px solid #f2ddcf;
-      color: #8a5a38;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      display: none;
-    }
-
-    .helper-box.show {
-      display: block;
-    }
-
-    .error-msg {
-      display: none;
-      margin-bottom: 20px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: #fff2f2;
-      color: #d03131;
-      border: 1px solid #f3c3c3;
-      font-size: 0.96rem;
-      font-weight: 600;
-    }
-
-    .error-msg.show {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.95rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      color: #1a1a1a;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 18px 20px;
-      border-radius: 16px;
-      border: 2px solid var(--border);
-      background: rgba(255,255,255,0.92);
-      font-size: 1.08rem;
-      outline: none;
-      transition: 0.25s ease;
-      color: var(--text);
-    }
-
-    .form-group input:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 5px rgba(255, 90, 10, 0.12);
-      transform: translateY(-1px);
-    }
-
-    .row {
+    .footer-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      margin: 6px 0 26px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .check-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1rem;
+    .user-box {
       font-weight: 600;
-      color: #2a2a2a;
+      color: #ff5a1f;
     }
 
-    .check-row input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--orange);
+    #logoutBtn {
+      display: none;
     }
 
-    .forgot {
-      color: var(--orange);
-      font-weight: 700;
-      font-size: 1rem;
-      transition: 0.2s ease;
-    }
-
-    .forgot:hover {
-      text-decoration: underline;
-    }
-
-    .submit-btn {
-      width: 100%;
-      border: none;
-      border-radius: 18px;
-      padding: 18px 22px;
-      background: linear-gradient(135deg, var(--orange), #ff6d1f);
-      color: white;
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      cursor: pointer;
-      transition: 0.25s ease;
-      box-shadow: 0 18px 40px rgba(255, 90, 10, 0.22);
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-3px) scale(1.01);
-      box-shadow: 0 22px 45px rgba(255, 90, 10, 0.28);
-    }
-
-    .extra-actions {
-      display: grid;
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .guest-btn {
-      width: 100%;
-      padding: 16px 18px;
-      border-radius: 18px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.25s ease;
-      background: rgba(255,255,255,0.95);
-      color: var(--dark);
-      border: 2px solid var(--border);
-    }
-
-    .guest-btn:hover {
-      transform: translateY(-2px);
-      border-color: #cfc2b2;
-      box-shadow: var(--card-shadow);
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 28px 0;
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: #e4dbcf;
-    }
-
-    .divider-text {
-      color: #928779;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .google-btn {
-      width: 100%;
-      padding: 17px 18px;
-      background: rgba(255,255,255,0.95);
-      border: 2px solid var(--border);
-      border-radius: 18px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      transition: 0.25s ease;
-    }
-
-    .google-btn:hover {
-      transform: translateY(-2px);
-      border-color: #cfc2b2;
-      box-shadow: var(--card-shadow);
-    }
-
-    .bottom-link {
-      margin-top: 28px;
-      text-align: center;
-      color: #6f6f6f;
-      font-size: 1rem;
-    }
-
-    .bottom-link a {
-      color: var(--orange);
-      font-weight: 800;
-    }
-
-    .bottom-link a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 1100px) {
-      .main-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 38px;
       }
 
-      .left-panel {
-        min-height: 420px;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .page-shell {
-        width: 94%;
-        margin: 14px auto;
+      .nav-links {
+        gap: 12px;
       }
 
-      nav {
-        padding: 16px 18px;
-        border-radius: 22px;
+      .section-title {
+        font-size: 28px;
       }
 
-      .logo {
-        font-size: 1.75rem;
-      }
-
-      .btn-outline {
-        padding: 12px 18px;
-        font-size: 0.95rem;
-      }
-
-      .left-panel,
-      .right-panel {
-        padding: 36px 24px;
-      }
-
-      .left-panel h1 {
-        letter-spacing: -2px;
-      }
-
-      .form-title {
-        letter-spacing: -1px;
-      }
-
-      .mode-switch {
-        grid-template-columns: 1fr;
+      .cta h2 {
+        font-size: 30px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <nav>
-      <a href="index.html" class="logo">FeedMe</a>
-      <div class="nav-right">
-        <button class="btn-outline" onclick="location.href='register.html'">Register</button>
-      </div>
-    </nav>
 
-    <div class="main-grid">
-      <div class="left-panel">
-        <div class="badge">
-          <span class="dot"></span>
-          <span>Fast login • Fresh picks • Easy ordering</span>
-        </div>
+  <header>
+    <div class="container navbar">
+      <div class="logo">FeedMe</div>
 
-        <h1>Welcome <span>back.</span></h1>
+      <nav class="nav-links">
+        <a href="#categories">Categories</a>
+        <a href="#restaurants">Restaurants</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="login.html" id="loginLink">Login</a>
+        <a href="register.html" id="registerLink">Register</a>
+        <span class="user-box" id="userWelcome"></span>
+        <button class="btn btn-outline" id="logoutBtn">Logout</button>
+      </nav>
+    </div>
+  </header>
 
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Your favourite meals, delivered fast.</h1>
         <p>
-          Sign in to reorder your favourites, track deliveries faster,
-          save your go-to meals, and jump straight into a smoother FeedMe experience.
+          Discover local restaurants, explore fresh meals, and enjoy a smoother
+          ordering experience with FeedMe.
         </p>
-
-        <div class="feature-row">
-          <div class="feature-pill">⚡ Quick checkout</div>
-          <div class="feature-pill">🍔 Saved favourites</div>
-          <div class="feature-pill">📍 Live order tracking</div>
+        <div class="hero-buttons">
+          <a href="#restaurants" class="btn btn-primary">Start Ordering</a>
+          <a href="login.html" class="btn btn-outline">Login to Your Account</a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="right-panel">
-        <div class="form-card">
-          <div class="eyebrow" id="modeEyebrow">Sign in to continue</div>
-          <div class="form-title" id="modeTitle">Login to FeedMe</div>
-          <div class="form-sub" id="modeSub">
-            Enter your details below and get back to your cravings in seconds.
+  <section class="section" id="categories">
+    <div class="container">
+      <h2 class="section-title">Browse by Category</h2>
+      <p class="section-subtitle">Pick what you are craving today.</p>
+
+      <div class="grid categories-grid">
+        <div class="card">
+          <div class="card-icon">🍔</div>
+          <h3>Burgers</h3>
+          <p>Juicy burgers, crispy fries, and quick comfort food.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🍕</div>
+          <h3>Pizza</h3>
+          <p>Freshly baked pizzas loaded with your favourite toppings.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🍜</div>
+          <h3>Asian</h3>
+          <p>Noodles, rice bowls, curries, and rich Asian flavours.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🥗</div>
+          <h3>Healthy</h3>
+          <p>Fresh salads, wraps, and balanced meal choices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="restaurants" style="background: #fff;">
+    <div class="container">
+      <h2 class="section-title">Popular Restaurants</h2>
+      <p class="section-subtitle">Some featured options to explore on FeedMe.</p>
+
+      <div class="grid restaurants-grid">
+        <div class="restaurant-card">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80" alt="Pizza restaurant">
+          <div class="restaurant-content">
+            <h3>Pizza Palace</h3>
+            <p>Classic and gourmet pizzas made fresh every day.</p>
+            <span class="tag">Pizza</span>
+            <span class="tag">Fast Delivery</span>
           </div>
+        </div>
 
-          <div class="mode-switch">
-            <button type="button" class="mode-btn active" onclick="setMode('user', this)">USER LOGIN</button>
-            <button type="button" class="mode-btn" onclick="setMode('admin', this)">ADMIN LOGIN</button>
-            <button type="button" class="mode-btn" onclick="setMode('rider', this)">RIDER LOGIN</button>
-            <button type="button" class="mode-btn" onclick="setMode('restaurant', this)">RESTAURANT LOGIN</button>
+        <div class="restaurant-card">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80" alt="Burger restaurant">
+          <div class="restaurant-content">
+            <h3>Burger Hub</h3>
+            <p>Loaded burgers, crispy fries, and late-night favourites.</p>
+            <span class="tag">Burgers</span>
+            <span class="tag">Popular</span>
           </div>
+        </div>
 
-          <div id="helperBox" class="helper-box"></div>
-
-          <div id="error-alert" class="error-msg">
-            Invalid email or password. Please try again.
-          </div>
-
-          <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input type="email" id="email" placeholder="user@example.com" required>
-            </div>
-
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" placeholder="Enter your password" required>
-            </div>
-
-            <div class="row">
-              <div class="check-row">
-                <input type="checkbox" id="remember">
-                <label for="remember" style="margin:0; font-size:1rem; font-weight:600; text-transform:none; letter-spacing:0;">Remember me</label>
-              </div>
-
-              <a href="#" class="forgot">Forgot password?</a>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">LOGIN NOW</button>
-
-            <div class="extra-actions">
-              <button type="button" class="guest-btn" onclick="continueAsGuest()">CONTINUE AS GUEST</button>
-            </div>
-          </form>
-
-          <div class="divider">
-            <div class="divider-line"></div>
-            <div class="divider-text">OR</div>
-            <div class="divider-line"></div>
-          </div>
-
-          <button class="google-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-          </button>
-
-          <div class="bottom-link">
-            Don’t have an account? <a href="register.html">Create one now</a>
+        <div class="restaurant-card">
+          <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=1200&q=80" alt="Asian restaurant">
+          <div class="restaurant-content">
+            <h3>Wok Express</h3>
+            <p>Fresh noodles, fried rice, stir fry, and signature sauces.</p>
+            <span class="tag">Asian</span>
+            <span class="tag">Top Rated</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Ordering food with FeedMe is simple.</p>
+
+      <div class="grid steps-grid">
+        <div class="card">
+          <div class="step-number">1</div>
+          <h3>Choose a Restaurant</h3>
+          <p>Browse categories and explore meals from your favourite places.</p>
+        </div>
+
+        <div class="card">
+          <div class="step-number">2</div>
+          <h3>Place Your Order</h3>
+          <p>Select your food, review your cart, and confirm your order easily.</p>
+        </div>
+
+        <div class="card">
+          <div class="step-number">3</div>
+          <h3>Track Delivery</h3>
+          <p>Follow your order updates and know when your meal is arriving.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta">
+        <h2>Ready to order something delicious?</h2>
+        <p>Sign in or create your account to enjoy a faster and smoother food delivery experience.</p>
+        <div class="hero-buttons" style="justify-content: center;">
+          <a href="login.html" class="btn btn-outline" style="background: white; color: #ff5a1f; border-color: white;">Login</a>
+          <a href="register.html" class="btn btn-primary" style="background: #1f1f1f;">Create Account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-content">
+      <p>&copy; 2026 FeedMe. All rights reserved.</p>
+      <p>Fast ordering • Easy tracking • Better cravings</p>
+    </div>
+  </footer>
 
   <script>
-    let loginMode = 'user';
+    const savedUser = localStorage.getItem("feedmeUser");
+    const savedRole = localStorage.getItem("feedmeUserRole") || localStorage.getItem("feedmeRole");
+    const loginLink = document.getElementById("loginLink");
+    const registerLink = document.getElementById("registerLink");
+    const userWelcome = document.getElementById("userWelcome");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    function setMode(mode, button) {
-      loginMode = mode;
-
-      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-
-      const eyebrow = document.getElementById('modeEyebrow');
-      const title = document.getElementById('modeTitle');
-      const sub = document.getElementById('modeSub');
-      const helperBox = document.getElementById('helperBox');
-      const errorAlert = document.getElementById('error-alert');
-      const submitBtn = document.getElementById('submitBtn');
-
-      errorAlert.classList.remove('show');
-      helperBox.classList.remove('show');
-
-      if (mode === 'user') {
-        eyebrow.textContent = 'Sign in to continue';
-        title.textContent = 'Login to FeedMe';
-        sub.textContent = 'Enter your details below and get back to your cravings in seconds.';
-        submitBtn.textContent = 'LOGIN NOW';
-      }
-
-      if (mode === 'admin') {
-        eyebrow.textContent = 'Admin access only';
-        title.textContent = 'Admin Login';
-        sub.textContent = 'Use the admin email and password to access the FeedMe admin dashboard.';
-        helperBox.textContent = 'Admin credentials: burgerplace@gmail.com / FeedMeNow';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS ADMIN';
-      }
-
-      if (mode === 'rider') {
-        eyebrow.textContent = 'Rider access only';
-        title.textContent = 'Rider Login';
-        sub.textContent = 'Use the rider email and password to access the rider delivery page.';
-        helperBox.textContent = 'Rider credentials: rider@gmail.com / RiderOnTheWay';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS RIDER';
-      }
-
-      if (mode === 'restaurant') {
-        eyebrow.textContent = 'Restaurant access only';
-        title.textContent = 'Restaurant Login';
-        sub.textContent = 'Use the restaurant email and password to access the restaurant dashboard.';
-        helperBox.textContent = 'Restaurant credentials: burgerpalace@gmail.com / FeedMeNow';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS RESTAURANT';
-      }
-    }
-
-    async function handleLogin(e) {
-      e.preventDefault();
-
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorAlert = document.getElementById('error-alert');
-
-      errorAlert.classList.remove('show');
-
-      if (loginMode === 'admin') {
-        if (email === 'burgerplace@gmail.com' && password === 'FeedMeNow') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'admin');
-          window.location.href = 'admin.html';
-        } else {
-          errorAlert.textContent = 'Admin email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
-      }
-
-      if (loginMode === 'rider') {
-        if (email === 'rider@gmail.com' && password === 'RiderOnTheWay') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'rider');
-          window.location.href = 'rider.html';
-        } else {
-          errorAlert.textContent = 'Rider email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
-      }
-
-      if (loginMode === 'restaurant') {
-        if (email === 'burgerpalace@gmail.com' && password === 'FeedMeNow') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'restaurant');
-          localStorage.setItem('restaurant_id', '1');
-          localStorage.setItem('restaurant_name', 'Burger Palace');
-          localStorage.setItem('token', 'restaurant-demo-token');
-          window.location.href = 'restaurant-dashboard.html';
-        } else {
-          errorAlert.textContent = 'Restaurant email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
-      }
-
+    if (savedUser) {
       try {
-        const API_BASE = 'http://18.212.234.225:5000';
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'user');
-
-          if (data.token) {
-            localStorage.setItem('feedmeToken', data.token);
-          }
-
-          if (data.user) {
-            localStorage.setItem('feedmeUser', JSON.stringify(data.user));
-
-            if (data.user.role === 'owner') {
-              window.location.href = 'restaurant-dashboard.html';
-              return;
-            }
-          }
-
-          window.location.href = 'index.html';
-        } else {
-          errorAlert.textContent = data.message || 'Invalid email or password. Please try again.';
-          errorAlert.classList.add('show');
-        }
+        const user = JSON.parse(savedUser);
+        const userName = user.name || user.full_name || user.email || "User";
+        userWelcome.textContent = `Hi, ${userName}`;
       } catch (error) {
-        errorAlert.textContent = 'Unable to connect to server.';
-        errorAlert.classList.add('show');
+        userWelcome.textContent = "Logged in";
       }
+
+      loginLink.style.display = "none";
+      registerLink.style.display = "none";
+      logoutBtn.style.display = "inline-block";
     }
 
-    function continueAsGuest() {
-      localStorage.setItem('feedmeGuest', 'true');
-      localStorage.setItem('feedmeLoggedIn', 'false');
-      localStorage.removeItem('feedmeToken');
-      localStorage.removeItem('feedmeUser');
-      localStorage.removeItem('feedmeUserEmail');
-      localStorage.removeItem('feedmeUserRole');
-      localStorage.removeItem('restaurant_id');
-      localStorage.removeItem('restaurant_name');
-      localStorage.removeItem('token');
-      window.location.href = 'index.html';
-    }
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("feedmeToken");
+      localStorage.removeItem("feedmeUser");
+      localStorage.removeItem("feedmeUserRole");
+      localStorage.removeItem("feedmeRole");
+      localStorage.removeItem("token");
+      localStorage.removeItem("restaurant_id");
+      localStorage.removeItem("restaurant_name");
+      window.location.href = "login.html";
+    });
   </script>
+
 </body>
 </html>
