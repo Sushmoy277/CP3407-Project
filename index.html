@@ -12,6 +12,10 @@
       font-family: Arial, sans-serif;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background: #fffaf5;
       color: #222;
@@ -42,10 +46,12 @@
       justify-content: space-between;
       align-items: center;
       padding: 18px 0;
+      gap: 18px;
+      flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
       color: #ff5a1f;
     }
@@ -62,8 +68,16 @@
       transition: 0.3s;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-links a.active {
       color: #ff5a1f;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -74,6 +88,7 @@
       transition: 0.3s;
       cursor: pointer;
       border: none;
+      font-size: 14px;
     }
 
     .btn-primary {
@@ -94,6 +109,15 @@
     .btn-outline:hover {
       background: #ff5a1f;
       color: white;
+    }
+
+    .btn-dark {
+      background: #1f1f1f;
+      color: white;
+    }
+
+    .btn-dark:hover {
+      background: #111;
     }
 
     .hero {
@@ -121,6 +145,7 @@
       font-size: 18px;
       margin-bottom: 28px;
       color: #f3f3f3;
+      max-width: 620px;
     }
 
     .hero-buttons {
@@ -215,6 +240,7 @@
     .restaurant-content h3 {
       margin-bottom: 8px;
       color: #222;
+      font-size: 22px;
     }
 
     .restaurant-content p {
@@ -233,6 +259,13 @@
       font-weight: bold;
       margin-right: 8px;
       margin-top: 8px;
+    }
+
+    .restaurant-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .steps-grid {
@@ -292,8 +325,21 @@
       color: #ff5a1f;
     }
 
-    #logoutBtn {
+    #logoutBtn,
+    #dashboardBtn {
       display: none;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links,
+      .nav-actions {
+        width: 100%;
+      }
     }
 
     @media (max-width: 768px) {
@@ -323,13 +369,18 @@
 
       <nav class="nav-links">
         <a href="#categories">Categories</a>
-        <a href="#restaurants">Restaurants</a>
+        <a href="restaurants.html">Restaurants</a>
         <a href="#how-it-works">How It Works</a>
-        <a href="login.html" id="loginLink">Login</a>
-        <a href="register.html" id="registerLink">Register</a>
-        <span class="user-box" id="userWelcome"></span>
-        <button class="btn btn-outline" id="logoutBtn">Logout</button>
+        <a href="tracking.html">Track Order</a>
       </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline" id="loginLink">Login</a>
+        <a href="cart.html" class="btn btn-primary" id="cartBtn">Cart</a>
+        <button class="btn btn-dark" id="dashboardBtn">Dashboard</button>
+        <button class="btn btn-outline" id="logoutBtn">Logout</button>
+        <span class="user-box" id="userWelcome"></span>
+      </div>
     </div>
   </header>
 
@@ -342,8 +393,8 @@
           ordering experience with FeedMe.
         </p>
         <div class="hero-buttons">
-          <a href="#restaurants" class="btn btn-primary">Start Ordering</a>
-          <a href="login.html" class="btn btn-outline">Login to Your Account</a>
+          <a href="restaurants.html" class="btn btn-primary">Start Ordering</a>
+          <a href="login.html" class="btn btn-outline" id="heroLoginBtn">Login to Dashboard</a>
         </div>
       </div>
     </div>
@@ -355,29 +406,29 @@
       <p class="section-subtitle">Pick what you are craving today.</p>
 
       <div class="grid categories-grid">
-        <div class="card">
+        <a href="restaurants.html" class="card">
           <div class="card-icon">🍔</div>
           <h3>Burgers</h3>
           <p>Juicy burgers, crispy fries, and quick comfort food.</p>
-        </div>
+        </a>
 
-        <div class="card">
+        <a href="restaurants.html" class="card">
           <div class="card-icon">🍕</div>
           <h3>Pizza</h3>
           <p>Freshly baked pizzas loaded with your favourite toppings.</p>
-        </div>
+        </a>
 
-        <div class="card">
+        <a href="restaurants.html" class="card">
           <div class="card-icon">🍜</div>
           <h3>Asian</h3>
           <p>Noodles, rice bowls, curries, and rich Asian flavours.</p>
-        </div>
+        </a>
 
-        <div class="card">
+        <a href="restaurants.html" class="card">
           <div class="card-icon">🥗</div>
           <h3>Healthy</h3>
           <p>Fresh salads, wraps, and balanced meal choices.</p>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -395,16 +446,22 @@
             <p>Classic and gourmet pizzas made fresh every day.</p>
             <span class="tag">Pizza</span>
             <span class="tag">Fast Delivery</span>
+            <div class="restaurant-actions">
+              <a href="restaurants.html" class="btn btn-dark">View Menu</a>
+            </div>
           </div>
         </div>
 
         <div class="restaurant-card">
           <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80" alt="Burger restaurant">
           <div class="restaurant-content">
-            <h3>Burger Hub</h3>
+            <h3>Burger Palace</h3>
             <p>Loaded burgers, crispy fries, and late-night favourites.</p>
             <span class="tag">Burgers</span>
             <span class="tag">Popular</span>
+            <div class="restaurant-actions">
+              <a href="menu.html" class="btn btn-dark">View Menu</a>
+            </div>
           </div>
         </div>
 
@@ -415,6 +472,9 @@
             <p>Fresh noodles, fried rice, stir fry, and signature sauces.</p>
             <span class="tag">Asian</span>
             <span class="tag">Top Rated</span>
+            <div class="restaurant-actions">
+              <a href="restaurants.html" class="btn btn-dark">View Menu</a>
+            </div>
           </div>
         </div>
       </div>
@@ -452,10 +512,11 @@
     <div class="container">
       <div class="cta">
         <h2>Ready to order something delicious?</h2>
-        <p>Sign in or create your account to enjoy a faster and smoother food delivery experience.</p>
+        <p>Browse restaurants, open your cart, or track your latest order with FeedMe.</p>
         <div class="hero-buttons" style="justify-content: center;">
-          <a href="login.html" class="btn btn-outline" style="background: white; color: #ff5a1f; border-color: white;">Login</a>
-          <a href="register.html" class="btn btn-primary" style="background: #1f1f1f;">Create Account</a>
+          <a href="restaurants.html" class="btn btn-outline" style="background: white; color: #ff5a1f; border-color: white;">Browse Restaurants</a>
+          <a href="tracking.html" class="btn btn-dark">Track Order</a>
+          <a href="cart.html" class="btn btn-outline" style="background: transparent; color: white; border-color: white;">Open Cart</a>
         </div>
       </div>
     </div>
@@ -471,26 +532,50 @@
   <script>
     const savedUser = localStorage.getItem("feedmeUser");
     const savedRole = localStorage.getItem("feedmeUserRole") || localStorage.getItem("feedmeRole");
+
     const loginLink = document.getElementById("loginLink");
-    const registerLink = document.getElementById("registerLink");
+    const heroLoginBtn = document.getElementById("heroLoginBtn");
     const userWelcome = document.getElementById("userWelcome");
     const logoutBtn = document.getElementById("logoutBtn");
+    const dashboardBtn = document.getElementById("dashboardBtn");
 
-    if (savedUser) {
+    if (savedUser && savedRole) {
       try {
         const user = JSON.parse(savedUser);
-        const userName = user.name || user.full_name || user.email || "User";
+        const userName = user.name || user.full_name || user.email || savedRole;
         userWelcome.textContent = `Hi, ${userName}`;
       } catch (error) {
-        userWelcome.textContent = "Logged in";
+        userWelcome.textContent = `Hi, ${savedRole}`;
       }
 
       loginLink.style.display = "none";
-      registerLink.style.display = "none";
+      heroLoginBtn.style.display = "none";
       logoutBtn.style.display = "inline-block";
+      dashboardBtn.style.display = "inline-block";
+
+      if (savedRole === "admin") {
+        dashboardBtn.textContent = "Admin Dashboard";
+        dashboardBtn.onclick = () => {
+          window.location.href = "admin.html";
+        };
+      } else if (savedRole === "rider") {
+        dashboardBtn.textContent = "Rider Dashboard";
+        dashboardBtn.onclick = () => {
+          window.location.href = "rider.html";
+        };
+      } else if (savedRole === "restaurant") {
+        dashboardBtn.textContent = "Restaurant Dashboard";
+        dashboardBtn.onclick = () => {
+          window.location.href = "restaurant-dashboard.html";
+        };
+      } else {
+        dashboardBtn.style.display = "none";
+      }
     }
 
     logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("feedmeLoggedIn");
+      localStorage.removeItem("feedmeGuest");
       localStorage.removeItem("feedmeToken");
       localStorage.removeItem("feedmeUser");
       localStorage.removeItem("feedmeUserRole");
@@ -498,7 +583,9 @@
       localStorage.removeItem("token");
       localStorage.removeItem("restaurant_id");
       localStorage.removeItem("restaurant_name");
-      window.location.href = "login.html";
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("feedmeUserId");
+      window.location.href = "index.html";
     });
   </script>
 
