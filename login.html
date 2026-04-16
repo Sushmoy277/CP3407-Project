@@ -492,189 +492,194 @@
   </div>
 
   <script>
-    let loginMode = 'user';
+  let loginMode = 'user';
 
-    function setMode(mode, button) {
-      loginMode = mode;
+  function getApiBase() {
+    return `${window.location.protocol}//${window.location.hostname}:5000`;
+  }
 
-      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+  function setMode(mode, button) {
+    loginMode = mode;
 
-      const eyebrow = document.getElementById('modeEyebrow');
-      const title = document.getElementById('modeTitle');
-      const sub = document.getElementById('modeSub');
-      const helperBox = document.getElementById('helperBox');
-      const errorAlert = document.getElementById('error-alert');
-      const submitBtn = document.getElementById('submitBtn');
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
 
-      errorAlert.classList.remove('show');
-      helperBox.classList.remove('show');
+    const eyebrow = document.getElementById('modeEyebrow');
+    const title = document.getElementById('modeTitle');
+    const sub = document.getElementById('modeSub');
+    const helperBox = document.getElementById('helperBox');
+    const errorAlert = document.getElementById('error-alert');
+    const submitBtn = document.getElementById('submitBtn');
 
-      if (mode === 'user') {
-        eyebrow.textContent = 'Sign in to continue';
-        title.textContent = 'Login to FeedMe';
-        sub.textContent = 'Enter your details below and get back to your cravings in seconds.';
-        submitBtn.textContent = 'LOGIN NOW';
-      }
+    errorAlert.classList.remove('show');
+    helperBox.classList.remove('show');
 
-      if (mode === 'admin') {
-        eyebrow.textContent = 'Admin access only';
-        title.textContent = 'Admin Login';
-        sub.textContent = 'Use the admin email and password to access the FeedMe admin dashboard.';
-        helperBox.textContent = 'Admin credentials: burgerplace@gmail.com / FeedMeNow';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS ADMIN';
-      }
-
-      if (mode === 'rider') {
-        eyebrow.textContent = 'Rider access only';
-        title.textContent = 'Rider Login';
-        sub.textContent = 'Use the rider email and password to access the rider delivery page.';
-        helperBox.textContent = 'Rider credentials: rider@gmail.com / RiderOnTheWay';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS RIDER';
-      }
-
-      if (mode === 'restaurant') {
-        eyebrow.textContent = 'Restaurant access only';
-        title.textContent = 'Restaurant Login';
-        sub.textContent = 'Use the restaurant email and password to access the restaurant dashboard.';
-        helperBox.textContent = 'Restaurant credentials: burgerpalace@gmail.com / FeedMeNow';
-        helperBox.classList.add('show');
-        submitBtn.textContent = 'LOGIN AS RESTAURANT';
-      }
+    if (mode === 'user') {
+      eyebrow.textContent = 'Sign in to continue';
+      title.textContent = 'Login to FeedMe';
+      sub.textContent = 'Enter your details below and get back to your cravings in seconds.';
+      submitBtn.textContent = 'LOGIN NOW';
     }
 
-    async function handleLogin(e) {
-      e.preventDefault();
+    if (mode === 'admin') {
+      eyebrow.textContent = 'Admin access only';
+      title.textContent = 'Admin Login';
+      sub.textContent = 'Use the admin email and password to access the FeedMe admin dashboard.';
+      helperBox.textContent = 'Admin credentials: burgerplace@gmail.com / FeedMeNow';
+      helperBox.classList.add('show');
+      submitBtn.textContent = 'LOGIN AS ADMIN';
+    }
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorAlert = document.getElementById('error-alert');
+    if (mode === 'rider') {
+      eyebrow.textContent = 'Rider access only';
+      title.textContent = 'Rider Login';
+      sub.textContent = 'Use the rider email and password to access the rider delivery page.';
+      helperBox.textContent = 'Rider credentials: rider@gmail.com / RiderOnTheWay';
+      helperBox.classList.add('show');
+      submitBtn.textContent = 'LOGIN AS RIDER';
+    }
 
-      errorAlert.classList.remove('show');
+    if (mode === 'restaurant') {
+      eyebrow.textContent = 'Restaurant access only';
+      title.textContent = 'Restaurant Login';
+      sub.textContent = 'Use the restaurant email and password to access the restaurant dashboard.';
+      helperBox.textContent = 'Restaurant credentials: burgerpalace@gmail.com / FeedMeNow';
+      helperBox.classList.add('show');
+      submitBtn.textContent = 'LOGIN AS RESTAURANT';
+    }
+  }
 
-      if (loginMode === 'admin') {
-        if (email === 'burgerplace@gmail.com' && password === 'FeedMeNow') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'admin');
-          window.location.href = 'admin.html';
-        } else {
-          errorAlert.textContent = 'Admin email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorAlert = document.getElementById('error-alert');
+
+    errorAlert.classList.remove('show');
+
+    if (loginMode === 'admin') {
+      if (email === 'burgerplace@gmail.com' && password === 'FeedMeNow') {
+        localStorage.setItem('feedmeLoggedIn', 'true');
+        localStorage.setItem('feedmeGuest', 'false');
+        localStorage.setItem('feedmeUserEmail', email);
+        localStorage.setItem('feedmeUserRole', 'admin');
+        window.location.href = 'admin.html';
+      } else {
+        errorAlert.textContent = 'Admin email or password is incorrect.';
+        errorAlert.classList.add('show');
       }
+      return;
+    }
 
-      if (loginMode === 'rider') {
-        if (email === 'rider@gmail.com' && password === 'RiderOnTheWay') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'rider');
-          localStorage.setItem('token', 'rider-demo-token');
-          localStorage.setItem('feedmeToken', 'rider-demo-token');
-          localStorage.setItem('user_id', '1');
-          localStorage.setItem('feedmeUserId', '1');
-          window.location.href = 'rider.html';
-        } else {
-          errorAlert.textContent = 'Rider email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
+    if (loginMode === 'rider') {
+      if (email === 'rider@gmail.com' && password === 'RiderOnTheWay') {
+        localStorage.setItem('feedmeLoggedIn', 'true');
+        localStorage.setItem('feedmeGuest', 'false');
+        localStorage.setItem('feedmeUserEmail', email);
+        localStorage.setItem('feedmeUserRole', 'rider');
+        localStorage.setItem('token', 'rider-demo-token');
+        localStorage.setItem('feedmeToken', 'rider-demo-token');
+        localStorage.setItem('user_id', '1');
+        localStorage.setItem('feedmeUserId', '1');
+        window.location.href = 'rider.html';
+      } else {
+        errorAlert.textContent = 'Rider email or password is incorrect.';
+        errorAlert.classList.add('show');
       }
+      return;
+    }
 
-      if (loginMode === 'restaurant') {
-        if (email === 'burgerpalace@gmail.com' && password === 'FeedMeNow') {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'restaurant');
-          localStorage.setItem('restaurant_id', '1');
-          localStorage.setItem('restaurant_name', 'Burger Palace');
-          localStorage.setItem('token', 'restaurant-demo-token');
-          localStorage.setItem('feedmeToken', 'restaurant-demo-token');
-          window.location.href = 'restaurant-dashboard.html';
-        } else {
-          errorAlert.textContent = 'Restaurant email or password is incorrect.';
-          errorAlert.classList.add('show');
-        }
-        return;
+    if (loginMode === 'restaurant') {
+      if (email === 'burgerpalace@gmail.com' && password === 'FeedMeNow') {
+        localStorage.setItem('feedmeLoggedIn', 'true');
+        localStorage.setItem('feedmeGuest', 'false');
+        localStorage.setItem('feedmeUserEmail', email);
+        localStorage.setItem('feedmeUserRole', 'restaurant');
+        localStorage.setItem('restaurant_id', '1');
+        localStorage.setItem('restaurant_name', 'Burger Palace');
+        localStorage.setItem('token', 'restaurant-demo-token');
+        localStorage.setItem('feedmeToken', 'restaurant-demo-token');
+        window.location.href = 'restaurant-dashboard.html';
+      } else {
+        errorAlert.textContent = 'Restaurant email or password is incorrect.';
+        errorAlert.classList.add('show');
       }
+      return;
+    }
+
+    try {
+      const response = await fetch(`${getApiBase()}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const rawText = await response.text();
+      let data = {};
 
       try {
-        const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        });
-
-        let data = {};
-        const rawText = await response.text();
-        try {
-          data = rawText ? JSON.parse(rawText) : {};
-        } catch {
-          data = { message: rawText || 'Unexpected server response.' };
-        }
-
-        if (response.ok) {
-          localStorage.setItem('feedmeLoggedIn', 'true');
-          localStorage.setItem('feedmeGuest', 'false');
-          localStorage.setItem('feedmeUserEmail', email);
-          localStorage.setItem('feedmeUserRole', 'user');
-
-          if (data.token) {
-            localStorage.setItem('feedmeToken', data.token);
-            localStorage.setItem('token', data.token);
-          }
-
-          if (data.user) {
-            localStorage.setItem('feedmeUser', JSON.stringify(data.user));
-
-            if (data.user.user_id) {
-              localStorage.setItem('user_id', String(data.user.user_id));
-              localStorage.setItem('feedmeUserId', String(data.user.user_id));
-            }
-
-            if (data.user.role === 'owner') {
-              window.location.href = 'restaurant-dashboard.html';
-              return;
-            }
-          }
-
-          window.location.href = 'index.html';
-        } else {
-          errorAlert.textContent = data.message || 'Invalid email or password. Please try again.';
-          errorAlert.classList.add('show');
-        }
-      } catch (error) {
-        errorAlert.textContent =
-          'Unable to connect to server.\n' +
-          'If you are opening this page from GitHub Pages, user login will fail because the page is HTTPS but your backend is HTTP on port 5000.\n' +
-          'Open this page from your EC2-hosted site instead.';
-        errorAlert.classList.add('show');
-        console.error(error);
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        data = { message: rawText || 'Unexpected server response.' };
       }
-    }
 
-    function continueAsGuest() {
-      localStorage.setItem('feedmeGuest', 'true');
-      localStorage.removeItem('feedmeLoggedIn');
-      localStorage.removeItem('feedmeToken');
-      localStorage.removeItem('token');
-      localStorage.removeItem('feedmeUser');
-      localStorage.removeItem('feedmeUserEmail');
-      localStorage.removeItem('feedmeUserRole');
-      localStorage.removeItem('restaurant_id');
-      localStorage.removeItem('restaurant_name');
-      localStorage.removeItem('user_id');
-      localStorage.removeItem('feedmeUserId');
-      window.location.href = 'index.html';
+      if (response.ok) {
+        localStorage.setItem('feedmeLoggedIn', 'true');
+        localStorage.setItem('feedmeGuest', 'false');
+        localStorage.setItem('feedmeUserEmail', email);
+        localStorage.setItem('feedmeUserRole', 'user');
+
+        if (data.token) {
+          localStorage.setItem('feedmeToken', data.token);
+          localStorage.setItem('token', data.token);
+        }
+
+        if (data.user) {
+          localStorage.setItem('feedmeUser', JSON.stringify(data.user));
+
+          if (data.user.user_id) {
+            localStorage.setItem('user_id', String(data.user.user_id));
+            localStorage.setItem('feedmeUserId', String(data.user.user_id));
+          }
+
+          if (data.user.role === 'owner') {
+            window.location.href = 'restaurant-dashboard.html';
+            return;
+          }
+        }
+
+        window.location.href = 'index.html';
+      } else {
+        errorAlert.textContent = data.message || `Login failed with status ${response.status}.`;
+        errorAlert.classList.add('show');
+      }
+    } catch (error) {
+      errorAlert.textContent =
+        `Unable to connect to server.\n` +
+        `Tried: ${getApiBase()}/api/auth/login\n` +
+        `Details: ${error.message}`;
+      errorAlert.classList.add('show');
+      console.error('Login error:', error);
     }
-  </script>
+  }
+
+  function continueAsGuest() {
+    localStorage.setItem('feedmeGuest', 'true');
+    localStorage.removeItem('feedmeLoggedIn');
+    localStorage.removeItem('feedmeToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('feedmeUser');
+    localStorage.removeItem('feedmeUserEmail');
+    localStorage.removeItem('feedmeUserRole');
+    localStorage.removeItem('restaurant_id');
+    localStorage.removeItem('restaurant_name');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('feedmeUserId');
+    window.location.href = 'index.html';
+  }
+</script>
 </body>
 </html>
