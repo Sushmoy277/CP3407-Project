@@ -1,364 +1,1320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FeedMe — Restaurant Dashboard</title>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--orange:#FF4D00;--dark:#1A1A1A;--light:#F5F4F0;--white:#fff;--gray:#888;--border:#E0DDD8;--green:#10B981;--font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace}
-  body{font-family:var(--font);background:var(--light);color:var(--dark);display:flex;min-height:100vh}
-  .sidebar{width:240px;background:var(--dark);flex-shrink:0;display:flex;flex-direction:column;padding:0}
-  .sidebar-brand{padding:20px 20px 16px;border-bottom:1px solid #333;display:flex;align-items:center;gap:10px}
-  .sidebar-logo{font-family:var(--mono);font-weight:700;font-size:16px;color:var(--orange)}
-  .sidebar-name{font-size:13px;font-weight:600;color:var(--white)}
-  .sidebar-section{font-size:10px;font-family:var(--mono);color:#555;text-transform:uppercase;letter-spacing:2px;padding:16px 20px 6px}
-  .sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer;transition:all .2s;text-decoration:none}
-  .sidebar-item:hover{color:var(--white);background:rgba(255,255,255,.05)}
-  .sidebar-item.active{color:var(--white);background:var(--orange)}
-  .sidebar-item .icon{font-size:16px;width:20px}
-  .main{flex:1;overflow:auto}
-  .topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
-  .topbar-title{font-size:18px;font-weight:800}
-  .topbar-right{display:flex;align-items:center;gap:12px}
-  .status-badge{background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:6px;font-family:var(--mono);cursor:pointer}
-  .refresh-indicator{font-size:11px;font-family:var(--mono);color:var(--gray)}
-  .content{padding:28px 32px}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
-  .stat-card{background:var(--white);border:2px solid var(--border);border-left:5px solid var(--orange);border-radius:10px;padding:18px 20px}
-  .stat-val{font-size:30px;font-weight:800;font-family:var(--mono)}
-  .stat-label{font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);margin-top:4px}
-  .stat-change{font-size:11px;color:var(--green);font-family:var(--mono);margin-top:6px}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .panel{background:var(--white);border:2px solid var(--border);border-radius:10px;padding:20px}
-  .panel-title{font-size:14px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-  .order-item{border:2px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;transition:all .3s}
-  .order-item.new{border-color:var(--orange);background:#FFF5F2}
-  .order-item.preparing{border-color:#F59E0B;background:#FFFBF0}
-  .order-item.ready{border-color:var(--green);background:#F0FDF4}
-  .order-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-  .order-num{font-size:13px;font-weight:800;font-family:var(--mono)}
-  .o-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
-  .o-new{background:var(--orange);color:#fff}
-  .o-prep{background:#F59E0B;color:#fff}
-  .o-ready{background:#8B5CF6;color:#fff}
-  .o-done{background:var(--green);color:#fff}
-  .o-cancelled{background:#EF4444;color:#fff}
-  .order-detail{font-size:12px;color:var(--gray);font-family:var(--mono);margin-bottom:10px;line-height:1.6}
-  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
-  .btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;border:2px solid}
-  .btn:disabled{opacity:0.5;cursor:not-allowed}
-  .btn-accept{background:var(--orange);color:#fff;border-color:var(--orange)}
-  .btn-accept:hover:not(:disabled){background:#e04400}
-  .btn-reject{background:transparent;color:var(--dark);border-color:var(--border)}
-  .btn-reject:hover:not(:disabled){border-color:#EF4444;color:#EF4444}
-  .btn-preparing{background:#F59E0B;color:#fff;border-color:#F59E0B}
-  .btn-preparing:hover:not(:disabled){background:#d97706}
-  .btn-ready{background:var(--dark);color:#fff;border-color:var(--dark)}
-  .btn-ready:hover:not(:disabled){background:var(--orange);border-color:var(--orange)}
-  .loading{text-align:center;padding:30px;color:var(--gray);font-family:var(--mono);font-size:13px}
-  .empty{text-align:center;padding:30px;color:var(--gray);font-family:var(--mono);font-size:13px}
-  .error-msg{background:#FEE2E2;border:1px solid #FCA5A5;color:#DC2626;padding:10px 14px;border-radius:6px;font-size:12px;font-family:var(--mono);margin-bottom:12px;display:none}
-  .chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding:10px 0}
-  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-  .bar{width:100%;background:var(--border);border-radius:4px 4px 0 0;transition:height .3s}
-  .bar.highlight{background:var(--orange)}
-  .bar-label{font-size:10px;font-family:var(--mono);color:var(--gray)}
-  .toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:white;padding:12px 20px;border-radius:8px;font-size:13px;font-family:var(--mono);font-weight:600;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s}
-  .toast.show{transform:translateY(0);opacity:1}
-  .toast.success{background:var(--green)}
-  .toast.error{background:#EF4444}
-  @media(max-width:900px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
-</style>
-</head>
-<body>
-<div class="sidebar">
-  <div class="sidebar-brand">
-    <div>
-      <div class="sidebar-logo">FeedMe</div>
-      <div class="sidebar-name" id="restaurantName">Restaurant</div>
-    </div>
-  </div>
-  <div class="sidebar-section">MAIN</div>
-  <a class="sidebar-item active" href="restaurant-dashboard.html"><span class="icon">📊</span> Dashboard</a>
-  <a class="sidebar-item" href="#"><span class="icon">📦</span> Orders</a>
-  <a class="sidebar-item" href="menu-management.html"><span class="icon">🍔</span> Menu</a>
-  <div class="sidebar-section">REPORTS</div>
-  <a class="sidebar-item" href="#"><span class="icon">💰</span> Sales</a>
-  <a class="sidebar-item" href="#"><span class="icon">⭐</span> Reviews</a>
-  <div class="sidebar-section">SETTINGS</div>
-  <a class="sidebar-item" href="#"><span class="icon">⚙️</span> Settings</a>
-  <a class="sidebar-item" href="login.html" onclick="logout()"><span class="icon">🚪</span> Logout</a>
-</div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedMe — Restaurant Dashboard</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title">Today's Overview</div>
-    <div class="topbar-right">
-      <div class="refresh-indicator" id="refreshIndicator">🟢 Live connected</div>
-      <div class="status-badge" onclick="toggleStoreStatus(this)">● STORE OPEN</div>
-    </div>
-  </div>
-
-  <div class="content">
-    <div id="errorMsg" class="error-msg"></div>
-
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-val" id="totalOrders">—</div>
-        <div class="stat-label">Orders Today</div>
-        <div class="stat-change" id="pendingLabel">Loading...</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="totalRevenue">—</div>
-        <div class="stat-label">Revenue Today</div>
-        <div class="stat-change">↑ Today's total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="pendingCount">—</div>
-        <div class="stat-label">Pending Orders</div>
-        <div class="stat-change" style="color:var(--orange)">Requires attention</div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="panel">
-        <div class="panel-title">
-          🔔 Incoming Orders
-          <span style="font-size:11px;font-family:var(--mono);color:var(--gray);font-weight:400" id="lastUpdated"></span>
-        </div>
-        <div id="ordersContainer"><div class="loading">Loading orders...</div></div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">📈 Sales — This Week</div>
-        <div class="chart">
-          <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">Mon</div></div>
-          <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">Tue</div></div>
-          <div class="bar-wrap"><div class="bar" style="height:60%"></div><div class="bar-label">Wed</div></div>
-          <div class="bar-wrap"><div class="bar highlight" style="height:90%"></div><div class="bar-label">Thu</div></div>
-          <div class="bar-wrap"><div class="bar" style="height:85%"></div><div class="bar-label">Fri</div></div>
-          <div class="bar-wrap"><div class="bar" style="height:95%"></div><div class="bar-label">Sat</div></div>
-          <div class="bar-wrap"><div class="bar" style="height:80%"></div><div class="bar-label">Sun</div></div>
-        </div>
-        <div style="font-size:12px;font-family:var(--mono);color:var(--gray);margin-top:8px;text-align:center">Peak day: Saturday · $892 revenue</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-const API = 'http://18.212.234.225:5001/api';
-const SOCKET_URL = 'http://18.212.234.225:5001';
-
-const token = localStorage.getItem('token');
-const restaurantId = localStorage.getItem('restaurant_id');
-const restaurantName = localStorage.getItem('restaurant_name');
-
-if (!token || !restaurantId) {
-  window.location.href = 'login.html';
-}
-
-if (restaurantName) {
-  document.getElementById('restaurantName').textContent = restaurantName;
-}
-
-const socket = io(SOCKET_URL, {
-  transports: ['websocket', 'polling']
-});
-
-socket.on('connect', () => {
-  socket.emit('join_restaurant_room', restaurantId);
-  document.getElementById('refreshIndicator').textContent = '🟢 Live connected';
-});
-
-socket.on('disconnect', () => {
-  document.getElementById('refreshIndicator').textContent = '🔴 Disconnected';
-});
-
-socket.on('new_order', (order) => {
-  showToast(`🆕 New order #${order.order_id} received`, 'success');
-  loadOrders();
-});
-
-socket.on('restaurant_order_updated', () => {
-  loadOrders();
-});
-
-socket.on('order_ready_for_rider', (data) => {
-  showToast(`📦 Order #${data.order_id} is ready for rider`, 'success');
-  loadOrders();
-});
-
-function toggleStoreStatus(el) {
-  el.textContent = el.textContent.includes('OPEN') ? '● STORE CLOSED' : '● STORE OPEN';
-}
-
-function logout() {
-  localStorage.clear();
-}
-
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => {
-    t.className = 'toast';
-  }, 3000);
-}
-
-function showError(msg) {
-  const box = document.getElementById('errorMsg');
-  box.style.display = 'block';
-  box.textContent = msg;
-}
-
-function hideError() {
-  document.getElementById('errorMsg').style.display = 'none';
-}
-
-function getStatusBadge(status) {
-  const map = {
-    pending: '<span class="o-badge o-new">NEW</span>',
-    confirmed: '<span class="o-badge o-prep">CONFIRMED</span>',
-    preparing: '<span class="o-badge o-prep">PREPARING</span>',
-    ready: '<span class="o-badge o-ready">READY</span>',
-    out_for_delivery: '<span class="o-badge o-done">OUT FOR DELIVERY</span>',
-    delivered: '<span class="o-badge o-done">DELIVERED</span>',
-    cancelled: '<span class="o-badge o-cancelled">CANCELLED</span>'
-  };
-  return map[status] || `<span class="o-badge o-new">${status}</span>`;
-}
-
-function getItemClass(status) {
-  if (status === 'pending') return 'new';
-  if (status === 'confirmed' || status === 'preparing') return 'preparing';
-  if (status === 'ready') return 'ready';
-  return '';
-}
-
-function getActionButtons(order) {
-  const id = order.order_id;
-  const status = order.order_status;
-
-  if (status === 'pending') {
-    return `
-      <button class="btn btn-accept" onclick="updateStatus(${id}, 'confirmed')">ACCEPT</button>
-      <button class="btn btn-reject" onclick="updateStatus(${id}, 'cancelled')">REJECT</button>
-    `;
-  }
-
-  if (status === 'confirmed') {
-    return `<button class="btn btn-preparing" onclick="updateStatus(${id}, 'preparing')">START PREPARING</button>`;
-  }
-
-  if (status === 'preparing') {
-    return `<button class="btn btn-ready" onclick="updateStatus(${id}, 'ready')">MARK AS READY</button>`;
-  }
-
-  if (status === 'ready') {
-    return `<button class="btn btn-ready" onclick="updateStatus(${id}, 'out_for_delivery')">MARK DISPATCHED</button>`;
-  }
-
-  return '';
-}
-
-async function updateStatus(orderId, newStatus) {
-  try {
-    const res = await fetch(`${API}/orders/${orderId}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ status: newStatus })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Failed to update status');
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    showToast(`✅ Order #${orderId} updated to ${newStatus}`, 'success');
-    loadOrders();
-  } catch (err) {
-    showToast(`❌ ${err.message}`, 'error');
-  }
-}
+    :root {
+      --orange: #ff5a0a;
+      --orange-dark: #e64d00;
+      --dark: #0e1014;
+      --dark-2: #171a20;
+      --light: #f6f2ec;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #777;
+      --border: #e3ddd2;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --red: #ef4444;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.06);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
 
-async function loadOrders() {
-  try {
-    hideError();
+    body {
+      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top left, rgba(255, 90, 10, 0.07), transparent 24%),
+        linear-gradient(180deg, #fbf8f4 0%, #f3efe8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    const res = await fetch(`${API}/orders/restaurant/${restaurantId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar {
+      width: 260px;
+      background:
+        linear-gradient(180deg, rgba(255,90,10,0.08), transparent 22%),
+        linear-gradient(180deg, #0d1015 0%, #090b10 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 22px 16px;
+      position: sticky;
+      top: 0;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sidebar-brand {
+      padding: 12px 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 18px;
+    }
+
+    .sidebar-logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-name {
+      margin-top: 6px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .sidebar-sub {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-family: var(--font-mono);
+    }
+
+    .sidebar-section {
+      font-size: 0.74rem;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-family: var(--font-mono);
+      padding: 18px 14px 10px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      margin-bottom: 8px;
+      border-radius: 16px;
+      color: rgba(255,255,255,0.74);
+      font-weight: 700;
+      transition: 0.22s ease;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      box-shadow: 0 16px 35px rgba(255, 90, 10, 0.22);
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #ebe4d8;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 5px;
+    }
+
+    .topbar-sub {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .topbar-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .live-chip,
+    .status-badge,
+    .clock-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-soft);
+      font-size: 0.92rem;
+    }
+
+    .live-chip {
+      font-family: var(--font-mono);
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .clock-box {
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .status-badge {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .status-badge.closed {
+      background: var(--red);
+      border-color: var(--red);
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .hero-card,
+    .quick-card,
+    .panel,
+    .stat-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card {
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(255,90,10,0.12), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+    }
+
+    .eyebrow {
+      color: var(--orange);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero-card h2 {
+      font-size: 2.4rem;
+      line-height: 1.02;
+      letter-spacing: -1.3px;
+      margin-bottom: 12px;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      box-shadow: 0 16px 35px rgba(255, 90, 10, 0.22);
+    }
+
+    .action-btn.secondary {
+      background: #fff;
+      border: 2px solid var(--border);
+      color: var(--dark);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .quick-card {
+      padding: 24px;
+    }
+
+    .quick-card h3 {
+      font-size: 1.45rem;
+      margin-bottom: 8px;
+    }
+
+    .quick-card p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .health-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .health-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .health-item span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .health-badge {
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+    }
+
+    .ok { background: #dcfce7; color: #166534; }
+    .warn { background: #fef3c7; color: #92400e; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      border-left: 5px solid var(--orange);
+      transition: 0.2s ease;
+    }
+
+    .stat-card:nth-child(2) { border-left-color: var(--green); }
+    .stat-card:nth-child(3) { border-left-color: var(--blue); }
+    .stat-card:nth-child(4) { border-left-color: var(--purple); }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.10);
+    }
+
+    .stat-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.84rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-family: var(--font-mono);
+      margin-bottom: 10px;
+    }
+
+    .stat-change {
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+    }
+
+    .filters-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 2px solid var(--border);
+      background: #fff;
+      padding: 11px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 0.92rem;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+    }
+
+    .search-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 0 14px;
+    }
+
+    .search-mini input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 12px 4px;
+      min-width: 220px;
+      font-family: var(--font-main);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #ebe2d6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .order-item {
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      transition: 0.24s ease;
+      background: #fff;
+    }
+
+    .order-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .order-item.new {
+      border-color: var(--orange);
+      background: #fff7f2;
+    }
+
+    .order-item.preparing {
+      border-color: var(--yellow);
+      background: #fffbf2;
+    }
+
+    .order-item.ready {
+      border-color: var(--green);
+      background: #f4fff8;
+    }
+
+    .order-item.dispatched {
+      border-color: var(--blue);
+      background: #f4f9ff;
+    }
+
+    .order-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .order-num {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    .o-badge {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .o-new { background: var(--orange); }
+    .o-confirmed { background: #fb923c; }
+    .o-prep { background: var(--yellow); }
+    .o-ready { background: var(--green); }
+    .o-dispatched { background: var(--blue); }
+    .o-done { background: #059669; }
+    .o-cancelled { background: var(--red); }
+
+    .order-detail {
+      color: var(--muted);
+      line-height: 1.7;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+    }
+
+    .items-list {
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #faf7f2;
+      border: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: 0.2s ease;
+      border: 2px solid var(--border);
+      background: transparent;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn-accept {
+      background: linear-gradient(135deg, var(--orange), #ff6d1f);
+      color: #fff;
+      border-color: var(--orange);
+    }
+
+    .btn-reject {
+      color: var(--dark);
+      background: #fff;
+    }
+
+    .btn-preparing {
+      background: var(--yellow);
+      color: #fff;
+      border-color: var(--yellow);
+    }
+
+    .btn-ready {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+    }
+
+    .btn-dispatch {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .btn-track {
+      background: #fff;
+      color: var(--orange);
+      border-color: #ffd7c6;
+    }
+
+    .loading,
+    .empty {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .chart {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      height: 220px;
+      padding-top: 10px;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 46px;
+      border-radius: 16px 16px 8px 8px;
+      background: #d7d0c6;
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .bar:hover {
+      transform: translateY(-4px);
+    }
+
+    .bar.highlight {
+      background: linear-gradient(180deg, #ff7a3b, #ff5a0a);
+    }
+
+    .bar-label {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .mini-note {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--dark);
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--red); }
+
+    @media (max-width: 1200px) {
+      .hero-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+
+      .content,
+      .topbar {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-right {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-mini input {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .chart {
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">FeedMe</div>
+      <div class="sidebar-name" id="restaurantName">Restaurant</div>
+      <div class="sidebar-sub">Restaurant Console</div>
+    </div>
+
+    <div class="sidebar-section">Main</div>
+    <a class="sidebar-item active" href="restaurant-dashboard.html">📊 Dashboard</a>
+    <a class="sidebar-item" href="#">📦 Orders</a>
+    <a class="sidebar-item" href="menu-management.html">🍔 Menu</a>
+
+    <div class="sidebar-section">Reports</div>
+    <a class="sidebar-item" href="#">💰 Sales</a>
+    <a class="sidebar-item" href="#">⭐ Reviews</a>
+
+    <div class="sidebar-section">Settings</div>
+    <a class="sidebar-item" href="#">⚙️ Settings</a>
+    <a class="sidebar-item" href="login.html" onclick="logout()">🚪 Logout</a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Today’s Overview</div>
+        <div class="topbar-sub">Live restaurant orders, status flow, and customer tracking sync.</div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="live-chip" id="refreshIndicator">🟢 Live connected</div>
+        <div class="clock-box" id="clock"></div>
+        <div class="status-badge" id="storeBadge" onclick="toggleStoreStatus(this)">● STORE OPEN</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="errorMsg" class="error-msg"></div>
+
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">Live Order Flow</div>
+          <h2>Accept orders, update kitchen status, and push tracking updates live.</h2>
+          <p>
+            New Burger Palace orders should appear here automatically when they are saved into the backend.
+            When you accept or move an order forward, this dashboard updates the order status and also syncs
+            customer tracking data for the tracking page.
+          </p>
+
+          <div class="hero-actions">
+            <button class="action-btn primary" onclick="loadOrders(true)">Refresh Orders</button>
+            <button class="action-btn secondary" onclick="scrollToOrders()">Go to Incoming Orders</button>
+          </div>
+        </div>
+
+        <div class="quick-card">
+          <div class="eyebrow">System Health</div>
+          <h3>Kitchen is ready.</h3>
+          <p>Connection, restaurant session, and incoming order updates are monitored here.</p>
+
+          <div class="health-list">
+            <div class="health-item">
+              <span>Socket Connection</span>
+              <div class="health-badge ok" id="socketHealth">ONLINE</div>
+            </div>
+            <div class="health-item">
+              <span>Restaurant Session</span>
+              <div class="health-badge ok" id="sessionHealth">ACTIVE</div>
+            </div>
+            <div class="health-item">
+              <span>Manual Refresh Needed</span>
+              <div class="health-badge warn" id="refreshNeed">LOW</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="totalOrders">—</div>
+          <div class="stat-label">Orders Today</div>
+          <div class="stat-change" id="pendingLabel">Loading...</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="totalRevenue">—</div>
+          <div class="stat-label">Revenue Today</div>
+          <div class="stat-change">↑ Based on today’s accepted orders</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="pendingCount">—</div>
+          <div class="stat-label">Active Kitchen Queue</div>
+          <div class="stat-change" style="color: var(--orange);">Orders requiring action</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-val" id="completedToday">—</div>
+          <div class="stat-label">Completed Today</div>
+          <div class="stat-change">✓ Delivered or finished today</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <section class="panel" id="ordersPanel">
+          <div class="panel-title">
+            <span>🔔 Incoming Orders</span>
+            <span class="panel-sub" id="lastUpdated"></span>
+          </div>
+
+          <div class="filters-row">
+            <div class="tabs" id="statusTabs">
+              <button class="tab-btn active" data-filter="all">All</button>
+              <button class="tab-btn" data-filter="pending">New</button>
+              <button class="tab-btn" data-filter="preparing">Preparing</button>
+              <button class="tab-btn" data-filter="ready">Ready</button>
+              <button class="tab-btn" data-filter="out_for_delivery">Dispatched</button>
+            </div>
+
+            <div class="search-mini">
+              <span>🔎</span>
+              <input type="text" id="orderSearch" placeholder="Search by order id or customer">
+            </div>
+          </div>
+
+          <div id="ordersContainer" class="orders-list">
+            <div class="loading">Loading orders...</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">📈 Sales — This Week</div>
+
+          <div class="chart">
+            <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">Mon</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">Tue</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:60%"></div><div class="bar-label">Wed</div></div>
+            <div class="bar-wrap"><div class="bar highlight" style="height:90%"></div><div class="bar-label">Thu</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:85%"></div><div class="bar-label">Fri</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:95%"></div><div class="bar-label">Sat</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:80%"></div><div class="bar-label">Sun</div></div>
+          </div>
+
+          <div class="mini-note">Peak day: Saturday · $892 revenue</div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = 'http://18.212.234.225:5001/api';
+    const SOCKET_URL = 'http://18.212.234.225:5001';
+
+    const token = localStorage.getItem('token');
+    const restaurantId = localStorage.getItem('restaurant_id');
+    const restaurantName = localStorage.getItem('restaurant_name');
+
+    let allOrders = [];
+    let activeFilter = 'all';
+
+    if (!token || !restaurantId) {
+      window.location.href = 'login.html';
+    }
+
+    if (restaurantName) {
+      document.getElementById('restaurantName').textContent = restaurantName;
+    }
+
+    document.getElementById('sessionHealth').textContent = token && restaurantId ? 'ACTIVE' : 'MISSING';
+
+    const socket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling']
+    });
+
+    socket.on('connect', () => {
+      socket.emit('join_restaurant_room', restaurantId);
+      document.getElementById('refreshIndicator').textContent = '🟢 Live connected';
+      document.getElementById('socketHealth').textContent = 'ONLINE';
+      document.getElementById('refreshNeed').textContent = 'LOW';
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('refreshIndicator').textContent = '🔴 Disconnected';
+      document.getElementById('socketHealth').textContent = 'OFFLINE';
+      document.getElementById('refreshNeed').textContent = 'HIGH';
+    });
+
+    socket.on('new_order', (order) => {
+      if (belongsToRestaurant(order)) {
+        showToast(`🆕 New order #${order.order_id} received`, 'success');
+        loadOrders(true);
       }
     });
 
-    if (!res.ok) {
-      throw new Error('Could not load restaurant orders');
+    socket.on('restaurant_order_updated', () => {
+      loadOrders(false);
+    });
+
+    socket.on('order_ready_for_rider', (data) => {
+      showToast(`📦 Order #${data.order_id} is ready for rider`, 'success');
+      loadOrders(false);
+    });
+
+    function belongsToRestaurant(order) {
+      if (!order) return false;
+      return String(order.restaurant_id || order.restaurantId || '') === String(restaurantId);
     }
 
-    const orders = await res.json();
-
-    const today = new Date().toDateString();
-    const todayOrders = orders.filter(o => new Date(o.order_date).toDateString() === today);
-    const pendingOrders = orders.filter(o => ['pending', 'confirmed', 'preparing', 'ready'].includes(o.order_status));
-    const revenue = todayOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
-
-    document.getElementById('totalOrders').textContent = todayOrders.length;
-    document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(2)}`;
-    document.getElementById('pendingCount').textContent = pendingOrders.length;
-    document.getElementById('pendingLabel').textContent =
-      pendingOrders.length > 0 ? `↑ ${pendingOrders.length} need attention` : '✓ All caught up';
-
-    document.getElementById('lastUpdated').textContent =
-      `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-
-    const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.order_status));
-    const completedOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.order_status)).slice(0, 3);
-    const displayOrders = [...activeOrders, ...completedOrders];
-
-    const container = document.getElementById('ordersContainer');
-
-    if (displayOrders.length === 0) {
-      container.innerHTML = '<div class="empty">No orders yet today 🍽️</div>';
-      return;
+    function logout() {
+      localStorage.clear();
     }
 
-    container.innerHTML = displayOrders.map(order => {
-      const time = new Date(order.order_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    function updateClock() {
+      document.getElementById('clock').textContent = new Date().toLocaleString();
+    }
 
-      return `
-        <div class="order-item ${getItemClass(order.order_status)}" id="order-${order.order_id}">
-          <div class="order-top-row">
-            <span class="order-num">#${order.order_id} — ${order.customer_name || 'Customer'}</span>
-            ${getStatusBadge(order.order_status)}
-          </div>
-          <div class="order-detail">
-            $${Number(order.total_amount || 0).toFixed(2)} · ${time}<br>
-            📍 ${order.delivery_address || 'No address'}
-          </div>
-          <div class="btn-row">
-            ${getActionButtons(order)}
-          </div>
-        </div>
-      `;
-    }).join('');
-  } catch (err) {
-    showError('⚠️ Could not load orders. Check your connection.');
-    document.getElementById('ordersContainer').innerHTML = '<div class="empty">Failed to load orders</div>';
-  }
-}
+    updateClock();
+    setInterval(updateClock, 1000);
 
-loadOrders();
-setInterval(loadOrders, 15000);
-</script>
+    function toggleStoreStatus(el) {
+      const isOpen = el.textContent.includes('OPEN');
+      if (isOpen) {
+        el.textContent = '● STORE CLOSED';
+        el.classList.add('closed');
+        showToast('Store marked as closed', 'error');
+      } else {
+        el.textContent = '● STORE OPEN';
+        el.classList.remove('closed');
+        showToast('Store marked as open', 'success');
+      }
+    }
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => {
+        t.className = 'toast';
+      }, 2800);
+    }
+
+    function showError(msg) {
+      const box = document.getElementById('errorMsg');
+      box.style.display = 'block';
+      box.textContent = msg;
+    }
+
+    function hideError() {
+      document.getElementById('errorMsg').style.display = 'none';
+    }
+
+    function getStatusBadge(status) {
+      const map = {
+        pending: '<span class="o-badge o-new">NEW</span>',
+        confirmed: '<span class="o-badge o-confirmed">CONFIRMED</span>',
+        preparing: '<span class="o-badge o-prep">PREPARING</span>',
+        ready: '<span class="o-badge o-ready">READY</span>',
+        out_for_delivery: '<span class="o-badge o-dispatched">DISPATCHED</span>',
+        delivered: '<span class="o-badge o-done">DELIVERED</span>',
+        cancelled: '<span class="o-badge o-cancelled">CANCELLED</span>'
+      };
+      return map[status] || `<span class="o-badge o-new">${status}</span>`;
+    }
+
+    function getItemClass(status) {
+      if (status === 'pending') return 'new';
+      if (status === 'confirmed' || status === 'preparing') return 'preparing';
+      if (status === 'ready') return 'ready';
+      if (status === 'out_for_delivery') return 'dispatched';
+      return '';
+    }
+
+    function getNormalizedStatusForFilter(order) {
+      const s = order.order_status || '';
+      if (s === 'confirmed' || s === 'preparing') return 'preparing';
+      return s;
+    }
+
+    function getOrderItemsHtml(order) {
+      const items = order.order_items || order.items || [];
+      if (Array.isArray(items) && items.length > 0) {
+        return items.map(item => {
+          const name = item.item_name || item.name || 'Item';
+          const qty = item.quantity || item.qty || 1;
+          return `${name} x${qty}`;
+        }).join('<br>');
+      }
+      return 'Items not available';
+    }
+
+    function getTrackingStatusConfig(status) {
+      const map = {
+        pending: {
+          pill: '⏳ ORDER RECEIVED',
+          step: 1,
+          mins: 35
+        },
+        confirmed: {
+          pill: '✅ ORDER ACCEPTED',
+          step: 1,
+          mins: 32
+        },
+        preparing: {
+          pill: '👨‍🍳 PREPARING YOUR ORDER',
+          step: 2,
+          mins: 25
+        },
+        ready: {
+          pill: '📦 ORDER READY',
+          step: 2,
+          mins: 15
+        },
+        out_for_delivery: {
+          pill: '🛵 OUT FOR DELIVERY',
+          step: 3,
+          mins: 10
+        },
+        delivered: {
+          pill: '🎉 DELIVERED',
+          step: 4,
+          mins: 0
+        },
+        cancelled: {
+          pill: '❌ ORDER CANCELLED',
+          step: 0,
+          mins: 0
+        }
+      };
+      return map[status] || map.pending;
+    }
+
+    function saveTrackingData(order, statusOverride = null) {
+      const status = statusOverride || order.order_status || 'pending';
+      const cfg = getTrackingStatusConfig(status);
+
+      const trackingPayload = {
+        order_id: order.order_id,
+        restaurant_name: restaurantName || order.restaurant_name || 'Burger Palace',
+        customer_name: order.customer_name || 'Customer',
+        total_amount: Number(order.total_amount || 0),
+        delivery_address: order.delivery_address || 'Address unavailable',
+        order_date: order.order_date || new Date().toISOString(),
+        order_status: status,
+        tracking_step: cfg.step,
+        tracking_pill: cfg.pill,
+        eta_minutes: cfg.mins,
+        rider_name: 'Ahmad Rider',
+        rider_rating: '4.8',
+        rider_vehicle: 'Honda Beat WXY 1234',
+        items: order.order_items || order.items || []
+      };
+
+      localStorage.setItem(`feedme_tracking_${order.order_id}`, JSON.stringify(trackingPayload));
+      localStorage.setItem('feedme_last_tracking_order', String(order.order_id));
+    }
+
+    function openTracking(orderId) {
+      localStorage.setItem('feedme_last_tracking_order', String(orderId));
+      window.location.href = 'tracking.html';
+    }
+
+    function getActionButtons(order) {
+      const id = order.order_id;
+      const status = order.order_status;
+
+      if (status === 'pending') {
+        return `
+          <button class="btn btn-accept" onclick="updateStatus(${id}, 'confirmed')">ACCEPT</button>
+          <button class="btn btn-reject" onclick="updateStatus(${id}, 'cancelled')">REJECT</button>
+          <button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === 'confirmed') {
+        return `
+          <button class="btn btn-preparing" onclick="updateStatus(${id}, 'preparing')">START PREPARING</button>
+          <button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === 'preparing') {
+        return `
+          <button class="btn btn-ready" onclick="updateStatus(${id}, 'ready')">MARK AS READY</button>
+          <button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === 'ready') {
+        return `
+          <button class="btn btn-dispatch" onclick="updateStatus(${id}, 'out_for_delivery')">MARK DISPATCHED</button>
+          <button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>
+        `;
+      }
+
+      if (status === 'out_for_delivery') {
+        return `
+          <button class="btn btn-accept" onclick="updateStatus(${id}, 'delivered')">MARK DELIVERED</button>
+          <button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>
+        `;
+      }
+
+      return `<button class="btn btn-track" onclick="openTracking(${id})">OPEN TRACKING</button>`;
+    }
+
+    async function updateStatus(orderId, newStatus) {
+      const order = allOrders.find(o => Number(o.order_id) === Number(orderId));
+
+      try {
+        const res = await fetch(`${API}/orders/${orderId}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to update status');
+        }
+
+        if (order) {
+          order.order_status = newStatus;
+          saveTrackingData(order, newStatus);
+        }
+
+        showToast(`✅ Order #${orderId} updated to ${newStatus}`, 'success');
+        renderOrders();
+        loadOrders(false);
+      } catch (err) {
+        showToast(`❌ ${err.message}`, 'error');
+      }
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('ordersContainer');
+      const searchText = document.getElementById('orderSearch').value.toLowerCase().trim();
+
+      const filtered = allOrders.filter(order => {
+        const statusMatch =
+          activeFilter === 'all' ||
+          getNormalizedStatusForFilter(order) === activeFilter;
+
+        const haystack = `${order.order_id} ${order.customer_name || ''}`.toLowerCase();
+        const textMatch = haystack.includes(searchText);
+
+        return statusMatch && textMatch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty">No matching orders found 🍽️</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(order => {
+        const time = new Date(order.order_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const total = Number(order.total_amount || 0).toFixed(2);
+
+        saveTrackingData(order);
+
+        return `
+          <div class="order-item ${getItemClass(order.order_status)}" id="order-${order.order_id}">
+            <div class="order-top-row">
+              <span class="order-num">#${order.order_id} — ${order.customer_name || 'Customer'}</span>
+              ${getStatusBadge(order.order_status)}
+            </div>
+
+            <div class="order-detail">
+              $${total} · ${time}<br>
+              📍 ${order.delivery_address || 'No address'}
+            </div>
+
+            <div class="items-list">
+              ${getOrderItemsHtml(order)}
+            </div>
+
+            <div class="btn-row">
+              ${getActionButtons(order)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadOrders(showSuccessToast = false) {
+      try {
+        hideError();
+
+        const res = await fetch(`${API}/orders/restaurant/${restaurantId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error('Could not load restaurant orders');
+        }
+
+        const orders = await res.json();
+        allOrders = Array.isArray(orders) ? orders.slice().sort((a, b) =>
+          new Date(b.order_date) - new Date(a.order_date)
+        ) : [];
+
+        const today = new Date().toDateString();
+
+        const todayOrders = allOrders.filter(o =>
+          new Date(o.order_date).toDateString() === today
+        );
+
+        const queueOrders = allOrders.filter(o =>
+          ['pending', 'confirmed', 'preparing', 'ready', 'out_for_delivery'].includes(o.order_status)
+        );
+
+        const completedOrders = allOrders.filter(o =>
+          ['delivered'].includes(o.order_status) &&
+          new Date(o.order_date).toDateString() === today
+        );
+
+        const revenue = todayOrders
+          .filter(o => ['confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered'].includes(o.order_status))
+          .reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+
+        document.getElementById('totalOrders').textContent = todayOrders.length;
+        document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(2)}`;
+        document.getElementById('pendingCount').textContent = queueOrders.length;
+        document.getElementById('completedToday').textContent = completedOrders.length;
+        document.getElementById('pendingLabel').textContent =
+          queueOrders.length > 0 ? `↑ ${queueOrders.length} need attention` : '✓ All caught up';
+
+        document.getElementById('lastUpdated').textContent =
+          `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        renderOrders();
+
+        if (showSuccessToast) {
+          showToast('🔄 Orders refreshed', 'success');
+        }
+      } catch (err) {
+        showError('⚠️ Could not load restaurant orders. Check API / token / restaurant id.');
+        document.getElementById('ordersContainer').innerHTML = '<div class="empty">Failed to load orders</div>';
+      }
+    }
+
+    function scrollToOrders() {
+      document.getElementById('ordersPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderOrders();
+      });
+    });
+
+    document.getElementById('orderSearch').addEventListener('input', renderOrders);
+
+    loadOrders();
+    setInterval(loadOrders, 15000);
+  </script>
 </body>
 </html>
