@@ -111,6 +111,11 @@
       font-weight: 700;
     }
 
+    .online-badge.offline {
+      color: var(--red);
+      background: rgba(239,68,68,.12);
+    }
+
     .sidebar-section {
       font-size: 0.74rem;
       text-transform: uppercase;
@@ -653,6 +658,7 @@
       font-family: var(--font-mono);
       margin-bottom: 14px;
       display: none;
+      white-space: pre-line;
     }
 
     .map-box {
@@ -903,14 +909,20 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // Use the same backend port your server.js is actually running on.
-    // If your backend starts on 5001, keep 5001 here.
-    // If you changed server.js to 5000 and restarted successfully, change both lines to 5000.
-    const API_BASE = "http://18.212.234.225:5001/api";
-    const SOCKET_BASE = "http://18.212.234.225:5001";
+    const API_BASE = "http://18.212.234.225:5000/api";
+    const SOCKET_BASE = "http://18.212.234.225:5000";
 
-    const token = localStorage.getItem("token");
-    const riderId = localStorage.getItem("user_id") || localStorage.getItem("feedmeUserId") || "1";
+    // accept both old and new localStorage keys
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("feedmeToken") ||
+      localStorage.getItem("restaurant-demo-token");
+
+    const riderId =
+      localStorage.getItem("user_id") ||
+      localStorage.getItem("feedmeUserId") ||
+      localStorage.getItem("rider_id") ||
+      "1";
 
     let allDeliveries = [];
     let activeFilter = "all";
@@ -924,7 +936,7 @@
     document.getElementById("sessionHealth").textContent = token ? "ACTIVE" : "MISSING";
 
     const socket = io(SOCKET_BASE, {
-      transports: ['websocket', 'polling']
+      transports: ["websocket", "polling"]
     });
 
     socket.on("connect", () => {
@@ -940,7 +952,7 @@
       document.getElementById("socketHealth").textContent = "OFFLINE";
     });
 
-    socket.on("delivery_assigned", (payload) => {
+    socket.on("delivery_assigned", () => {
       showToast("🆕 New delivery assigned", "success");
       loadDeliveries(false);
     });
@@ -955,6 +967,11 @@
       localStorage.removeItem("feedmeUserEmail");
       localStorage.removeItem("feedmeUserRole");
       localStorage.removeItem("feedme_rider_online");
+      localStorage.removeItem("token");
+      localStorage.removeItem("feedmeToken");
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("feedmeUserId");
+      localStorage.removeItem("rider_id");
     }
 
     function updateClock() {
@@ -975,6 +992,7 @@
         btn.textContent = "● GO OFFLINE";
         btn.classList.remove("offline");
         side.textContent = "● ONLINE";
+        side.classList.remove("offline");
         state.textContent = "LIVE";
         stateSub.textContent = "Connected and ready";
         avail.textContent = "READY";
@@ -982,6 +1000,7 @@
         btn.textContent = "● GO ONLINE";
         btn.classList.add("offline");
         side.textContent = "● OFFLINE";
+        side.classList.add("offline");
         state.textContent = "OFFLINE";
         stateSub.textContent = "Not accepting new jobs";
         avail.textContent = "PAUSED";
@@ -1168,17 +1187,29 @@
           }
         });
 
-        const data = await res.json();
+        let data = null;
+        const rawText = await res.text();
+
+        try {
+          data = rawText ? JSON.parse(rawText) : null;
+        } catch {
+          data = rawText;
+        }
 
         if (!res.ok) {
-          throw new Error(data.message || "Failed to load deliveries");
+          throw new Error(
+            `Status ${res.status}: ${
+              typeof data === "object" && data?.message
+                ? data.message
+                : rawText || "Failed to load deliveries"
+            }`
+          );
         }
 
         allDeliveries = Array.isArray(data) ? data : [];
 
         const active = allDeliveries.filter(d => !["delivered", "cancelled"].includes(d.delivery_status));
         const completed = allDeliveries.filter(d => d.delivery_status === "delivered");
-
         const earnings = allDeliveries.reduce((sum, d) => sum + Number(d.total_amount || 0), 0);
 
         document.getElementById("activeCount").textContent = active.length;
@@ -1188,7 +1219,7 @@
           active.length > 0 ? `${active.length} jobs currently active` : "Waiting for assignments";
 
         document.getElementById("lastUpdated").textContent =
-          `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          `Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 
         renderDeliveries();
 
@@ -1196,7 +1227,13 @@
           showToast("🔄 Deliveries refreshed", "success");
         }
       } catch (err) {
-        showError("⚠️ Could not load rider deliveries. Check token, rider assignment, or backend route.");
+        showError(
+          `⚠️ Could not load rider deliveries.\n` +
+          `API: ${API_BASE}/delivery/rider/my\n` +
+          `Rider ID: ${riderId}\n` +
+          `Token found: ${token ? "YES" : "NO"}\n` +
+          `Details: ${err.message}`
+        );
         document.getElementById("deliveriesList").innerHTML = `<div class="empty">Failed to load deliveries</div>`;
       }
     }
@@ -1214,10 +1251,23 @@
           body: JSON.stringify({ delivery_status: status })
         });
 
-        const data = await res.json();
+        let data = null;
+        const rawText = await res.text();
+
+        try {
+          data = rawText ? JSON.parse(rawText) : null;
+        } catch {
+          data = rawText;
+        }
 
         if (!res.ok) {
-          throw new Error(data.message || "Failed to update delivery");
+          throw new Error(
+            `Status ${res.status}: ${
+              typeof data === "object" && data?.message
+                ? data.message
+                : rawText || "Failed to update delivery"
+            }`
+          );
         }
 
         if (target) {
