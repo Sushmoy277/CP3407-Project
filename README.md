@@ -1,118 +1,76 @@
+# FeedMe: A Modern Food Delivery Ecosystem
 
-# FeedMe
-
-FeedMe is a modern food ordering website developed for CP3407/CP5507. The system is designed to improve the online food ordering experience by allowing customers to browse restaurants, view menus, place orders, and track their order progress. Restaurant owners can manage menu items and incoming orders, while administrators can monitor users, restaurants, and overall activity on the platform.
+FeedMe is a sophisticated, database-driven food ordering platform developed for **CP3407/CP5507** at **James Cook University**. Our system is designed to provide a better food ordering experience than traditional platforms by focusing on usability, clear role-based access, and efficient order management.
 
 ## Project Goal
-The goal of FeedMe is to develop a user-friendly and database-driven website that provides a better food ordering experience than traditional platforms by focusing on usability, clear role-based access, and efficient order management.
+The goal of FeedMe is to develop a user-friendly and database-driven website that delivers "what is needed, on time and on budget." We focus on high usability for four distinct roles: Customers, Restaurant Owners, Delivery Riders, and Administrators.
 
-# cp3407-project-FEED ME
+## The Team
+1. **Sushmoy Paul Rohit:** Backend Lead & Database Architecture
+2. **Ornysha Biswas:** Frontend Lead & UI/UX Design
+3. **Mohammad Ramiz Karim:** Quality Assurance, Documentation & Testing Lead
 
-This a project assignment template for CP3407. 
-The following is the list of items, which are required to be completed.
+---
 
+## Project Planning & System Design
+Before starting development, the project was thoroughly planned to ensure all requirements were met.
 
-## Team
+* **Tech Stack:** PHP, MySQL, HTML5, CSS3, JavaScript, and AWS Lightsail. (tech_stack.md)
+* **Architecture:** A layered architecture where users interact through a web frontend, communicating with a backend server and a central database. (architecture.md)
+* **Database Design:** Structured to handle high-concurrency for orders, menus, and user roles. (database_design.md)
+* **UI/UX Design:** Responsive layouts designed for smooth user flow and accessibility. (UI_design.md)
 
-It is recommended to complete this assignment in a group of 2-4 students.
-1. Sushmoy Paul Rohit
-2. Ornysha Biswas
-3. Mohammad Ramiz Karim
+---
 
+### Iteration 1
+**Duration:** 3 Weeks (March 9, 2026 – March 30, 2026)
+**Goal:** Deliver a Minimum Viable Product (MVP) focusing on the core ordering flow.
 
+1. **User Registration & Login:** Priority: High | Status: Completed
+2. **Restaurant & Menu Browsing:** Priority: High | Status: Completed
+3. **Cart Management:** Priority: High | Status: Completed
+4. **Order Placement:** Priority: High | Status: Completed
 
-# Project planning BEFORE iteration-1, (see chapters 1-3)
-Checklist/TODOs: 
-* Update the following during each week prac session  
-* GitHub entry timestamp is BEFORE the iteration-1  
-* User stories are correct and prioritised  
-* Created more user stories than needed for iteration 1 and 2  
-* Project idea finalised ( FeedMe)  
-* Tech stack selected (PHP, MySQL, HTML, CSS, JS, Docker)  
-* Pages and features identified  
-* Database design completed
+*Total: 16 days of development.* (iteration_1.md)
 
-Total: YY days
+### Iteration 2
+**Duration:** 3 Weeks (March 31, 2026 – April 16, 2026)
+**Goal:** Expand management features and implement live cloud tracking.
 
-## System Features
-- [Pages And Features](https://github.com/Sushmoy277/CP3407-Project/blob/main/pages_and_features.md)
+1. **Restaurant Owner Dashboard:** Priority: High | Status: Completed
+2. **Rider Delivery Interface:** Priority: Medium | Status: Completed
+3. **Live Order Tracking:** Priority: High | Status: Completed
+4. **AWS Cloud Deployment:** Priority: High | Status: Completed
 
-## Techs Used
-- [Tech Stack](https://github.com/Sushmoy277/CP3407-Project/blob/main/tech_stack.md)
+*Total: 16 days of development.* (iteration_2.md)
 
-## Agile Project Management
+---
 
-- The project follows an Agile (Scrum) approach to develop the system in multiple iterations (sprints).
-- Tasks are divided into smaller units and managed using tools like GitHub and Trello for better tracking.
-- Team collaboration is maintained through version control, task boards, and regular updates to ensure timely delivery.
-- [Agile Project Management](https://github.com/Sushmoy277/CP3407-Project/blob/main/agile_project_management.md)
+## Technical Specifications
 
-## UI/UX Design
+### Security Design
+The system employs secure login mechanisms, role-based access control (RBAC), and data validation to protect user accounts and prevent unauthorized access.(security.md)
 
-- The system is designed with a simple and user-friendly interface to improve usability and navigation.
-- Wireframes and structured page layouts are used to clearly define the system before development.
-- The design focuses on smooth user flow, accessibility, and responsive behaviour across devices.
-- [UI Design](UI_design.md)
-- [Interface Design](https://www.figma.com/board/7PcOZ8ORDOZHcP3hYhWP62/CP3407-Project?node-id=0-1&p=f&t=Rcg0UPWfsJqJucsH-0)
+### Testing
+We utilize unit, integration, and system testing to verify key functionalities like login, ordering, and real-time updates. (testing.md)
 
-## Security Design
+### Team Roles
+Detailed distribution of work across the team members can be found here: (team_roles.md)
 
-- The system uses secure login and role-based access to protect user accounts and data.
-- All user inputs and data are validated and protected to prevent errors and attacks.
-- Security practices such as encryption, HTTPS, and safe deployment are used to keep the system reliable.
-- [Security](https://github.com/Sushmoy277/CP3407-Project/blob/main/security.md)
+---
 
-## Team Roles
-- [Team Work Distributions](https://github.com/Sushmoy277/CP3407-Project/blob/main/team_roles.md)
+## Marking Navigation
+This GitHub repository serves as the project output. Use the table below to find specific criteria for marking:
 
-## Database Design
+| Rubric Criterion | Link |
+| :--- | :--- |
+| **1: Requirements** | [User Stories](User_stories.md) |
+| **2: Design** | [System Design](design.md) |
+| **3: Implementation** | [Actual Iterations](#actual-iterations) |
+| **4: Testing** | [QA & Testing](testing.md) |
+| **6: Building Tools** | [Tools & Tech Stack](tech_stack.md) |
+| **7: Agile Engineering** | [Agile Management](agile_project_management.md) |
 
-- The database is designed to store users, restaurants, orders, and related data in a structured way.
-- It includes multiple tables with clear relationships to support system functionality.
-- The design ensures data consistency, scalability, and efficient system performance.
+**Live Deployed Solution:** [FeedMe on AWS](http://18.212.234.225/)
 
-- [Database Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/database_design.md)
-## Architecture Design
-
-- The system follows a layered architecture where users (Customer, Restaurant Owner, Delivery Rider, and Admin) interact with the platform through a web-based frontend interface.
-- The frontend communicates with the backend server, which handles core functionalities such as authentication, order processing, delivery management, and overall business logic.
-- The backend connects to a central database for storing system data and integrates with external services such as payment gateways, notification systems, and location services to support real-time food delivery operations.
-- [Architecture Design](https://github.com/Sushmoy277/CP3407-Project/blob/main/architecture.md)
-## Testing
-
-- The system is tested using unit, integration, and system testing to ensure all features work correctly.
-- Test cases are used to verify key functionalities such as login, ordering, and delivery.
-- Validation and error handling are applied to improve system reliability and user experience.
-
-- [Testing](https://github.com/Sushmoy277/CP3407-Project/blob/main/testing.md)
-  
-## Iteration 1 [duration 3-4 weeks], add your start and end dates 
-
-* Goal is to have 2 iterations during a trimester of teaching.
-* Update the following during each week prac session
-* During pracs, you may experiment with using other github ways of tracking changes, e.g. via pull requests.
-
-1. [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
-2. ...
-
-Total: YY days
-
-
-### Iteration 2 [duration 3-4 weeks], add your start and end dates
-Goal is to have 2 iterations during a trimester of teaching.
-1. [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
-2. ...
-
-Total: YY days
-
-### Not enough time/developers: 
-1. [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
-2. ...
-
-Total: YY days
-
-# Actual iterations
-1. [Iteration-1](./iteration_1.md)
-2. [Iteration-2](./iteration_2.md)
-
-
+*James Cook University — CP3407 Project 2026*
