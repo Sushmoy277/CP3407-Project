@@ -620,7 +620,7 @@
 
   <script>
     let loginMode = 'user';
-    const API_BASE = `${window.location.protocol}//${window.location.hostname}:5001`;
+    const API_BASE = `${window.location.protocol}//${window.location.hostname}:5000`;
 
     function setMode(mode, button) {
       loginMode = mode;
@@ -702,7 +702,8 @@
       }
 
       try {
-        const response = await fetch(`${API_BASE}/api/auth/login`, {
+        // const response = await fetch(`${API_BASE}/api/auth/login`, {
+        const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
