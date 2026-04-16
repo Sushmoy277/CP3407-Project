@@ -728,7 +728,7 @@
       }
 
       try {
-        const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
+        const API_BASE = 'http://18.212.234.225:5000';
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
