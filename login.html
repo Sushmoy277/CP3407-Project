@@ -10,11 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --orange: #ff5a0a;
@@ -28,7 +24,6 @@
       --soft-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
       --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
       --font-main: 'Inter', sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
     }
 
     body {
@@ -40,20 +35,13 @@
       min-height: 100vh;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+    a { text-decoration: none; color: inherit; }
 
-    .page-shell {
-      width: min(96%, 1500px);
-      margin: 22px auto;
-    }
+    .page-shell { width: min(96%, 1500px); margin: 22px auto; }
 
     nav {
       background: rgba(255, 255, 255, 0.82);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.8);
       border-radius: 28px;
       box-shadow: var(--soft-shadow);
@@ -71,12 +59,6 @@
       letter-spacing: -1px;
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
     .btn-outline {
       border: 2px solid #d8cec0;
       background: rgba(255,255,255,0.75);
@@ -86,13 +68,6 @@
       font-weight: 700;
       font-size: 1.05rem;
       cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .btn-outline:hover {
-      transform: translateY(-2px);
-      border-color: var(--dark);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
     .main-grid {
@@ -106,7 +81,6 @@
     }
 
     .left-panel {
-      position: relative;
       background:
         linear-gradient(135deg, rgba(255,90,10,0.18), transparent 26%),
         repeating-linear-gradient(
@@ -124,17 +98,7 @@
       color: white;
     }
 
-    .left-panel::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at bottom right, rgba(255, 90, 10, 0.12), transparent 22%);
-      pointer-events: none;
-    }
-
     .badge {
-      position: relative;
-      z-index: 1;
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -142,11 +106,9 @@
       padding: 14px 22px;
       background: rgba(255,255,255,0.09);
       border: 1px solid rgba(255,255,255,0.12);
-      color: #f5f5f5;
       border-radius: 999px;
       font-weight: 700;
       margin-bottom: 36px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .dot {
@@ -158,8 +120,6 @@
     }
 
     .left-panel h1 {
-      position: relative;
-      z-index: 1;
       font-size: clamp(3rem, 7vw, 6rem);
       line-height: 0.95;
       letter-spacing: -3px;
@@ -167,13 +127,9 @@
       margin-bottom: 28px;
     }
 
-    .left-panel h1 span {
-      color: var(--orange);
-    }
+    .left-panel h1 span { color: var(--orange); }
 
     .left-panel p {
-      position: relative;
-      z-index: 1;
       max-width: 640px;
       font-size: 1.2rem;
       line-height: 1.8;
@@ -182,8 +138,6 @@
     }
 
     .feature-row {
-      position: relative;
-      z-index: 1;
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
@@ -206,10 +160,7 @@
       justify-content: center;
     }
 
-    .form-card {
-      width: 100%;
-      max-width: 560px;
-    }
+    .form-card { width: 100%; max-width: 560px; }
 
     .eyebrow {
       color: var(--orange);
@@ -253,12 +204,6 @@
       font-size: 0.9rem;
       font-weight: 800;
       cursor: pointer;
-      transition: 0.25s ease;
-    }
-
-    .mode-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow);
     }
 
     .mode-btn.active {
@@ -279,9 +224,7 @@
       display: none;
     }
 
-    .helper-box.show {
-      display: block;
-    }
+    .helper-box.show { display: block; }
 
     .error-msg {
       display: none;
@@ -293,15 +236,12 @@
       border: 1px solid #f3c3c3;
       font-size: 0.96rem;
       font-weight: 600;
+      white-space: pre-line;
     }
 
-    .error-msg.show {
-      display: block;
-    }
+    .error-msg.show { display: block; }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+    .form-group { margin-bottom: 20px; }
 
     .form-group label {
       display: block;
@@ -321,14 +261,7 @@
       background: rgba(255,255,255,0.92);
       font-size: 1.08rem;
       outline: none;
-      transition: 0.25s ease;
       color: var(--text);
-    }
-
-    .form-group input:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 5px rgba(255, 90, 10, 0.12);
-      transform: translateY(-1px);
     }
 
     .row {
@@ -359,11 +292,6 @@
       color: var(--orange);
       font-weight: 700;
       font-size: 1rem;
-      transition: 0.2s ease;
-    }
-
-    .forgot:hover {
-      text-decoration: underline;
     }
 
     .submit-btn {
@@ -377,13 +305,7 @@
       font-weight: 800;
       letter-spacing: 0.6px;
       cursor: pointer;
-      transition: 0.25s ease;
       box-shadow: 0 18px 40px rgba(255, 90, 10, 0.22);
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-3px) scale(1.01);
-      box-shadow: 0 22px 45px rgba(255, 90, 10, 0.28);
     }
 
     .extra-actions {
@@ -399,16 +321,9 @@
       font-size: 1rem;
       font-weight: 800;
       cursor: pointer;
-      transition: 0.25s ease;
       background: rgba(255,255,255,0.95);
       color: var(--dark);
       border: 2px solid var(--border);
-    }
-
-    .guest-btn:hover {
-      transform: translateY(-2px);
-      border-color: #cfc2b2;
-      box-shadow: var(--card-shadow);
     }
 
     .divider {
@@ -443,13 +358,6 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      transition: 0.25s ease;
-    }
-
-    .google-btn:hover {
-      transform: translateY(-2px);
-      border-color: #cfc2b2;
-      box-shadow: var(--card-shadow);
     }
 
     .bottom-link {
@@ -464,56 +372,20 @@
       font-weight: 800;
     }
 
-    .bottom-link a:hover {
-      text-decoration: underline;
-    }
-
     @media (max-width: 1100px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .left-panel {
-        min-height: 420px;
-      }
+      .main-grid { grid-template-columns: 1fr; }
+      .left-panel { min-height: 420px; }
     }
 
     @media (max-width: 700px) {
-      .page-shell {
-        width: 94%;
-        margin: 14px auto;
-      }
-
-      nav {
-        padding: 16px 18px;
-        border-radius: 22px;
-      }
-
-      .logo {
-        font-size: 1.75rem;
-      }
-
-      .btn-outline {
-        padding: 12px 18px;
-        font-size: 0.95rem;
-      }
-
-      .left-panel,
-      .right-panel {
-        padding: 36px 24px;
-      }
-
-      .left-panel h1 {
-        letter-spacing: -2px;
-      }
-
-      .form-title {
-        letter-spacing: -1px;
-      }
-
-      .mode-switch {
-        grid-template-columns: 1fr;
-      }
+      .page-shell { width: 94%; margin: 14px auto; }
+      nav { padding: 16px 18px; border-radius: 22px; }
+      .logo { font-size: 1.75rem; }
+      .btn-outline { padding: 12px 18px; font-size: 0.95rem; }
+      .left-panel, .right-panel { padding: 36px 24px; }
+      .left-panel h1 { letter-spacing: -2px; }
+      .form-title { letter-spacing: -1px; }
+      .mode-switch { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -620,7 +492,6 @@
   </div>
 
   <script>
-    const API_BASE = 'http://18.212.234.225:5000';
     let loginMode = 'user';
 
     function setMode(mode, button) {
@@ -703,6 +574,10 @@
           localStorage.setItem('feedmeGuest', 'false');
           localStorage.setItem('feedmeUserEmail', email);
           localStorage.setItem('feedmeUserRole', 'rider');
+          localStorage.setItem('token', 'rider-demo-token');
+          localStorage.setItem('feedmeToken', 'rider-demo-token');
+          localStorage.setItem('user_id', '1');
+          localStorage.setItem('feedmeUserId', '1');
           window.location.href = 'rider.html';
         } else {
           errorAlert.textContent = 'Rider email or password is incorrect.';
@@ -720,6 +595,7 @@
           localStorage.setItem('restaurant_id', '1');
           localStorage.setItem('restaurant_name', 'Burger Palace');
           localStorage.setItem('token', 'restaurant-demo-token');
+          localStorage.setItem('feedmeToken', 'restaurant-demo-token');
           window.location.href = 'restaurant-dashboard.html';
         } else {
           errorAlert.textContent = 'Restaurant email or password is incorrect.';
@@ -729,7 +605,7 @@
       }
 
       try {
-        const response = await fetch(${API_BASE}/api/auth/login`, {
+        const response = await fetch('http://18.212.234.225:5000/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -737,20 +613,32 @@
           body: JSON.stringify({ email, password })
         });
 
-        const data = await response.json();
+        let data = {};
+        const rawText = await response.text();
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch {
+          data = { message: rawText || 'Unexpected server response.' };
+        }
 
         if (response.ok) {
-          localStorage.removeItem('feedmeLoggedIn');
+          localStorage.setItem('feedmeLoggedIn', 'true');
           localStorage.setItem('feedmeGuest', 'false');
           localStorage.setItem('feedmeUserEmail', email);
           localStorage.setItem('feedmeUserRole', 'user');
 
           if (data.token) {
             localStorage.setItem('feedmeToken', data.token);
+            localStorage.setItem('token', data.token);
           }
 
           if (data.user) {
             localStorage.setItem('feedmeUser', JSON.stringify(data.user));
+
+            if (data.user.user_id) {
+              localStorage.setItem('user_id', String(data.user.user_id));
+              localStorage.setItem('feedmeUserId', String(data.user.user_id));
+            }
 
             if (data.user.role === 'owner') {
               window.location.href = 'restaurant-dashboard.html';
@@ -764,8 +652,12 @@
           errorAlert.classList.add('show');
         }
       } catch (error) {
-        errorAlert.textContent = 'Unable to connect to server.';
+        errorAlert.textContent =
+          'Unable to connect to server.\n' +
+          'If you are opening this page from GitHub Pages, user login will fail because the page is HTTPS but your backend is HTTP on port 5000.\n' +
+          'Open this page from your EC2-hosted site instead.';
         errorAlert.classList.add('show');
+        console.error(error);
       }
     }
 
@@ -773,12 +665,14 @@
       localStorage.setItem('feedmeGuest', 'true');
       localStorage.removeItem('feedmeLoggedIn');
       localStorage.removeItem('feedmeToken');
+      localStorage.removeItem('token');
       localStorage.removeItem('feedmeUser');
       localStorage.removeItem('feedmeUserEmail');
       localStorage.removeItem('feedmeUserRole');
       localStorage.removeItem('restaurant_id');
       localStorage.removeItem('restaurant_name');
-      localStorage.removeItem('token');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('feedmeUserId');
       window.location.href = 'index.html';
     }
   </script>
