@@ -11,11 +11,6 @@ The goal of FeedMe is to develop a user-friendly and database-driven website tha
 This a project assignment template for CP3407. 
 The following is the list of items, which are required to be completed.
 
-## How to submit [You may delete this before submitting]
-
-2. Add your instructor (JCU-Australia: jc138691@gmail.com Dmitry Konovalov) as a team member to view your project on github
-1. Submit link to your repository
-2. Download your github repository as a zip file and submit via LearnJCU.
 
 ## Team
 
