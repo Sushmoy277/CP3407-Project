@@ -1,7 +1,7 @@
 # Iteration 1
 
-**Start Date:** [Week 3 — add exact date]  
-**End Date:** [Week 6 — add exact date]  
+**Start Date:** Week 3  
+**End Date:** Week 6 
 **Duration:** 3 weeks  
 **Number of Developers:** 3  
 **Assumed Velocity:** 4 developer-days per week (12 days total)
@@ -32,25 +32,25 @@ Deliver the core customer-facing ordering flow — from account creation through
 
 ## Tasks In Progress (during iteration)
 
-- Customer registration form with validation (Sushmoy) — started [add date]
-- Restaurant listing page with dummy data (Ornysha) — started [add date]
-- MySQL database schema for users and restaurants (Sushmoy) — started [add date]
-- Cart session handling logic (Ornysha) — started [add date]
+- Customer registration form with validation (Sushmoy)
+- Restaurant listing page with dummy data (Ornysha) 
+- MySQL database schema for users and restaurants (Sushmoy)
+- Cart session handling logic (Ornysha)
 
 ---
 
 ## Completed Tasks
 
-- Project repository set up with folder structure (Sushmoy) — [add date]
-- Tech stack finalised: PHP, MySQL, HTML, CSS, JS, Docker (all team) — [add date]
-- Database schema for users, restaurants, menus, orders designed (Sushmoy) — [add date]
-- Customer registration and login pages built and connected to MySQL (Sushmoy) — [add date]
-- Restaurant browsing page displaying list of restaurants from database (Ornysha) — [add date]
-- Restaurant detail page showing menu items with prices and images (Ornysha) — [add date]
-- Add to cart and cart management with quantity controls (Ornysha) — [add date]
-- Order placement with order saved to database (Sushmoy) — [add date]
-- Basic session-based authentication and logout (Sushmoy) — [add date]
-- Documentation: user stories, architecture, database design, UI wireframes (Ramiz) — [add date]
+- Project repository set up with folder structure (Sushmoy) 
+- Tech stack finalised: PHP, MySQL, HTML, CSS, JS, Docker (all team) 
+- Database schema for users, restaurants, menus, orders designed (Sushmoy) 
+- Customer registration and login pages built and connected to MySQL (Sushmoy) 
+- Restaurant browsing page displaying list of restaurants from database (Ornysha)
+- Restaurant detail page showing menu items with prices and images (Ornysha) 
+- Add to cart and cart management with quantity controls (Ornysha)
+- Order placement with order saved to database (Sushmoy) 
+- Basic session-based authentication and logout (Sushmoy) 
+- Documentation: user stories, architecture, database design, UI wireframes (Ramiz)
 
 ---
 
@@ -81,7 +81,7 @@ By the end of Iteration 1, the following features were fully functional and depl
 - Order placement with order record saved to the database
 - Basic responsive layout across desktop and mobile
 
-**Deployed app after Iteration 1:** [add AWS Lightsail URL]
+**Deployed app after Iteration 1:** 
 
 ---
 
