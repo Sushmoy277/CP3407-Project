@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FeedMe Login</title>
+  <title>FeedMe Staff Login</title>
   <style>
     * {
       margin: 0;
@@ -23,7 +23,7 @@
 
     .login-container {
       width: 100%;
-      max-width: 430px;
+      max-width: 460px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
@@ -53,13 +53,13 @@
 
     .mode-tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-bottom: 22px;
     }
 
     .tab-btn {
-      padding: 12px;
+      padding: 13px;
       border: 2px solid #ff5a1f;
       background: white;
       color: #ff5a1f;
@@ -67,6 +67,7 @@
       cursor: pointer;
       font-weight: 700;
       transition: 0.25s;
+      font-size: 15px;
     }
 
     .tab-btn.active {
@@ -168,7 +169,7 @@
       border: 1px solid #ffd8c7;
       font-size: 13px;
       color: #7a3d1f;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .home-link {
@@ -182,25 +183,20 @@
     .home-link:hover {
       text-decoration: underline;
     }
-
-    @media (max-width: 500px) {
-      .mode-tabs {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="login-header">
       <h1>FeedMe</h1>
-      <p>Login to continue</p>
+      <p>Staff login portal</p>
     </div>
 
     <div class="login-body">
       <div class="mode-tabs">
-        <button type="button" class="tab-btn active" id="userTab">User Login</button>
-        <button type="button" class="tab-btn" id="adminTab">Admin Login</button>
+        <button type="button" class="tab-btn active" id="adminTab">Admin Login</button>
+        <button type="button" class="tab-btn" id="riderTab">Rider Login</button>
+        <button type="button" class="tab-btn" id="restaurantTab">Restaurant Login</button>
       </div>
 
       <form id="loginForm">
@@ -220,14 +216,13 @@
       </form>
 
       <div class="extra-links">
-        <p>Don’t have an account? <a href="register.html">Register here</a></p>
         <a href="index.html" class="home-link">← Back to Home</a>
       </div>
 
       <div class="demo-box" id="demoBox">
-        <strong>Admin demo login:</strong><br>
-        Email: admin@feedme.com<br>
-        Password: admin123
+        <strong>Admin login:</strong><br>
+        Email: burgerplace@gmail.com<br>
+        Password: FeedMeNow
       </div>
     </div>
   </div>
@@ -236,16 +231,13 @@
     const loginForm = document.getElementById("loginForm");
     const loginBtn = document.getElementById("loginBtn");
     const messageBox = document.getElementById("messageBox");
-    const userTab = document.getElementById("userTab");
+
     const adminTab = document.getElementById("adminTab");
+    const riderTab = document.getElementById("riderTab");
+    const restaurantTab = document.getElementById("restaurantTab");
     const demoBox = document.getElementById("demoBox");
 
-    let loginMode = "user";
-
-    const API_BASE =
-      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? "http://localhost:5000"
-        : "http://18.212.234.225:5000";
+    let loginMode = "admin";
 
     function showMessage(text, type) {
       messageBox.textContent = text;
@@ -263,26 +255,37 @@
       loginMode = mode;
       clearMessage();
 
-      if (mode === "user") {
-        userTab.classList.add("active");
-        adminTab.classList.remove("active");
-        demoBox.innerHTML = `
-          <strong>User login:</strong><br>
-          Use the account you created from the registration page.
-        `;
-      } else {
+      adminTab.classList.remove("active");
+      riderTab.classList.remove("active");
+      restaurantTab.classList.remove("active");
+
+      if (mode === "admin") {
         adminTab.classList.add("active");
-        userTab.classList.remove("active");
         demoBox.innerHTML = `
-          <strong>Admin demo login:</strong><br>
-          Email: admin@feedme.com<br>
-          Password: admin123
+          <strong>Admin login:</strong><br>
+          Email: burgerplace@gmail.com<br>
+          Password: FeedMeNow
+        `;
+      } else if (mode === "rider") {
+        riderTab.classList.add("active");
+        demoBox.innerHTML = `
+          <strong>Rider login:</strong><br>
+          Email: rider@gmail.com<br>
+          Password: RiderOnTheWay
+        `;
+      } else if (mode === "restaurant") {
+        restaurantTab.classList.add("active");
+        demoBox.innerHTML = `
+          <strong>Restaurant login:</strong><br>
+          Email: burgerpalace@gmail.com<br>
+          Password: FeedMeNow
         `;
       }
     }
 
-    userTab.addEventListener("click", () => setMode("user"));
     adminTab.addEventListener("click", () => setMode("admin"));
+    riderTab.addEventListener("click", () => setMode("rider"));
+    restaurantTab.addEventListener("click", () => setMode("restaurant"));
 
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -301,52 +304,59 @@
 
       try {
         if (loginMode === "admin") {
-          if (email === "admin@feedme.com" && password === "admin123") {
+          if (email === "burgerplace@gmail.com" && password === "FeedMeNow") {
             localStorage.setItem("feedmeToken", "admin-demo-token");
             localStorage.setItem("feedmeUserRole", "admin");
-            localStorage.setItem(
-              "feedmeUser",
-              JSON.stringify({
-                name: "Admin",
-                email: "admin@feedme.com",
-                role: "admin"
-              })
-            );
+            localStorage.setItem("feedmeUser", JSON.stringify({
+              name: "Admin",
+              email: "burgerplace@gmail.com",
+              role: "admin"
+            }));
 
             showMessage("Admin login successful. Redirecting...", "success");
-
             setTimeout(() => {
               window.location.href = "admin.html";
             }, 800);
           } else {
             showMessage("Invalid admin email or password.", "error");
           }
-        } else {
-          const response = await fetch(`${API_BASE}/api/auth/login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              email,
-              password
-            })
-          });
+        } else if (loginMode === "rider") {
+          if (email === "rider@gmail.com" && password === "RiderOnTheWay") {
+            localStorage.setItem("feedmeToken", "rider-demo-token");
+            localStorage.setItem("feedmeUserRole", "rider");
+            localStorage.setItem("feedmeUser", JSON.stringify({
+              name: "Rider",
+              email: "rider@gmail.com",
+              role: "rider"
+            }));
+            localStorage.setItem("user_id", "1");
+            localStorage.setItem("feedmeUserId", "1");
 
-          const data = await response.json();
-
-          if (!response.ok) {
-            showMessage(data.message || "Login failed.", "error");
-          } else {
-            localStorage.setItem("feedmeToken", data.token || "");
-            localStorage.setItem("feedmeUserRole", data.user?.role || "user");
-            localStorage.setItem("feedmeUser", JSON.stringify(data.user || {}));
-
-            showMessage("Login successful. Redirecting...", "success");
-
+            showMessage("Rider login successful. Redirecting...", "success");
             setTimeout(() => {
-              window.location.href = "index.html";
+              window.location.href = "rider.html";
             }, 800);
+          } else {
+            showMessage("Invalid rider email or password.", "error");
+          }
+        } else if (loginMode === "restaurant") {
+          if (email === "burgerpalace@gmail.com" && password === "FeedMeNow") {
+            localStorage.setItem("feedmeToken", "restaurant-demo-token");
+            localStorage.setItem("feedmeUserRole", "restaurant");
+            localStorage.setItem("feedmeUser", JSON.stringify({
+              name: "Burger Palace",
+              email: "burgerpalace@gmail.com",
+              role: "restaurant"
+            }));
+            localStorage.setItem("restaurant_id", "1");
+            localStorage.setItem("restaurant_name", "Burger Palace");
+
+            showMessage("Restaurant login successful. Redirecting...", "success");
+            setTimeout(() => {
+              window.location.href = "restaurant-dashboard.html";
+            }, 800);
+          } else {
+            showMessage("Invalid restaurant email or password.", "error");
           }
         }
       } catch (error) {
@@ -358,7 +368,7 @@
       }
     });
 
-    setMode("user");
+    setMode("admin");
   </script>
 </body>
 </html>
